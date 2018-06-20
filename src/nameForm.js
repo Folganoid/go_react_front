@@ -75,17 +75,17 @@ class NameForm extends React.Component {
         if (this.state.userId === 0) {
             login = <ul className="uk-navbar-nav">
                 <li className="uk-navbar-content ifLogout">
-                    <input name="login" type="text" size="5" placeholder="login" onChange={this.loginChange}/>
-                    <input name="pass" type="password" size="5" placeholder="pass" onChange={this.passChange}/>
+                    <input className="uk-input uk-form-width-small" name="login" type="text" size="5" placeholder="login" onChange={this.loginChange}/>
+                    <input className="uk-input uk-form-width-small" name="pass" type="password" size="5" placeholder="pass" onChange={this.passChange}/>
                 </li>
                 <li className="uk-navbar-content ifLogout">
-                    <button type="submit">Login</button>
+                    <button className="uk-button uk-button-default" type="submit">Login</button>
                 </li>
             </ul>;
         } else {
             login = <ul className="uk-navbar-nav">
                 <li className="uk-navbar-content ifLogin">
-                    <button className="uk-button" type="reset" onClick={this.logOut}>Logout</button>
+                    <button className="uk-button uk-button-default" type="reset" onClick={this.logOut}>Logout</button>
                 </li>
                 <li className="uk-navbar-content ifLogin"><b>{this.state.user}</b></li>
             </ul>;
