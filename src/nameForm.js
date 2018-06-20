@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 /**
  * Auth form
@@ -73,29 +74,35 @@ class NameForm extends React.Component {
         let login;
 
         if (this.state.userId === 0) {
-            login = <ul className="uk-navbar-nav">
-                <li className="uk-navbar-content ifLogout">
-                    <input className="uk-input uk-form-width-small" name="login" type="text" size="5" placeholder="login" onChange={this.loginChange}/>
-                    <input className="uk-input uk-form-width-small" name="pass" type="password" size="5" placeholder="pass" onChange={this.passChange}/>
-                </li>
-                <li className="uk-navbar-content ifLogout">
-                    <button className="uk-button uk-button-default" type="submit">Login</button>
-                </li>
-            </ul>;
+            login = <div className="uk-navbar-right">
+                <div className="uk-navbar-item">
+                    <input className="uk-input uk-form-width-small" name="login" type="text" size="5"
+                           placeholder="login" onChange={this.loginChange}/>
+                    <input className="uk-input uk-form-width-small" name="pass" type="password" size="5"
+                           placeholder="pass" onChange={this.passChange}/>
+                </div>
+                <div className="uk-navbar-item">
+                    <button className="uk-button uk-button-default" type="submit" onClick={this.handleSubmit}>Login</button>
+                </div>
+                <div className="uk-navbar-item">
+                    <Link to="/register">Registration</Link>
+                </div>
+            </div>;
         } else {
-            login = <ul className="uk-navbar-nav">
-                <li className="uk-navbar-content ifLogin">
-                    <button className="uk-button uk-button-default" type="reset" onClick={this.logOut}>Logout</button>
-                </li>
-                <li className="uk-navbar-content ifLogin"><b>{this.state.user}</b></li>
-            </ul>;
+            login = <div className="uk-navbar-right">
+                <div className="uk-navbar-item">
+                    <div><span uk-icon="icon: user"></span> <b>{this.state.user}</b></div>
+                </div>
+                <ul className="uk-navbar-nav">
+                    <li className="uk-navbar-content ifLogin">
+                        <button className="uk-button uk-button-default" type="reset" onClick={this.logOut}>Logout
+                        </button>
+                    </li>
+                </ul>
+            </div>;
         }
 
-        return (
-            <form onSubmit={this.handleSubmit}>
-                {login}
-            </form>
-        );
+        return (login);
     }
 }
 
