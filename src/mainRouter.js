@@ -1,11 +1,7 @@
 import React, {Component} from 'react'
-import {
-    BrowserRouter as Router,
-    Link,
-    Route,
-    Switch,
-} from 'react-router-dom';
-import NameForm from './nameForm.js';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import NameForm from './auth/nameForm.js';
+import RegForm from './auth/regForm.js';
 
 /**
  *  Router and navbar
@@ -18,7 +14,6 @@ class MainRouter extends Component {
                     <nav className="uk-navbar-container" uk-navbar="boundary-align: true; align: center;">
                         <div className="uk-navbar-left">
                             <ul className="uk-navbar-nav">
-                                <li className="uk-active"><Link to="/stat">Statistic</Link></li>
                                 <li className="uk-parent"><Link to="/">Home</Link></li>
                                 <li className="uk-parent"><Link to={{pathname: '/map'}}>Map</Link></li>
                                 <li className="uk-parent"><Link to="/stat">Statistic</Link></li>
@@ -45,10 +40,10 @@ class MainRouter extends Component {
     }
 }
 
-const Home = () => <h1>Hello from Home!</h1>
-const Stat = () => <h1>We are located at 555 Jackson St.</h1>
-const Map = () => <h1>Map</h1>
-const Register = () => <h1>Register</h1>;
+const Home = () => <h1>Hello from Home!</h1>;
+const Stat = () => <h1>We are located at 555 Jackson St.</h1>;
+const Map = () => <h1>Map</h1>;
+const Register = () => <RegForm/>;
 
 
 export default MainRouter
