@@ -1,9 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import {withRouter} from "react-router-dom";
+import SETUP from '../config';
 
 class RegForm extends React.Component {
 
+    /**
+     * constructor
+     * @param props
+     */
     constructor(props) {
         super(props);
         this.state = {
@@ -32,18 +37,19 @@ class RegForm extends React.Component {
 
             axios({
                 method: 'post',
-                url: 'http://127.0.0.1:3001/reg',
+                url: SETUP.goHost + '/reg',
                 data: formData,
 
                 config: {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Origin': 'http://localhost:3000',
+                        'Origin': SETUP.reactHost,
                     }
                 },
 
             }).then(function (response) {
                 if(response.status === 200 && response.statusText === "OK") {
+                    this.props.done("User "+ this.state.login +" registered succesful !", "uk-alert-success");
                     this.props.history.push('/');
                 };
             }.bind(this));
@@ -68,6 +74,10 @@ class RegForm extends React.Component {
             });
     }
 
+    /**
+     * RENDER
+     * @returns {*}
+     */
     render() {
 
         let passMessage;
