@@ -13,9 +13,11 @@ class RegForm extends React.Component {
         super(props);
         this.state = {
             login: '',
+            name: '',
             pass: '',
             pass2: '',
             email: '',
+            year: '',
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -32,8 +34,10 @@ class RegForm extends React.Component {
 
             let formData = new FormData();
             formData.append('login', this.state.login);
+            formData.append('name', this.state.name);
             formData.append('pass', this.state.pass);
             formData.append('email', this.state.email);
+            formData.append('year', this.state.year);
 
             axios({
                 method: 'post',
@@ -96,15 +100,19 @@ class RegForm extends React.Component {
                         <tr>
                             <td>
                                 <label htmlFor="reg_login">Login: </label><br/>
+                                <label htmlFor="reg_name">Name: </label><br/>
+                                <label htmlFor="reg_email">Email: </label><br/>
                                 <label htmlFor="reg_pass">Password: </label><br/>
                                 <label htmlFor="reg_pass2">Confirm password: </label><br/>
-                                <label htmlFor="reg_email">Email: </label><br/>
+                                <label htmlFor="reg_year">Year: </label><br/>
                             </td>
                             <td>
                                 <input id="reg_login" name="login" placeholder="login" onChange={this.handleInputChange} /><br/>
+                                <input id="reg_name" name="name" placeholder="name" onChange={this.handleInputChange} /><br/>
+                                <input id="reg_email" name="email" placeholder="email" onChange={this.handleInputChange} /><br/>
                                 <input id="reg_pass" name="pass" type="password" onChange={this.handleInputChange} /><br/>
                                 <input id="reg_pass2" name="pass2" type="password" onChange={this.handleInputChange} /><span style={{color: 'red'}}>{passMessage}</span><br/>
-                                <input id="reg_email" name="email" placeholder="email" onChange={this.handleInputChange} /><br/>
+                                <input id="reg_year" name="year" placeholder="year" onChange={this.handleInputChange} /><br/>
                             </td>
                         </tr>
                         </tbody>
