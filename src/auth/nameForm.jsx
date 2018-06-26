@@ -23,7 +23,9 @@ class NameForm extends React.Component {
                            placeholder="pass" onChange={this.props.passChange}/>
                 </div>
                 <div className="uk-navbar-item">
-                    <button className="uk-button uk-button-default" type="submit" onClick={this.props.handleSubmit}>Login</button>
+                    <button className="uk-button uk-button-default" type="submit"
+                            onClick={this.props.handleSubmit}>Login
+                    </button>
                 </div>
                 <div className="uk-navbar-item">
                     <Link to="/register">Registration</Link>
@@ -32,7 +34,7 @@ class NameForm extends React.Component {
         } else {
             login = <div className="uk-navbar-right">
                 <div className="uk-navbar-item">
-                    <div><span uk-icon="icon: user"></span> <b>{this.props.userLogin}</b></div>
+                    <Link to="/profile"><span uk-icon="icon: user"></span> <b>{this.props.userLogin}</b></Link>
                 </div>
                 <ul className="uk-navbar-nav">
                     <li className="uk-navbar-content ifLogin">

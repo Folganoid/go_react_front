@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
 import NameForm from './auth/nameForm';
 import RegForm from './auth/regForm';
+import ProfForm from './auth/profForm';
 import Alert from './elements/alert';
 import axios from 'axios';
 import SETUP from './config'
@@ -20,7 +21,9 @@ class MainRouter extends Component {
         this.state = {
             login: '',
             pass: '',
+            name: '',
             userId: 0,
+            year: 0,
             alertMessage: "",
             alertType: "uk-alert-primary",
         };
@@ -52,10 +55,13 @@ class MainRouter extends Component {
      * @param login
      * @param userId
      */
-    userChange(login, userId) {
-        this.setState({login: login});
-        this.setState({userId: userId});
-        this.changeAlert("Wellcome " + login)
+    userChange(data) {
+        this.setState({login: data.Login});
+        this.setState({userId: data.Id});
+        this.setState({email: data.Email});
+        this.setState({name: data.Name});
+        this.setState({year: data.Year});
+        this.changeAlert("Wellcome " + data.Login)
     }
 
     /**
@@ -106,7 +112,7 @@ class MainRouter extends Component {
         }).then(function (response) {
             console.log(response);
             if (response.data.Id !== 0) {
-                this.userChange(response.data.Login, response.data.Id);
+                this.userChange(response.data);
             }
             else {
                 this.changeAlert("Login or password is incorrect ", "uk-alert-danger")
@@ -124,6 +130,7 @@ class MainRouter extends Component {
     render() {
 
         let Register = () => <RegForm done={this.changeAlert} />;
+        let Profile = () => <ProfForm done={this.changeAlert} user={this.state} />;
 
         return (
             <Router>
@@ -146,6 +153,7 @@ class MainRouter extends Component {
                             <Route exact path="/map" component={Map}/>
                             <Route exact path="/stat" component={Stat}/>
                             <Route exact path="/register" component={Register}/>
+                            <Route exact path="/profile" component={Profile}/>
                             <Route
                                 exact path="/data"
                                 render={() => <h1>Data</h1>}/>
