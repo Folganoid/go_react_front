@@ -56,6 +56,7 @@ class MainRouter extends Component {
      * @param userId
      */
     userChange(data) {
+        console.log(data);
         this.setState({login: data.Login});
         this.setState({userId: data.Id});
         this.setState({email: data.Email});
@@ -97,6 +98,7 @@ class MainRouter extends Component {
         formData.append('login', this.state.login);
         formData.append('pass', this.state.pass);
 
+        let that = this;
         axios({
             method: 'post',
             url: SETUP.goHost + '/user',
@@ -110,14 +112,12 @@ class MainRouter extends Component {
             },
 
         }).then(function (response) {
-            console.log(response);
-            if (response.data.Id !== 0) {
-                this.userChange(response.data);
+                that.userChange(response.data)
+        }).catch((error) => {
+            if (error.response) {
+                that.changeAlert("Login or password is incorrect ", "uk-alert-danger");
             }
-            else {
-                this.changeAlert("Login or password is incorrect ", "uk-alert-danger")
-            }
-        }.bind(this));
+        });
 
         event.preventDefault();
     }

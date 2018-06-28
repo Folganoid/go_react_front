@@ -39,6 +39,7 @@ class RegForm extends React.Component {
             formData.append('email', this.state.email);
             formData.append('year', this.state.year);
 
+            let that = this;
             axios({
                 method: 'post',
                 url: SETUP.goHost + '/reg',
@@ -52,11 +53,13 @@ class RegForm extends React.Component {
                 },
 
             }).then(function (response) {
-                if(response.status === 200 && response.statusText === "OK") {
-                    this.props.done("User "+ this.state.login +" registered succesful !", "uk-alert-success");
-                    this.props.history.push('/');
-                };
-            }.bind(this));
+                    that.props.done("User "+ that.state.login +" registered succesful !", "uk-alert-success");
+                    that.props.history.push('/');
+            }).catch((error) => {
+                if (error.response) {
+                    that.changeAlert("Data Base error ", "uk-alert-danger");
+                }
+            });
 
         }
 

@@ -43,6 +43,7 @@ class ProfForm extends React.Component {
             formData.append('email', this.state.email);
             formData.append('year', this.state.year);
 
+            let that = this;
             axios({
                 method: 'post',
                 url: SETUP.goHost + '/profupdate',
@@ -56,14 +57,14 @@ class ProfForm extends React.Component {
                 },
 
             }).then(function (response) {
-                if (response.status === 200 && response.statusText === "OK" && response.data.pass === "updated") {
-                    this.props.done("User " + this.state.login + " User update succesful !", "uk-alert-success");
-                    this.props.history.push('/');
-                } else {
-                    this.props.done("Access denied !", "uk-alert-danger");
-                    this.props.history.push('/');
+                that.props.done("User " + that.state.login + " User update succesful !", "uk-alert-success");
+                that.props.history.push('/');
+            }).catch((error) => {
+                if (error.response) {
+                    that.props.done("Access denied !", "uk-alert-danger");
+                    that.props.history.push('/');
                 }
-            }.bind(this));
+            });
         }
 
         event.preventDefault();
