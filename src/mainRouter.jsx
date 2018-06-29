@@ -6,6 +6,7 @@ import ProfForm from './auth/profForm';
 import Alert from './elements/alert';
 import axios from 'axios';
 import SETUP from './config'
+import MapContainer from './pages/markers'
 
 /**
  *  Router and navbar
@@ -24,6 +25,8 @@ class MainRouter extends Component {
             name: '',
             userId: 0,
             year: 0,
+            token: '',
+            markers: [],
             alertMessage: "",
             alertType: "uk-alert-primary",
         };
@@ -34,6 +37,7 @@ class MainRouter extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
 
+        this.Marks = () => <MapContainer done={this.changeAlert} />;
     }
 
     /**
@@ -56,13 +60,18 @@ class MainRouter extends Component {
      * @param userId
      */
     userChange(data) {
-        console.log(data);
+
         this.setState({login: data.Login});
         this.setState({userId: data.Id});
         this.setState({email: data.Email});
         this.setState({name: data.Name});
         this.setState({year: data.Year});
-        this.changeAlert("Wellcome " + data.Login)
+        this.setState({token: data.Token});
+
+        localStorage.setItem('token', data.Token);
+        localStorage.setItem('userId', data.Id);
+
+        this.changeAlert("Welcome " + data.Login);
     }
 
     /**
@@ -86,6 +95,10 @@ class MainRouter extends Component {
     logOut() {
         this.setState({login: ''});
         this.setState({userId: 0});
+        this.setState({token: 0});
+        this.setState({markers: []});
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
     }
 
     /**
@@ -139,7 +152,7 @@ class MainRouter extends Component {
                         <div className="uk-navbar-left">
                             <ul className="uk-navbar-nav">
                                 <li className="uk-parent"><Link to="/">Home</Link></li>
-                                <li className="uk-parent"><Link to={{pathname: '/map'}}>Map</Link></li>
+                                <li className="uk-parent"><Link to="/map">Map</Link></li>
                                 <li className="uk-parent"><Link to="/stat">Statistic</Link></li>
                                 <li className="uk-parent"><Link to="/data">Data</Link></li>
                             </ul>
@@ -150,7 +163,7 @@ class MainRouter extends Component {
                     <div className="uk-container">
                         <Switch>
                             <Route exact path="/" component={Home}/>
-                            <Route exact path="/map" component={Map}/>
+                            <Route exact path="/map" component={this.Marks}/>
                             <Route exact path="/stat" component={Stat}/>
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/profile" component={Profile}/>
@@ -169,7 +182,6 @@ class MainRouter extends Component {
 //temp
 const Home = () => <h1>Hello from Home!</h1>;
 const Stat = () => <h1>We are located at 555 Jackson St.</h1>;
-const Map = () => <h1>Map</h1>;
 
 export default MainRouter
 
