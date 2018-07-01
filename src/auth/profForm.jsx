@@ -20,6 +20,7 @@ class ProfForm extends React.Component {
             pass2: '',
             email: this.props.user.email,
             year: this.props.user.year,
+            allow_map: this.props.user.allow_map,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -42,6 +43,7 @@ class ProfForm extends React.Component {
             formData.append('pass_old', this.state.pass_old);
             formData.append('email', this.state.email);
             formData.append('year', this.state.year);
+            formData.append('allow_map', this.state.allow_map);
 
             let that = this;
             axios({
@@ -98,6 +100,19 @@ class ProfForm extends React.Component {
             passMessage = 'Password is not match !';
         }
 
+        let allowMap;
+        if (this.state.allow_map === true) {
+            allowMap = <select id="upd_allow_map" name="allow_map" onChange={this.handleInputChange}>
+                <option value={"1"} selected>true</option>
+                <option value={"0"}>false</option>
+            </select>;
+        } else {
+            allowMap = <select id="upd_allow_map" name="allow_map" onChange={this.handleInputChange}>
+                <option value={"1"}>true</option>
+                <option value={"0"} selected>false</option>
+            </select>;
+        }
+
         let form =
             <div>
                 <h1>Edit profile</h1>
@@ -113,6 +128,7 @@ class ProfForm extends React.Component {
                                 <label htmlFor="upd_pass">Password: </label><br/>
                                 <label htmlFor="upd_pass2">Confirm password: </label><br/>
                                 <label htmlFor="upd_year">Year: </label><br/>
+                                <label htmlFor="upd_allow_map">Allow watch map: </label><br/>
                             </td>
                             <td>
                                 <input id="upd_userId" name="userId" type="hidden" value={this.state.userId} />
@@ -131,6 +147,7 @@ class ProfForm extends React.Component {
                                 style={{color: 'red'}}>{passMessage}</span><br/>
                                 <input id="upd_year" name="year" placeholder="year" value={this.state.year}
                                        onChange={this.handleInputChange}/><br/>
+                                {allowMap}
                             </td>
                         </tr>
                         </tbody>

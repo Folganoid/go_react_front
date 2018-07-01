@@ -26,6 +26,7 @@ class MainRouter extends Component {
             userId: 0,
             year: 0,
             token: '',
+            allow_map : 0,
             markers: [],
             alertMessage: "",
             alertType: "uk-alert-primary",
@@ -37,7 +38,7 @@ class MainRouter extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
 
-        this.Marks = () => <MapContainer done={this.changeAlert} />;
+        this.Marks = () => <MapContainer done={this.changeAlert} state={this.state}/>;
     }
 
     /**
@@ -67,9 +68,7 @@ class MainRouter extends Component {
         this.setState({name: data.Name});
         this.setState({year: data.Year});
         this.setState({token: data.Token});
-
-        localStorage.setItem('token', data.Token);
-        localStorage.setItem('userId', data.Id);
+        this.setState({allow_map : data.Allow_map});
 
         this.changeAlert("Welcome " + data.Login);
     }
@@ -97,8 +96,6 @@ class MainRouter extends Component {
         this.setState({userId: 0});
         this.setState({token: 0});
         this.setState({markers: []});
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
     }
 
     /**
