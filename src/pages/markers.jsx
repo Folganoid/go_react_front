@@ -2,7 +2,6 @@ import React from 'react';
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 import SETUP from "../config";
 import axios from 'axios';
-import {TextFilter} from 'react-text-filter';
 
 export class MapContainer extends React.Component {
 
@@ -14,7 +13,9 @@ export class MapContainer extends React.Component {
             selectedPlace: {},
             markers: [],
             foreignLogin: '',
-            filter: ""
+            filter: "",
+            centerMap: {lat: 50.9129663, lng: 34.8055385},
+            color: "reset",
         };
 
         this.onMapClicked = this.onMapClicked.bind(this);
@@ -22,6 +23,9 @@ export class MapContainer extends React.Component {
         this.getMarker = this.getMarker.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getForeignMarker = this.getForeignMarker.bind(this);
+        this.colorFilter = this.colorFilter.bind(this);
+        this.listMarkerClick = this.listMarkerClick.bind(this);
+
         this.getMarker();
     }
 
@@ -51,6 +55,8 @@ export class MapContainer extends React.Component {
             activeMarker: marker,
             showingInfoWindow: true
         });
+        console.log(props);
+        console.log(marker);
     };
 
     onMouseoverMarker (props, marker, e) {
@@ -138,6 +144,23 @@ export class MapContainer extends React.Component {
         })
     }
 
+    /**
+     * set color filter
+     * @param str
+     */
+    colorFilter(str) {
+        this.setState({color: str});
+    }
+
+    /**
+     * list marker click
+     * @param str
+     */
+    listMarkerClick(cord) {
+        console.log(cord);
+        this.setState({centerMap: {lat: cord[0], lng: cord[1]}});
+    }
+
     render() {
 
         // sort
@@ -151,7 +174,9 @@ export class MapContainer extends React.Component {
         //filter
         let filteredObj = [];
         sortObj = sortObj.map((answer, i) => {
-            if (answer.Name.toLowerCase().indexOf(this.state.filter.toLowerCase()) >= 0) {
+            let color = (this.state.color !== "reset" && answer.Color !== this.state.color) ? false : true;
+
+            if (answer.Name.toLowerCase().indexOf(this.state.filter.toLowerCase()) >= 0 && color) {
                 filteredObj.push(answer);
             };
         });
@@ -180,7 +205,7 @@ export class MapContainer extends React.Component {
         // make list template
         let listTable = filteredObj.map((answer, i) => {
             return (
-                <tr key={i}>
+                <tr className={'listMarkers'} key={i} onClick={this.listMarkerClick.bind(this, [answer.X, answer.Y])}>
                     <td style={{color: answer.Color}}>{answer.Name}</td>
                     <td>{answer.X}</td><td>{answer.Y}</td>
                     <td><a href={answer.Link}>Link...</a></td>
@@ -188,10 +213,16 @@ export class MapContainer extends React.Component {
             )
         });
 
+        // subname
         let subname = "";
         if (this.state.selectedPlace.subname != "") {
             subname = <h4>{this.state.selectedPlace.subname}</h4>;
         };
+
+        let colors = ["red", "blue", "green", "orange", "purple", "reset"];
+        colors = colors.map((answer, i) => {
+            return (<button key={i} value={answer} onClick={this.colorFilter.bind(this, answer)}>{answer}</button>);
+        });
 
         return (<div className="uk-container">
                 <h1>Map</h1>
@@ -203,7 +234,7 @@ export class MapContainer extends React.Component {
                             google={this.props.google}
                             style={style}
                             className={'map'}
-                            initialCenter={{lat: 50.9129663, lng: 34.8055385}}
+                            initialCenter={this.state.centerMap}
                             zoom={12}
                             onClick={this.onMapClicked}
                         >
@@ -222,7 +253,7 @@ export class MapContainer extends React.Component {
                         </Map>
                     </div>
                     <div className="uk-width-1-2" style={{maxHeight: "500px", overflow: "auto"}}>
-                        <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
+                        <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>{colors}
                         <table>
                             <tbody>
                             {listTable}
