@@ -252,13 +252,15 @@ export class MapContainer extends React.Component {
                             </InfoWindow>
                         </Map>
                     </div>
-                    <div className="uk-width-1-2" style={{maxHeight: "500px", overflow: "auto"}}>
+                    <div className="uk-width-1-2">
                         <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>{colors}
+                        <div style={{maxHeight: "500px", overflow: "auto"}}>
                         <table>
                             <tbody>
                             {listTable}
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
 

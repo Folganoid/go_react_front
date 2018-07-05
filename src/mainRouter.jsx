@@ -7,6 +7,7 @@ import Alert from './elements/alert';
 import axios from 'axios';
 import SETUP from './config'
 import MapContainer from './pages/markers'
+import Statistic from "./pages/statistic";
 
 /**
  *  Router and navbar
@@ -39,6 +40,7 @@ class MainRouter extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
 
         this.Marks = () => <MapContainer done={this.changeAlert} state={this.state}/>;
+        this.Stats = () => <Statistic/>
     }
 
     /**
@@ -161,7 +163,7 @@ class MainRouter extends Component {
                         <Switch>
                             <Route exact path="/" component={Home}/>
                             <Route exact path="/map" component={this.Marks}/>
-                            <Route exact path="/stat" component={Stat}/>
+                            <Route exact path="/stat" component={this.Stats}/>
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/profile" component={Profile}/>
                             <Route
@@ -178,7 +180,6 @@ class MainRouter extends Component {
 
 //temp
 const Home = () => <h1>Hello from Home!</h1>;
-const Stat = () => <h1>We are located at 555 Jackson St.</h1>;
 
 export default MainRouter
 
