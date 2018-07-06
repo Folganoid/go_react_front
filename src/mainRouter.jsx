@@ -40,7 +40,7 @@ class MainRouter extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
 
         this.Marks = () => <MapContainer done={this.changeAlert} state={this.state}/>;
-        this.Stats = () => <Statistic/>
+        this.Stats = () => <Statistic done={this.changeAlert} state={this.state}/>
     }
 
     /**

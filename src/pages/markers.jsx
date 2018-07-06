@@ -55,8 +55,6 @@ export class MapContainer extends React.Component {
             activeMarker: marker,
             showingInfoWindow: true
         });
-        console.log(props);
-        console.log(marker);
     };
 
     onMouseoverMarker (props, marker, e) {
