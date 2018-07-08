@@ -213,7 +213,7 @@ export class MapContainer extends React.Component {
 
         // subname
         let subname = "";
-        if (this.state.selectedPlace.subname != "") {
+        if (this.state.selectedPlace.subname !== "") {
             subname = <h4>{this.state.selectedPlace.subname}</h4>;
         };
 
