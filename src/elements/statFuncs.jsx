@@ -135,6 +135,7 @@ export function getOdoBikeList(arr, statArr) {
             common[arr[i].Year] = arr[i].Dist;
         } else {
             common[arr[i].Year] += arr[i].Dist;
+            common[arr[i].Year] = +common[arr[i].Year].toFixed(2);
         }
     }
 
@@ -148,12 +149,14 @@ export function getOdoBikeList(arr, statArr) {
             result[bike][year] = dist;
         } else {
             result[bike][year] += dist;
+            result[bike][year] = +result[bike][year].toFixed();
         }
 
         if (common[year] === undefined) {
             common[year] = dist;
         } else {
             common[year] += dist;
+            common[year] = +common[year].toFixed(2);
         }
     }
 
@@ -217,5 +220,9 @@ export function onlyUnique(value, index, self) {
 }
 
 export function getFullYearList(optionsOdoYear) {
-    return "1111111";
+    var result = [];
+
+
+    console.log(result);
+    return result;
 }

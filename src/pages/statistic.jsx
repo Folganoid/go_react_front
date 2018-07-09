@@ -4,6 +4,7 @@ import HighchartsReact from 'highcharts-react-official'
 import SETUP from "../config";
 import axios from 'axios';
 import * as statFuncs from '../elements/statFuncs';
+import YearList from '../elements/yearlist';
 
 /**
  * Statistic
@@ -114,8 +115,6 @@ class Statistic extends React.Component {
      */
     render() {
 
-        let yearList = <h1>dfsdfsdfsdf</h1>;
-
         return (
             <div className="uk-container">
                 <h1>Statistic</h1>
@@ -123,7 +122,7 @@ class Statistic extends React.Component {
                     <div className="uk-width-1-2">
                         <div className="uk-grid">
                             <div className="uk-width-1-2">
-                                {yearList}
+                                <YearList data={this.state.optionsOdoYear} years={JSON.parse(JSON.stringify( this.state.years )).reverse()}/>
                             </div>
                             <div className="uk-width-1-2">
                                 <HighchartsReact
