@@ -15,3 +15,7 @@ body {
 .map {
   position: relative !important;
 }
+
+.colorred {
+  color: darkred;
+}
