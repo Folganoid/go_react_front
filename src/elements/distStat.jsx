@@ -2,16 +2,18 @@ import React from 'react';
 
 class DistStat extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = props.state;
-    }
-
     render() {
+
+        let bikeList = Object.keys(this.props.data).map((item, i) => (
+            <div key={i}>
+                <h2>{this.props.data[item]["Bike"]}</h2>
+                <hr />
+            </div>
+        ));
 
         return (
             <div className="uk-container">
-               khkjhkhkhkjkjh
+                {bikeList}
             </div>
         )
     }

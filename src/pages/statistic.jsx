@@ -23,7 +23,7 @@ class Statistic extends React.Component {
             optionsOdoYear: [],
             odoOptionsNames: [],
             curYear: (new Date()).getFullYear(),
-            curYearStat: [],
+            curYearStat: {},
         };
 
         this.getData = this.getData.bind(this);
@@ -61,7 +61,11 @@ class Statistic extends React.Component {
             odoCommonOptions: odoSumTmp,
         });
 
-        this.filterStatDataByYear(this.state.curYear);
+        this.setState({
+            curYearStat: this.filterStatDataByYear(this.state.curYear),
+        });
+
+        console.log(this.state);
     }
 
     /**
@@ -150,9 +154,7 @@ class Statistic extends React.Component {
            };
        }
 
-       this.buildStatOneYear(result);
-
-       return result;
+       return this.buildStatOneYear(result);
     }
 
     /**
@@ -161,7 +163,15 @@ class Statistic extends React.Component {
      * @param data
      */
     buildStatOneYear(data) {
-        console.log(data);
+
+        // add total stat
+        let dataCommon = [];
+        for (var  i = 0 ; i < data.length; i++) {
+            let tmp = JSON.parse(JSON.stringify(data[i]));
+            tmp.Bike = "Common";
+            dataCommon.push(tmp);
+        }
+        data = data.concat(dataCommon);
 
         let result = {};
 
@@ -181,7 +191,13 @@ class Statistic extends React.Component {
                 result[d.Bike]['Tvp'] = 0;
                 result[d.Bike]['Grn'] = 0;
                 result[d.Bike]['Bzd'] = 0;
-                result[d.Bike]['Months'] = [[],[],[],[],[],[],[],[],[],[],[],[]];
+                result[d.Bike]['Months'] = [[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0],[0,0,0]];
+                result[d.Bike]['Avgspd'] = 0;
+                result[d.Bike]['Avgpls'] = [0, 0];
+                result[d.Bike]['LastDate'] = 0;
+                result[d.Bike]['LastDist'] = 0;
+                result[d.Bike]['LastAvgspd'] = 0;
+                result[d.Bike]['LastAvgpls'] = 0;
 
             }
 
@@ -196,7 +212,22 @@ class Statistic extends React.Component {
             result[d.Bike]['Grn'] += (d.Dist / 100 * d.Surfgrn);
             result[d.Bike]['Bzd'] += (d.Dist / 100 * d.Srfbzd);
 
-            
+            let month = (new Date(d.Date*1000)).getMonth();
+            result[d.Bike]['Months'][month] = [result[d.Bike]['Months'][month][0] += d.Dist, result[d.Bike]['Months'][month][1] + 1, 0 ];
+
+            if (d.Avgpls > 0) {
+                result[d.Bike]['Avgpls'] = [result[d.Bike]['Avgpls'][0] + d.Avgpls, result[d.Bike]['Avgpls'][1]+1];
+            }
+
+            if (d.Date > result[d.Bike]['LastDate']) {
+                result[d.Bike]['LastDate'] = d.Date;
+                result[d.Bike]['LastDist'] = d.Dist;
+                result[d.Bike]['LastAvgpls'] = d.Avgpls;
+                result[d.Bike]['LastAvgspd'] = (d.Dist / d.Time * 60 * 60).toFixed(2);
+            }
+
+
+
         }
 
         for (var bike in result) {
@@ -210,9 +241,21 @@ class Statistic extends React.Component {
             result[bike].Grn = [r.Grn.toFixed(2), (r.Grn*100/r.Dist).toFixed()];
             result[bike].Bzd = [r.Bzd.toFixed(2), (r.Bzd*100/r.Dist).toFixed()];
 
+            // build month dist percents
+            let maxMonthDist = 0;
+            for (var z = 0 ; z < result[bike].Months.length ; z++) {
+                if (result[bike].Months[z][0] > maxMonthDist) maxMonthDist = result[bike].Months[z][0];
+            }
+
+            for (var z = 0 ; z < result[bike].Months.length ; z++) {
+                result[bike].Months[z][2] = r.Months[z][0] / maxMonthDist * 100;
+            }
+
+            result[bike].Avgpls = (r.Avgpls[0] / r.Avgpls[1]).toFixed();
+            result[bike].Avgspd = (r.Dist / r.Time * 60 * 60).toFixed(2);
+
         }
 
-        console.log(result);
         return result;
     }
 
@@ -249,7 +292,7 @@ class Statistic extends React.Component {
 
                 <div className="uk-row">
                     <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
-                    <DistStat state={this.state}/>
+                    <DistStat data={this.state.curYearStat} />
                 </div>
             </div>
 
