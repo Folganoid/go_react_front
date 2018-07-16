@@ -168,7 +168,7 @@ class Statistic extends React.Component {
         let dataCommon = [];
         for (var  i = 0 ; i < data.length; i++) {
             let tmp = JSON.parse(JSON.stringify(data[i]));
-            tmp.Bike = "Common";
+            tmp.Bike = "COMMON";
             dataCommon.push(tmp);
         }
         data = data.concat(dataCommon);
