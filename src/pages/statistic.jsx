@@ -186,6 +186,7 @@ class Statistic extends React.Component {
                 result[d.Bike]['Maxpls'] = [0, 0];
                 result[d.Bike]['Maxspd'] = [0, 0];
                 result[d.Bike]['Maxdst'] = [0, 0];
+                result[d.Bike]['Maxavgspd'] = [0, 0];
                 result[d.Bike]['Time'] = 0;
                 result[d.Bike]['Asf'] = 0;
                 result[d.Bike]['Tvp'] = 0;
@@ -198,6 +199,7 @@ class Statistic extends React.Component {
                 result[d.Bike]['LastDist'] = 0;
                 result[d.Bike]['LastAvgspd'] = 0;
                 result[d.Bike]['LastAvgpls'] = 0;
+                result[d.Bike]['LastBike'] = "";
 
             }
 
@@ -206,6 +208,7 @@ class Statistic extends React.Component {
             result[d.Bike]['Maxpls'] = (d.Maxpls > result[d.Bike]['Maxpls'][0]) ? [d.Maxpls, d.Date] : result[d.Bike]['Maxpls'];
             result[d.Bike]['Maxspd'] = (d.Maxspd > result[d.Bike]['Maxspd'][0]) ? [d.Maxspd, d.Date] : result[d.Bike]['Maxspd'];
             result[d.Bike]['Maxdst'] = (d.Dist > result[d.Bike]['Maxdst'][0]) ? [d.Dist, d.Date] : result[d.Bike]['Maxdst'];
+            result[d.Bike]['Maxavgspd'] = ((d.Dist / d.Time * 60 * 60) > result[d.Bike]['Maxavgspd'][0]) ? [(d.Dist / d.Time * 60 * 60).toFixed(2), d.Date] : result[d.Bike]['Maxavgspd'];
             result[d.Bike]['Time'] += d.Time;
             result[d.Bike]['Asf'] += (d.Dist / 100 * d.Surfasf);
             result[d.Bike]['Tvp'] += (d.Dist / 100 * d.Surftvp);
@@ -224,6 +227,7 @@ class Statistic extends React.Component {
                 result[d.Bike]['LastDist'] = d.Dist;
                 result[d.Bike]['LastAvgpls'] = d.Avgpls;
                 result[d.Bike]['LastAvgspd'] = (d.Dist / d.Time * 60 * 60).toFixed(2);
+                result[d.Bike]['LastBike'] = d.Bike;
             }
 
 

@@ -38,7 +38,27 @@ class DistStat extends React.Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="uk-width-1-3">2</div>
+                    <div className="uk-width-1-3">
+                        <table width="100%">
+                            <tbody>
+                            <tr><td width="60%">Total average speed: </td><td width="40%">{this.props.data[item]['Avgspd']}</td></tr>
+                            <tr><td width="60%">Maximum average speed: </td><td width="40%">{this.props.data[item]['Maxavgspd'][0]} / {this.props.data[item]['Maxavgspd'][1]}</td></tr>
+                            <tr><td width="60%">Total average pulse: </td><td width="40%">{this.props.data[item]['Avgpls']}</td></tr>
+                            <tr><td width="60%">Maximum pulse: </td><td width="40%">{this.props.data[item]['Maxpls'][0]} / {this.props.data[item]['Maxpls'][1]}</td></tr>
+                            <tr><td width="60%">Maximum speed: </td><td width="40%">{this.props.data[item]['Maxspd'][0]} / {this.props.data[item]['Maxspd'][1]}</td></tr>
+                            <tr><td width="60%">Maximum dist: </td><td width="40%">{this.props.data[item]['Maxdst'][0]} / {this.props.data[item]['Maxdst'][1]}</td></tr>
+                            </tbody>
+                        </table>
+                        <p>{this.props.data[item]['LastBike']}</p>
+                        <table>
+                            <tbody>
+                            <tr><td>Last date</td><td>{this.props.data[item]['LastDate']}</td></tr>
+                            <tr><td>Last average speed</td><td>{this.props.data[item]['LastAvgspd']}</td></tr>
+                            <tr><td>Last average pulse</td><td>{this.props.data[item]['LastAvgpls']}</td></tr>
+                            <tr><td>Last dist</td><td>{this.props.data[item]['LastDist']}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div className="uk-width-1-3">
                         <table width="100%">
                             <tbody>
