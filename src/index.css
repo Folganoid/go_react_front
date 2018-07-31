@@ -39,3 +39,19 @@ body {
   height: 7px;
   background-color: darkred;
 }
+
+.calMonth {
+  font-size: small;
+}
+
+.calRideDay {
+  background-color: red;
+}
+
+.calMonth {
+  width: 100%;
+}
+
+.calMonth tbody tr td {
+  width: 12.8%;
+}

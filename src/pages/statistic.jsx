@@ -6,6 +6,7 @@ import axios from 'axios';
 import * as statFuncs from '../elements/statFuncs';
 import YearList from '../elements/yearlist';
 import DistStat from '../elements/distStat';
+import Calendar from '../elements/calendar';
 
 /**
  * Statistic
@@ -24,6 +25,7 @@ class Statistic extends React.Component {
             odoOptionsNames: [],
             curYear: (new Date()).getFullYear(),
             curYearStat: {},
+            rideDaysArr: {},
         };
 
         this.getData = this.getData.bind(this);
@@ -32,8 +34,24 @@ class Statistic extends React.Component {
         this.nextYear = this.nextYear.bind(this);
         this.filterStatDataByYear = this.filterStatDataByYear.bind(this);
         this.buildStatOneYear = this.buildStatOneYear.bind(this);
+        this.buildRideDays = this.buildRideDays.bind(this);
 
         this.getData();
+    }
+
+
+    buildRideDays(data, year) {
+
+        let result = {};
+
+        for(let d = 0 ; d < data.length; d++) {
+            let date = new Date(data[d].Date * 1000);
+            if (date.getFullYear() !== year) continue;
+            if (result[date.getMonth()] === undefined) result[date.getMonth()] = {};
+            result[date.getMonth()][date.getDate()] = true;
+        }
+
+        return result;
     }
 
     /**
@@ -63,6 +81,7 @@ class Statistic extends React.Component {
 
         this.setState({
             curYearStat: this.filterStatDataByYear(this.state.curYear),
+            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear),
         });
 
         console.log(this.state);
@@ -127,6 +146,7 @@ class Statistic extends React.Component {
         this.setState({
             curYear: this.state.curYear - 1,
             curYearStat: this.filterStatDataByYear(this.state.curYear - 1),
+            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear - 1),
         });
     }
 
@@ -137,6 +157,7 @@ class Statistic extends React.Component {
         this.setState({
             curYear: this.state.curYear + 1,
             curYearStat: this.filterStatDataByYear(this.state.curYear + 1),
+            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear + 1),
         });
     }
 
@@ -297,6 +318,23 @@ class Statistic extends React.Component {
                 <div className="uk-row">
                     <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
                     <DistStat data={this.state.curYearStat} />
+                </div>
+                <br />
+                <div className="uk-grid">
+                    <div className="uk-width-1-6">January<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={0} /></div>
+                    <div className="uk-width-1-6">Febrary<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={1} /></div>
+                    <div className="uk-width-1-6">Marth<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={2} /></div>
+                    <div className="uk-width-1-6">April<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={3} /></div>
+                    <div className="uk-width-1-6">May<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={4} /></div>
+                    <div className="uk-width-1-6">June<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={5} /></div>
+                </div>
+                <div className="uk-grid">
+                    <div className="uk-width-1-6">Jule<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={6} /></div>
+                    <div className="uk-width-1-6">August<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={7} /></div>
+                    <div className="uk-width-1-6">September<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={8} /></div>
+                    <div className="uk-width-1-6">October<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={9} /></div>
+                    <div className="uk-width-1-6">November<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={10} /></div>
+                    <div className="uk-width-1-6">December<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={11} /></div>
                 </div>
             </div>
 
