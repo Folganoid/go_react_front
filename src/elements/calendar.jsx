@@ -44,9 +44,12 @@ function buildCalendarMonth(year, month, data) {
             let touch = false; // weekend
 
             if (data[month] !== undefined) {
+
+                let crd = tmpArr[z][x];
+
                 if (data[month][tmpArr[z][x]] !== undefined) {
                     if (x > 4) tmpArr[z][x] = "<span class='colorred'>" + tmpArr[z][x] + "</span>";
-                    result += "<td align='center' class='calRideDay'>" + tmpArr[z][x] + "</td>";
+                    result += "<td title='"+ data[month][crd] +"' align='center' class='calRideDay'>" + tmpArr[z][x] + "</td>";
                     touch = true;
                 }
             }
@@ -79,7 +82,7 @@ function buildCalendarMonth(year, month, data) {
 function validate_date(y, m, d)
 {
     var dt = new Date(y, m, d);
-    if ((dt.getFullYear() == y) && (dt.getMonth() == m) && (dt.getDate() == d)) {
+    if ((dt.getFullYear() === y) && (dt.getMonth() === m) && (dt.getDate() === d)) {
         return true;
     } else {
         return false;

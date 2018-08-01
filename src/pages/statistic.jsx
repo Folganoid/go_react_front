@@ -18,6 +18,7 @@ class Statistic extends React.Component {
         this.state = {
             odoOptions: statFuncs.odoOptions(),
             odoCommonOptions: statFuncs.odoCommonOptions(),
+            odoYearOptions: statFuncs.odoYearOptions(),
             yearData: [],
             statData: [],
             years: [],
@@ -48,7 +49,7 @@ class Statistic extends React.Component {
             let date = new Date(data[d].Date * 1000);
             if (date.getFullYear() !== year) continue;
             if (result[date.getMonth()] === undefined) result[date.getMonth()] = {};
-            result[date.getMonth()][date.getDate()] = true;
+            result[date.getMonth()][date.getDate()] = data[d].Id;
         }
 
         return result;
@@ -68,15 +69,19 @@ class Statistic extends React.Component {
             odoOptionsNames: statFuncs.makeOdoOptions(this.state.optionsOdoYear, this.state.years),
         });
 
+        // chart data
         let odoCatTmp = this.state.odoOptions;
         let odoSumTmp = this.state.odoCommonOptions;
+        let odoYearTmp = this.state.odoYearOptions;
         odoCatTmp.xAxis.categories = this.state.years;
         odoCatTmp.series = this.state.odoOptionsNames;
         odoSumTmp.series[0].data = statFuncs.convertToSumChart(this.state.odoOptionsNames);
+        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear);
 
         this.setState({
             odoOptions: odoCatTmp,
             odoCommonOptions: odoSumTmp,
+            odoYearOptions: odoYearTmp,
         });
 
         this.setState({
@@ -250,9 +255,6 @@ class Statistic extends React.Component {
                 result[d.Bike]['LastAvgspd'] = (d.Dist / d.Time * 60 * 60).toFixed(2);
                 result[d.Bike]['LastBike'] = d.Bike;
             }
-
-
-
         }
 
         for (var bike in result) {
@@ -278,9 +280,7 @@ class Statistic extends React.Component {
 
             result[bike].Avgpls = (r.Avgpls[0] / r.Avgpls[1]).toFixed();
             result[bike].Avgspd = (r.Dist / r.Time * 60 * 60).toFixed(2);
-
         }
-
         return result;
     }
 
@@ -314,12 +314,13 @@ class Statistic extends React.Component {
                         />
                     </div>
                 </div>
-
-                <div className="uk-row">
+                <br />
+                <div className="uk-row" align="center">
                     <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
                     <DistStat data={this.state.curYearStat} />
                 </div>
                 <br />
+                <h2>Activity</h2>
                 <div className="uk-grid">
                     <div className="uk-width-1-6">January<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={0} /></div>
                     <div className="uk-width-1-6">Febrary<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={1} /></div>
@@ -336,6 +337,11 @@ class Statistic extends React.Component {
                     <div className="uk-width-1-6">November<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={10} /></div>
                     <div className="uk-width-1-6">December<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={11} /></div>
                 </div>
+                <br />
+                <HighchartsReact
+                    highcharts={Highcharts}
+                    options={this.state.odoYearOptions}
+                />
             </div>
 
         );

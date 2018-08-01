@@ -165,6 +165,85 @@ export function getOdoBikeList(arr, statArr) {
 }
 
 /**
+ * options for year odo chart
+ *
+ * @returns {{chart: {type: string}, title: {text: string}, subtitle: {text: string}, xAxis: {type: string, dateTimeLabelFormats: {month: string, year: string}, title: {text: string}}, yAxis: {title: {text: string}, min: number}, tooltip: {headerFormat: string, pointFormat: string}, plotOptions: {spline: {marker: {enabled: boolean}}}, series: *[]}}
+ */
+export function odoYearOptions() {
+    return {
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: 'TOTAL DISTANCE'
+        },
+        subtitle: {
+            text: 'Year chart (Distance / Date)'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the dummy year
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: 'Date'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Kilometers'
+            },
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f} km'
+        },
+
+        plotOptions: {
+            spline: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+
+        series: [{
+            name: 'Distance',
+            data: []
+        }]
+    }
+}
+
+export function makeOdoYearOptionsData(statData, year) {
+
+    let res = [];
+
+
+    let tmpDate;
+    let tmpDay;
+    let tmpDist = 0;
+
+    for (let d = 0; d<statData.length; d++) {
+
+        if ((new Date(statData[d].Date * 1000)).getFullYear() !== year) continue;
+        if ((new Date(statData[d].Date * 1000)).getDate() + "-" + (new Date(statData[d].Date * 1000)).getMonth() === tmpDay) {
+            tmpDist += statData[d].Dist;
+            res.splice(-1,1);
+        }
+        else {
+            tmpDay = (new Date(statData[d].Date * 1000)).getDate() + "-" + (new Date(statData[d].Date * 1000)).getMonth();
+            tmpDate = statData[d].Date;
+            tmpDist = statData[d].Dist;
+        }
+        res.push([tmpDate * 1000, tmpDist]);
+    }
+
+    return res;
+}
+
+/**
  * make eries object for highcharts
  *
  * @param optionsOdoYear
@@ -221,8 +300,6 @@ export function onlyUnique(value, index, self) {
 
 export function getFullYearList(optionsOdoYear) {
     var result = [];
-
-
     console.log(result);
     return result;
 }
