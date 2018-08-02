@@ -19,6 +19,7 @@ class Statistic extends React.Component {
             odoOptions: statFuncs.odoOptions(),
             odoCommonOptions: statFuncs.odoCommonOptions(),
             odoYearOptions: statFuncs.odoYearOptions(),
+            avgPlsOptions: statFuncs.avgPlsOptions(),
             yearData: [],
             statData: [],
             years: [],
@@ -73,15 +74,18 @@ class Statistic extends React.Component {
         let odoCatTmp = this.state.odoOptions;
         let odoSumTmp = this.state.odoCommonOptions;
         let odoYearTmp = this.state.odoYearOptions;
+        let avgPlsTmp = this.state.avgPlsOptions;
         odoCatTmp.xAxis.categories = this.state.years;
         odoCatTmp.series = this.state.odoOptionsNames;
         odoSumTmp.series[0].data = statFuncs.convertToSumChart(this.state.odoOptionsNames);
         odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear);
+        avgPlsTmp.series[0].data = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear);
 
         this.setState({
             odoOptions: odoCatTmp,
             odoCommonOptions: odoSumTmp,
             odoYearOptions: odoYearTmp,
+            avgPlsOptions: avgPlsTmp,
         });
 
         this.setState({
@@ -341,6 +345,11 @@ class Statistic extends React.Component {
                 <HighchartsReact
                     highcharts={Highcharts}
                     options={this.state.odoYearOptions}
+                />
+                <br />
+                <HighchartsReact
+                    highcharts={Highcharts}
+                    options={this.state.avgPlsOptions}
                 />
             </div>
 

@@ -165,6 +165,64 @@ export function getOdoBikeList(arr, statArr) {
 }
 
 /**
+ * average pulse chart options
+ *
+ * @returns {{colors: string[], chart: {type: string}, title: {text: string}, subtitle: {text: string}, xAxis: {type: string, dateTimeLabelFormats: {month: string, year: string}, title: {text: string}}, yAxis: {title: {text: string}, min: number}, tooltip: {headerFormat: string, pointFormat: string}, plotOptions: {spline: {marker: {enabled: boolean}}}, series: Array}}
+ */
+export function avgPlsOptions() {
+    return {
+        colors: ['darkred', 'darkblue', 'darkgreen', '#4C0B5F', '#2E2E2E', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: 'СРЕДНИЙ ПУЛЬС'
+        },
+        subtitle: {
+            text: 'Годовая диаграмма (Средний пульс / Дата)'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the dummy year
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: 'Дата'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Ударов в минуту'
+            },
+            min: 100
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f} уд/мин'
+        },
+
+        plotOptions: {
+            spline: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+
+        series: []
+    }
+}
+
+export function makeAvgPulseData(statData, year) {
+    return [];
+}
+
+
+
+
+
+/**
  * options for year odo chart
  *
  * @returns {{chart: {type: string}, title: {text: string}, subtitle: {text: string}, xAxis: {type: string, dateTimeLabelFormats: {month: string, year: string}, title: {text: string}}, yAxis: {title: {text: string}, min: number}, tooltip: {headerFormat: string, pointFormat: string}, plotOptions: {spline: {marker: {enabled: boolean}}}, series: *[]}}
@@ -174,6 +232,7 @@ export function odoYearOptions() {
         chart: {
             type: 'spline'
         },
+        colors: ['darkred'],
         title: {
             text: 'TOTAL DISTANCE'
         },
@@ -216,10 +275,16 @@ export function odoYearOptions() {
     }
 }
 
+/**
+ * build data fo year odo chart
+ *
+ * @param statData
+ * @param year
+ * @returns {Array}
+ */
 export function makeOdoYearOptionsData(statData, year) {
 
     let res = [];
-
 
     let tmpDate;
     let tmpDay;
@@ -227,24 +292,26 @@ export function makeOdoYearOptionsData(statData, year) {
 
     for (let d = 0; d<statData.length; d++) {
 
-        if ((new Date(statData[d].Date * 1000)).getFullYear() !== year) continue;
-        if ((new Date(statData[d].Date * 1000)).getDate() + "-" + (new Date(statData[d].Date * 1000)).getMonth() === tmpDay) {
+        let curDate = new Date(statData[d].Date * 1000);
+
+        if (curDate.getFullYear() !== year) continue;
+        if (curDate.getDate() + "-" + curDate.getMonth() === tmpDay) {
             tmpDist += statData[d].Dist;
             res.splice(-1,1);
         }
         else {
-            tmpDay = (new Date(statData[d].Date * 1000)).getDate() + "-" + (new Date(statData[d].Date * 1000)).getMonth();
+            tmpDay = curDate.getDate() + "-" + curDate.getMonth();
             tmpDate = statData[d].Date;
             tmpDist = statData[d].Dist;
         }
-        res.push([tmpDate * 1000, tmpDist]);
+        res.push([Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate()), tmpDist]);
     }
 
     return res;
 }
 
 /**
- * make eries object for highcharts
+ * make series object for highcharts
  *
  * @param optionsOdoYear
  * @param years
