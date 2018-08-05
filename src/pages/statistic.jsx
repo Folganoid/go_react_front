@@ -7,6 +7,8 @@ import * as statFuncs from '../elements/statFuncs';
 import YearList from '../elements/yearlist';
 import DistStat from '../elements/distStat';
 import Calendar from '../elements/calendar';
+import StatDataTable from '../elements/dataStatTable';
+import TechDataTable from '../elements/dataTechTable';
 
 /**
  * Statistic
@@ -20,6 +22,7 @@ class Statistic extends React.Component {
             odoCommonOptions: statFuncs.odoCommonOptions(),
             odoYearOptions: statFuncs.odoYearOptions(),
             avgPlsOptions: statFuncs.avgPlsOptions(),
+            avgSpdOptions: statFuncs.avgSpdOptions(),
             yearData: [],
             statData: [],
             years: [],
@@ -75,17 +78,20 @@ class Statistic extends React.Component {
         let odoSumTmp = this.state.odoCommonOptions;
         let odoYearTmp = this.state.odoYearOptions;
         let avgPlsTmp = this.state.avgPlsOptions;
+        let avgSpdTmp = this.state.avgSpdOptions;
         odoCatTmp.xAxis.categories = this.state.years;
         odoCatTmp.series = this.state.odoOptionsNames;
         odoSumTmp.series[0].data = statFuncs.convertToSumChart(this.state.odoOptionsNames);
         odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear);
-        avgPlsTmp.series[0].data = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear);
+        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear);
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear);
 
         this.setState({
             odoOptions: odoCatTmp,
             odoCommonOptions: odoSumTmp,
             odoYearOptions: odoYearTmp,
             avgPlsOptions: avgPlsTmp,
+            avgSpdOptions: avgSpdTmp,
         });
 
         this.setState({
@@ -152,10 +158,18 @@ class Statistic extends React.Component {
      * click - year
      */
     preYear() {
+
+        let avgPlsTmp = this.state.avgPlsOptions;
+        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear - 1);
+        let avgSpdTmp = this.state.avgSpdOptions;
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear - 1);
+
         this.setState({
             curYear: this.state.curYear - 1,
             curYearStat: this.filterStatDataByYear(this.state.curYear - 1),
             rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear - 1),
+            avgPlsOptions: avgPlsTmp,
+            avgSpdOptions: avgSpdTmp,
         });
     }
 
@@ -163,10 +177,18 @@ class Statistic extends React.Component {
      * click + year
      */
     nextYear() {
+
+        let avgPlsTmp = this.state.avgPlsOptions;
+        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear + 1);
+        let avgSpdTmp = this.state.avgSpdOptions;
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear - 1);
+
         this.setState({
             curYear: this.state.curYear + 1,
             curYearStat: this.filterStatDataByYear(this.state.curYear + 1),
             rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear + 1),
+            avgPlsOptions: avgPlsTmp,
+            avgSpdOptions: avgSpdTmp,
         });
     }
 
@@ -347,10 +369,26 @@ class Statistic extends React.Component {
                     options={this.state.odoYearOptions}
                 />
                 <br />
-                <HighchartsReact
-                    highcharts={Highcharts}
-                    options={this.state.avgPlsOptions}
-                />
+                <div className="uk-grid">
+                    <div className="uk-width-1-2">
+                        <HighchartsReact
+                            highcharts={Highcharts}
+                            options={this.state.avgPlsOptions}
+                        />
+                    </div>
+                    <div className="uk-width-1-2">
+                        <HighchartsReact
+                            highcharts={Highcharts}
+                            options={this.state.avgSpdOptions}
+                        />
+                    </div>
+                </div>
+                <br />
+                <h1>Data</h1>
+                    <StatDataTable />
+                <br />
+                <h1>Technical data</h1>
+                    <TechDataTable />
             </div>
 
         );

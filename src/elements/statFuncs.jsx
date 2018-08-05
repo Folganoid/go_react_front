@@ -176,10 +176,10 @@ export function avgPlsOptions() {
             type: 'spline'
         },
         title: {
-            text: 'СРЕДНИЙ ПУЛЬС'
+            text: 'AVERAGE PULSE'
         },
         subtitle: {
-            text: 'Годовая диаграмма (Средний пульс / Дата)'
+            text: 'Average year pulse (Pulse / Date)'
         },
         xAxis: {
             type: 'datetime',
@@ -188,18 +188,18 @@ export function avgPlsOptions() {
                 year: '%b'
             },
             title: {
-                text: 'Дата'
+                text: 'Date'
             }
         },
         yAxis: {
             title: {
-                text: 'Ударов в минуту'
+                text: 'Beats per minute'
             },
             min: 100
         },
         tooltip: {
             headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f} уд/мин'
+            pointFormat: '{point.x:%e. %b}: {point.y:.0f} beat / min'
         },
 
         plotOptions: {
@@ -214,12 +214,131 @@ export function avgPlsOptions() {
     }
 }
 
-export function makeAvgPulseData(statData, year) {
-    return [];
+/**
+ * average speed chart options
+ *
+ * @returns {{colors: string[], chart: {type: string}, title: {text: string}, subtitle: {text: string}, xAxis: {type: string, dateTimeLabelFormats: {month: string, year: string}, title: {text: string}}, yAxis: {title: {text: string}, min: number}, tooltip: {headerFormat: string, pointFormat: string}, plotOptions: {spline: {marker: {enabled: boolean}}}, series: Array}}
+ */
+export function avgSpdOptions() {
+
+    return {
+        colors: ['darkred', 'darkblue', 'darkgreen', 'BlueViolet ', 'Chocolate', 'DarkSlateGrey', 'Red ', 'DimGrey', 'Blue', 'Green'],
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: 'AVERAGE SPEED'
+        },
+        subtitle: {
+            text: 'Year chart (Average speed / Date)'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: { // don't display the dummy year
+                month: '%e. %b',
+                year: '%b'
+            },
+            title: {
+                text: 'Date'
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Speed (km/h)'
+            },
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%e. %b}: {point.y:.2f} km/h'
+        },
+
+        plotOptions: {
+            spline: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+
+        series: []
+    }
+}
+
+/**
+ * make options data for average speed chart
+ *
+ * @param statData
+ * @param year
+ * @returns {Array}
+ */
+export function makeAvgSpeedData(statData, year) {
+
+    let result = [];
+
+    for (let i = 0; i< statData.length; i++) {
+
+        let curDate = new Date(statData[i].Date * 1000);
+        let date = Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate());
+
+        //filter
+        if (statData[i].Avgpls === 0 || statData[i].Avgpls === undefined) continue;
+        if (curDate.getFullYear() !== year) continue;
+
+        let pass = false;
+
+        if (i === 0) result.push({"name": statData[i].Bike, "data": [[date, statData[i].Dist / statData[i].Time * 3600]]});
+
+        for( let z = 0; z < result.length; z++) {
+            if (result[z].name === statData[i].Bike) {
+                result[z].data.push([date, statData[i].Dist / statData[i].Time * 3600]);
+                pass = true;
+                break;
+            }
+        }
+        if (!pass) result.push({"name": statData[i].Bike, "data": [[date, statData[i].Dist / statData[i].Time * 3600]]});
+    }
+
+    return result;
 }
 
 
+/**
+ * make options data for average pulse chart
+ *
+ * @param statData
+ * @param year
+ * @returns {Array}
+ */
+export function makeAvgPulseData(statData, year) {
 
+    let result = [];
+
+    for (let i = 0; i< statData.length; i++) {
+
+        let curDate = new Date(statData[i].Date * 1000);
+        let date = Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate());
+
+        //filter
+        if (statData[i].Avgpls === 0 || statData[i].Avgpls === undefined) continue;
+        if (curDate.getFullYear() !== year) continue;
+
+        let pass = false;
+
+        if (i === 0) result.push({"name": statData[0].Bike, "data": [[date, statData[0].Avgpls]]});
+
+        for( let z = 0; z < result.length; z++) {
+            if (result[z].name === statData[i].Bike) {
+                result[z].data.push([date, statData[i].Avgpls]);
+                pass = true;
+                break;
+            }
+        }
+        if (!pass) result.push({"name": statData[i].Bike, "data": [[date, statData[i].Avgpls]]});
+    }
+
+    return result;
+}
 
 
 /**
