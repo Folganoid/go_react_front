@@ -460,6 +460,11 @@ export function makeOdoOptions(optionsOdoYear, years) {
     return result;
 }
 
+/**
+ * [convertToSumChart description]
+ * @param  {[type]} odoOptionsNames [description]
+ * @return {[type]}                 [description]
+ */
 export function convertToSumChart(odoOptionsNames) {
     var result = [];
     for (var k in odoOptionsNames) {
@@ -484,8 +489,35 @@ export function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
 }
 
-export function getFullYearList(optionsOdoYear) {
-    var result = [];
-    console.log(result);
-    return result;
+/**
+ * Convert to human-date
+ * 
+ * @param date
+ * @returns {string}
+ */
+export function humanDate(date) {
+
+        let mnth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        let d = new Date(date * 1000);
+        let day = (d.getDate() < 10) ? "0" + d.getDate() : d.getDate();
+        return day + " " + mnth[d.getMonth()] + " " + d.getFullYear();
+}
+
+/**
+ * convert time
+ *
+ * @param t
+ * @returns {string}
+ */
+export function convertTimeStampToDate(t) {
+        var h = Math.floor((t / 3600));
+        var s = t % 60;
+        var m = (t - s - h*3600) / 60;
+
+        if (m < 10) m = "0" + m;
+        if (s < 10) s = "0" + s;
+        if (h < 10) h = "0" + h;
+
+        return h + ":" + m + ":" + s;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import * as statFuncs from './statFuncs';
 
 class TechDataTable extends React.Component {
 
@@ -33,43 +34,38 @@ class TechDataTable extends React.Component {
      */
     buildData() {
 
-        return "<h1>sdfsdfsd</h1>";
+        // filter DESC
+        function compare(a,b) {
+            if (a.Date < b.Date)
+                return 1;
+            if (a.Date > b.Date)
+                return -1;
+            return 0;
+        }
 
+        let tmpData = JSON.parse(JSON.stringify(this.props.data));
+        tmpData.sort(compare);
+
+        let result = "";
+
+        for (let d = 0; d < tmpData.length; d++) {
+
+            let odoTehDist = 0;
+            
+            for (let z = 0; z < tmpData.length; z++) {
+                if (tmpData[d].Date < tmpData[z].Date && tmpData[d].Bike === tmpData[z].Bike) odoTehDist += tmpData[z].Dist;
+            };
+
+            if (tmpData[d].Teh.length === 0) continue;
+
+            result += "<tr><td>" + statFuncs.humanDate(tmpData[d].Date) +
+                "</td><td>" + tmpData[d].Bike +
+                "</td><td>" + tmpData[d].Teh +
+                "</td><td>" + odoTehDist.toFixed(2) +
+                "</td></tr>";
+        }
+        return result;
     }
-
-    /**
-     * convert date
-     *
-     * @param date
-     * @returns {string}
-     */
-    humanDate(date) {
-
-        let mnth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-        let d = new Date(date * 1000);
-        let day = (d.getDate() < 10) ? "0" + d.getDate() : d.getDate();
-        return day + " " + mnth[d.getMonth()] + " " + d.getFullYear();
-    }
-
-    /**
-     * convert time
-     *
-     * @param t
-     * @returns {string}
-     */
-    convertTimeStampToDate(t) {
-        var h = Math.floor((t / 3600));
-        var s = t % 60;
-        var m = (t - s - h*3600) / 60;
-
-        if (m < 10) m = "0" + m;
-        if (s < 10) s = "0" + s;
-        if (h < 10) h = "0" + h;
-
-        return h + ":" + m + ":" + s;
-    }
-
 
     render() {
 
