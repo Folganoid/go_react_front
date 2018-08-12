@@ -51,6 +51,7 @@ class TechDataTable extends React.Component {
         for (let d = 0; d < tmpData.length; d++) {
 
             let odoTehDist = 0;
+            let date = statFuncs.humanDate(tmpData[d].Date);
             
             for (let z = 0; z < tmpData.length; z++) {
                 if (tmpData[d].Date < tmpData[z].Date && tmpData[d].Bike === tmpData[z].Bike) odoTehDist += tmpData[z].Dist;
@@ -58,7 +59,13 @@ class TechDataTable extends React.Component {
 
             if (tmpData[d].Teh.length === 0) continue;
 
-            result += "<tr><td>" + statFuncs.humanDate(tmpData[d].Date) +
+            // filter
+            if (this.state.filter !== "" && 
+                tmpData[d].Bike.search(this.state.filter) === -1 &&
+                tmpData[d].Teh.search(this.state.filter) === -1 &&
+                date.search(this.state.filter) === -1) continue;
+
+            result += "<tr><td>" + date +
                 "</td><td>" + tmpData[d].Bike +
                 "</td><td>" + tmpData[d].Teh +
                 "</td><td>" + odoTehDist.toFixed(2) +

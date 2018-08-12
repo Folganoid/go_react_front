@@ -10,6 +10,9 @@ class StatDataTable extends React.Component {
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.buildData = this.buildData.bind(this);
+
+        console.log(this.state);
     }
 
     /**
@@ -32,7 +35,7 @@ class StatDataTable extends React.Component {
      *
      * @returns {string}
      */
-    buildData() {
+    buildData(dt, filter) {
 
         // filter DESC
         function compare(a,b) {
@@ -43,7 +46,7 @@ class StatDataTable extends React.Component {
             return 0;
         }
 
-        let tmpData = JSON.parse(JSON.stringify(this.props.data));
+        let tmpData = JSON.parse(JSON.stringify(dt));
         tmpData.sort(compare);
 
         let result = "";
@@ -51,12 +54,17 @@ class StatDataTable extends React.Component {
         for (let d = 0; d < tmpData.length; d++) {
 
             let teh = (tmpData[d].Teh.length > 0) ? "*" : "";
+            let date = statFuncs.humanDate(tmpData[d].Date);
 
-            result += "<tr><td>" + statFuncs.humanDate(tmpData[d].Date) +
-                "</td><td>" + tmpData[d].Bike +
+            if (this.state.filter !== "" && 
+                tmpData[d].Bike.search(this.state.filter) === -1 &&
+                tmpData[d].Prim.search(this.state.filter) === -1 &&
+                date.search(this.state.filter) === -1) continue;
+            result += "<tr><td>" + date +
+                "</td><td>" + tmpData[d].Bike + 
                 "</td><td>" + tmpData[d].Prim +
                 "</td><td>" + tmpData[d].Dist +
-                "</td><td>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
+                "</td><td>" + statFuncs.convertTimeStampToDate(tmpData[d].Time); +
                 "</td><td>" + tmpData[d].Temp +
                 "</td><td>" + teh +
                 "</td></tr>";
@@ -69,7 +77,7 @@ class StatDataTable extends React.Component {
         return (
             <div>
                 <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
-                <table style={{width: '100%'}} dangerouslySetInnerHTML={{__html: this.buildData()}}/>
+                <table style={{width: '100%'}} dangerouslySetInnerHTML={{__html: this.buildData(this.props.data, this.state.filter)}}/>
             </div>
         )
     }
