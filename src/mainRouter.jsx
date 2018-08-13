@@ -8,6 +8,7 @@ import axios from 'axios';
 import SETUP from './config'
 import MapContainer from './pages/markers'
 import Statistic from "./pages/statistic";
+import Data from "./pages/data";
 
 /**
  *  Router and navbar
@@ -41,6 +42,7 @@ class MainRouter extends Component {
 
         this.Marks = () => <MapContainer done={this.changeAlert} state={this.state}/>;
         this.Stats = () => <Statistic done={this.changeAlert} state={this.state}/>
+        this.Data = () => <Data done={this.changeAlert} state={this.state}/>
     }
 
     /**
@@ -166,9 +168,7 @@ class MainRouter extends Component {
                             <Route exact path="/stat" component={this.Stats}/>
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/profile" component={Profile}/>
-                            <Route
-                                exact path="/data"
-                                render={() => <h1>Data</h1>}/>
+                            <Route exact path="/data" component={this.Data} />
                             <Route render={() => <h1>Page not found</h1>}/>
                         </Switch>
                     </div>

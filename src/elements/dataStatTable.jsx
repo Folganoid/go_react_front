@@ -56,15 +56,17 @@ class StatDataTable extends React.Component {
             let teh = (tmpData[d].Teh.length > 0) ? "*" : "";
             let date = statFuncs.humanDate(tmpData[d].Date);
 
+            // filter
             if (this.state.filter !== "" && 
                 tmpData[d].Bike.search(this.state.filter) === -1 &&
                 tmpData[d].Prim.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
+
             result += "<tr><td>" + date +
                 "</td><td>" + tmpData[d].Bike + 
                 "</td><td>" + tmpData[d].Prim +
                 "</td><td>" + tmpData[d].Dist +
-                "</td><td>" + statFuncs.convertTimeStampToDate(tmpData[d].Time); +
+                "</td><td>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
                 "</td><td>" + tmpData[d].Temp +
                 "</td><td>" + teh +
                 "</td></tr>";
