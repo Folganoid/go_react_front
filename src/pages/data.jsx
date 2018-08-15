@@ -9,9 +9,69 @@ class Data extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            bikeList: [],
+            tireList: [],
+            yearDistList: [],
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.fillLists = this.fillLists.bind(this);
+
+        this.fillLists();
+    }
+
+    fillLists() {
+
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+
+        let that = this;
+
+        // get bike list
+        axios({
+            method: 'post',
+            url: SETUP.goHost + '/get_bike_list',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+
+            that.setState({bikeList: response.data});
+
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Bike list not found!", "uk-alert-warning");
+            }
+        });
+
+        // get tire list
+        axios({
+            method: 'post',
+            url: SETUP.goHost + '/get_tire_list',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+
+            that.setState({tireList: response.data});
+
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Tire list not found!", "uk-alert-warning");
+            }
+        });
     }
 
     /**
@@ -34,7 +94,6 @@ class Data extends React.Component {
      */
     render() {
 
-
         return (
             <div className="uk-container">
                 <h1>Data control</h1>
@@ -48,8 +107,9 @@ class Data extends React.Component {
                                         <td>Bike:</td>
                                         <td>
                                             <select name="bike">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                                {this.state.bikeList.map(function(val, index){
+                                                    return <option key={ index } value={val.Name}>{val.Name}</option>;
+                                                })}
                                             </select>
                                         </td>
                                     </tr>
@@ -57,8 +117,9 @@ class Data extends React.Component {
                                         <td>Tires:</td>
                                         <td>
                                             <select name="tire">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                                {this.state.tireList.map(function(val, index){
+                                                    return <option key={ index } value={val.Name}>{val.Name}</option>;
+                                                })}
                                             </select>
                                         </td>
                                     </tr>
@@ -177,9 +238,18 @@ class Data extends React.Component {
                         <h3>Add bike</h3>
                             <input id="add_bike" type="text"/>
                             <button id="save_bike">Save bike</button>
+                            <br />
+                            {this.state.bikeList.map(function(val, index){
+                                return <dd key={ index }>{val.Name}</dd>;
+                            })}
                         <h3>Add tires</h3>
                             <input id="add_tire" type="text"/>
                             <button id="save_tire">Save tire</button>
+                            <br />
+                            {this.state.tireList.map(function(val, index){
+                                return <dd key={ index }>{val.Name}</dd>;
+                            })}
+
                         <h3>Add year distantion</h3>
                             <form>
                             <table>
@@ -188,8 +258,9 @@ class Data extends React.Component {
                                         <td>Bike:</td>
                                         <td>
                                             <select name="bike">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                                {this.state.bikeList.map(function(val, index){
+                                                    return <option key={ index } value={val.Name}>{val.Name}</option>;
+                                                })}
                                             </select>
                                         </td>
                                     </tr>
