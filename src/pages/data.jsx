@@ -13,10 +13,14 @@ class Data extends React.Component {
             bikeList: [],
             tireList: [],
             yearDistList: [],
+            addBike: "",
+            addTire: "",
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.fillLists = this.fillLists.bind(this);
+        this.saveBikeAjax = this.saveBikeAjax.bind(this);
+        this.saveTireAjax = this.saveTireAjax.bind(this);
 
         this.fillLists();
     }
@@ -85,6 +89,64 @@ class Data extends React.Component {
 
         this.setState({
             [name]: value
+        });
+    }
+
+    saveBikeAjax() {
+
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+        formData.append('bike', this.state.addBike);
+
+        let that = this;
+
+        axios({
+            method: 'post',
+            url: SETUP.goHost + '/add_bike',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.fillLists();
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Error! Can't save bike.", "uk-alert-warning");
+            }
+        });
+    }
+
+    saveTireAjax() {
+        
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+        formData.append('tire', this.state.addTire);
+
+        let that = this;
+
+        axios({
+            method: 'post',
+            url: SETUP.goHost + '/add_tire',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.fillLists();
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Error! Can't save tike.", "uk-alert-warning");
+            }
         });
     }
 
@@ -236,15 +298,15 @@ class Data extends React.Component {
                     </div>
                     <div className="uk-width-1-2">
                         <h3>Add bike</h3>
-                            <input id="add_bike" type="text"/>
-                            <button id="save_bike">Save bike</button>
+                            <input id="add_bike" name="addBike" type="text" placeholder="Enter bike" onChange={this.handleInputChange}/>
+                            <button className="uk-button uk-button-primary" id="save_bike" type="button" onClick={this.saveBikeAjax}>Save bike</button>
                             <br />
                             {this.state.bikeList.map(function(val, index){
                                 return <dd key={ index }>{val.Name}</dd>;
                             })}
                         <h3>Add tires</h3>
-                            <input id="add_tire" type="text"/>
-                            <button id="save_tire">Save tire</button>
+                            <input id="add_tire" type="text" name="addTire" placeholder="Enter tire" onChange={this.handleInputChange}/>
+                             <button className="uk-button uk-button-primary" id="save_tire" type="button" onClick={this.saveTireAjax}>Save tire</button>
                             <br />
                             {this.state.tireList.map(function(val, index){
                                 return <dd key={ index }>{val.Name}</dd>;
