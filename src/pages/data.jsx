@@ -15,6 +15,20 @@ class Data extends React.Component {
             yearDistList: [],
             addBike: "",
             addTire: "",
+
+            statYear: (new Date()).getFullYear(),
+            statMonth: (new Date()).getMonth(),
+            statDay: (new Date()).getDate(),
+
+            statDist: 0,
+            statHr: 0,
+            statMin: 0,
+            statSec: 0,
+
+            statAsf: 0,
+            statTvp: 0,
+            statGrn: 0,
+            statBzd: 0,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -23,6 +37,7 @@ class Data extends React.Component {
         this.saveTireAjax = this.saveTireAjax.bind(this);
         this.saveYearDist = this.saveYearDist.bind(this);
         this.deleteYD = this.deleteYD.bind(this);
+        this.saveStat = this.saveStat.bind(this);
 
         this.fillLists();
     }
@@ -225,6 +240,51 @@ class Data extends React.Component {
         });
     }
 
+
+    saveStat() {
+
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+        formData.append('bike', this.state.addBike);
+        formData.append('tire', this.state.addTire);;
+        formData.append('date', (new Date(this.state.statYear, this.state.statMonth, this.state.statDay)).getTime() / 1000);
+        formData.append('time', +this.state.statHr*3600 + +this.state.statMin*60 + +this.state.statSec);
+        formData.append('dist', this.state.statDist);
+        formData.append('prim', this.state.statPrim);
+        formData.append('maxspd', this.state.statMaxspd);
+        formData.append('maxpls', this.state.statMaxpls);
+        formData.append('avgpls', this.state.statAvgpls);
+        formData.append('asf', this.state.statAsf);
+        formData.append('tvp', this.state.statTvp);
+        formData.append('grn', this.state.statGrn);
+        formData.append('bzd', this.state.statBzd);
+        formData.append('temp', this.state.statTemp);
+        formData.append('teh', this.state.statTeh);
+        formData.append('wind', this.state.statWindspd + "@" + this.state.statWinddir);
+
+        let that = this;
+
+        axios({
+            method: 'PUT',
+            url: SETUP.goHost + '/stat',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.fillLists();
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Error! Can't save tike.", "uk-alert-warning");
+            }
+        });
+    }
+
     /**
      * [deleteYD description]
      * @param  {[type]} id   [description]
@@ -278,19 +338,22 @@ class Data extends React.Component {
         this.deleteYD(event.target.value, "/bike");
     }
 
+    let sumSurface = +this.state.statAsf + +this.state.statTvp + +this.state.statBzd + +this.state.statGrn;
+    let avgSpeed = this.state.statDist / (+this.state.statSec + +this.state.statMin*60 + +this.state.statHr*60*60)*3600;
+
+
         return (
             <div className="uk-container">
                 <h1>Data control</h1>
                 <div className="uk-grid">
                     <div className="uk-width-1-2">
                     <h3>Add ride data</h3>
-                        <form>
                             <table>
                                 <tbody>
                                     <tr>
                                         <td>Bike:</td>
                                         <td>
-                                            <select name="bike">
+                                            <select name="addBike" onChange={this.handleInputChange}>
                                                 {this.state.bikeList.map(function(val, index){
                                                     return <option key={ index } value={val.Name}>{val.Name}</option>;
                                                 })}
@@ -300,7 +363,7 @@ class Data extends React.Component {
                                      <tr>
                                         <td>Tires:</td>
                                         <td>
-                                            <select name="tire">
+                                            <select name="addTire" onChange={this.handleInputChange}>
                                                 {this.state.tireList.map(function(val, index){
                                                     return <option key={ index } value={val.Name}>{val.Name}</option>;
                                                 })}
@@ -310,113 +373,133 @@ class Data extends React.Component {
                                     <tr>
                                         <td>Date:</td>
                                         <td>
-                                            <select name="day">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <select name="statDay" onChange={this.handleInputChange}>
+                                                {[...Array(31)].map((x, i) =>
+                                                   <option key={ i+1 } value={ i+1 } selected={ (+this.state.statDay === i+1) ? "selected" : "" }>{ i+1 }</option>
+                                                )}
                                             </select>
-                                            <select name="month">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <select name="statMonth" onChange={this.handleInputChange}>
+                                                {[...Array(12)].map((x, i) =>
+                                                   <option key={ i+1 } value={ i+1 } selected={ (+this.state.statMonth === i) ? "selected" : "" }>{ i+1 }</option>
+                                                )}
                                             </select>
-                                            <select name="year">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <select name="statYear" onChange={this.handleInputChange}>
+                                                {[...Array(10)].map((x, i) =>
+                                                   <option key={ i } value={ +(new Date()).getFullYear() - i }>{ +(new Date()).getFullYear() - i }</option>
+                                                )}
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Time:</td>
                                         <td>
-                                            <select name="hr">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <select name="statHr" onChange={this.handleInputChange}>
+                                                {[...Array(25)].map((x, i) =>
+                                                   <option key={ i } value={ i }>{ i }</option>
+                                                )}
                                             </select>h,
-                                            <select name="min">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <select name="statMin" onChange={this.handleInputChange}>
+                                                {[...Array(60)].map((x, i) =>
+                                                   <option key={ i } value={ i }>{ i }</option>
+                                                )}
                                             </select>m,
-                                            <select name="sec">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <select name="statSec" onChange={this.handleInputChange}>
+                                                {[...Array(60)].map((x, i) =>
+                                                   <option key={ i } value={ i }>{ i }</option>
+                                                )}
                                             </select>s
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Description: </td>
+                                        <td>Dist: </td>
                                         <td>
-                                            <input type="text" name="prim"/>
+                                            <input type="text" name="statDist" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
-                                    <tr><td>Average speed: </td><td><span>3232</span></td></tr>
+                                    <tr><td>Average speed: </td><td><span>{avgSpeed.toFixed(2)}</span></td></tr>
+                                    <tr>
+                                        <td>Description: </td>
+                                        <td>
+                                            <input type="text" name="statPrim" onChange={this.handleInputChange}/>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td>Maximum speed: </td>
                                         <td>
-                                            <input type="text" name="maxspd"/>
+                                            <input type="text" name="statMaxspd" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Average pulse: </td>
                                         <td>
-                                            <input type="text" name="avgpls"/>
+                                            <input type="text" name="statAvgpls" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Maximum pulse: </td>
                                         <td>
-                                            <input type="text" name="maxpls"/>
+                                            <input type="text" name="statMaxpls" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Asphalte: </td>
                                         <td>
-                                            <input type="text" name="asf"/>
+                                            <input type="text" size={3} name="statAsf" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Bad asphalte: </td>
                                         <td>
-                                            <input type="text" name="tvp"/>
+                                            <input type="text" size={3} name="statTvp" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Country: </td>
                                         <td>
-                                            <input type="text" name="grn"/>
+                                            <input type="text" size={3} name="statGrn" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Offroad: </td>
                                         <td>
-                                            <input type="text" name="bzd"/>
+                                            <input type="text" size={3} name="statBzd" onChange={this.handleInputChange}/>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{color: (sumSurface === 100) ? "green" : "red"}}>{sumSurface}</td>
                                     </tr>
                                     <tr>
                                         <td>Temperature: </td>
                                         <td>
-                                            <input type="text" name="temp"/>
+                                            <input type="text" name="statTemp" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Wind: </td>
                                         <td>
-                                            <input type="text" name="windspd"/>
-                                            <select name="winddir">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
+                                            <input type="text" size="4" name="statWindspd" onChange={this.handleInputChange}/>&nbsp;
+                                            <select name="statWinddir" onChange={this.handleInputChange}>
+                                                <option value={5}></option>
+                                                <option value={8}>⇡</option>
+                                                <option value={9}>↗</option>
+                                                <option value={6}>⇢</option>
+                                                <option value={3}>↘</option>
+                                                <option value={2}>⇣</option>
+                                                <option value={1}>↙</option>
+                                                <option value={4}>⇠</option>
+                                                <option value={7}>↖</option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Technical notice: </td>
                                         <td>
-                                            <input type="textarea" name="teh"/>
+                                            <input type="textarea" name="statTeh" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                          
-                            <input type="submit" value="Save" />
-                        </form>
+                            <button type="button" onClick={this.saveStat}>Save</button>
                     </div>
                     <div className="uk-width-1-2">
                         <h3>Add bike</h3>
