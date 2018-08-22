@@ -55,3 +55,7 @@ body {
 .calMonth tbody tr td {
   width: 12.8%;
 }
+
+.invalid_stat_data {
+  background-color: red;
+}

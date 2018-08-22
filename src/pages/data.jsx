@@ -17,7 +17,7 @@ class Data extends React.Component {
             addTire: "",
 
             statYear: (new Date()).getFullYear(),
-            statMonth: (new Date()).getMonth(),
+            statMonth: (new Date()).getMonth() + 1,
             statDay: (new Date()).getDate(),
 
             statDist: 0,
@@ -38,6 +38,8 @@ class Data extends React.Component {
         this.saveYearDist = this.saveYearDist.bind(this);
         this.deleteYD = this.deleteYD.bind(this);
         this.saveStat = this.saveStat.bind(this);
+        this.validate = this.validate.bind(this);
+        this.validate_date = this.validate_date.bind(this);
 
         this.fillLists();
     }
@@ -138,6 +140,27 @@ class Data extends React.Component {
             [name]: value
         });
     }
+
+    validate() {
+        let surf = +this.state.statAsf + +this.state.statTvp + +this.state.statBzd + +this.state.statGrn;
+        let date = this.validate_date(+this.state.statYear, +this.state.statMonth - 1, +this.state.statDay);
+
+        if (surf === 100 && date) {
+            return true;
+        }
+        return false;
+    }
+
+    validate_date(y, m, d)
+    {
+        var dt = new Date(y, m, d);
+        if ((dt.getFullYear() === y) && (dt.getMonth() === m) && (dt.getDate() === d)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * [saveBikeAjax description]
@@ -341,6 +364,10 @@ class Data extends React.Component {
     let sumSurface = +this.state.statAsf + +this.state.statTvp + +this.state.statBzd + +this.state.statGrn;
     let avgSpeed = this.state.statDist / (+this.state.statSec + +this.state.statMin*60 + +this.state.statHr*60*60)*3600;
 
+    let validate = this.validate();
+    let validate_date = this.validate_date(+this.state.statYear, +this.state.statMonth - 1, +this.state.statDay);
+    let validate_time = (this.state.statHr > 0 || this.state.statMin > 0 || this.state.statSec > 0) ? true : false;
+    let validate_dist = this.state.statDist > 0;
 
         return (
             <div className="uk-container">
@@ -370,7 +397,7 @@ class Data extends React.Component {
                                             </select>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(validate_date) ? "" : "invalid_stat_data"}>
                                         <td>Date:</td>
                                         <td>
                                             <select name="statDay" onChange={this.handleInputChange}>
@@ -380,17 +407,18 @@ class Data extends React.Component {
                                             </select>
                                             <select name="statMonth" onChange={this.handleInputChange}>
                                                 {[...Array(12)].map((x, i) =>
-                                                   <option key={ i+1 } value={ i+1 } selected={ (+this.state.statMonth === i) ? "selected" : "" }>{ i+1 }</option>
+                                                   <option key={ i } value={ i+1 } selected={ (+this.state.statMonth === i+1) ? "selected" : "" }>{ i+1 }</option>
                                                 )}
                                             </select>
                                             <select name="statYear" onChange={this.handleInputChange}>
                                                 {[...Array(10)].map((x, i) =>
                                                    <option key={ i } value={ +(new Date()).getFullYear() - i }>{ +(new Date()).getFullYear() - i }</option>
                                                 )}
-                                            </select>
+                                            </select>&nbsp;
+                                            <span style={{color: "red"}}>{(validate_date) ? "" : "invalid date"}</span>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(validate_time) ? "" : "invalid_stat_data"}>
                                         <td>Time:</td>
                                         <td>
                                             <select name="statHr" onChange={this.handleInputChange}>
@@ -410,13 +438,13 @@ class Data extends React.Component {
                                             </select>s
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(validate_dist) ? "" : "invalid_stat_data"}>
                                         <td>Dist: </td>
                                         <td>
                                             <input type="text" name="statDist" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
-                                    <tr><td>Average speed: </td><td><span>{avgSpeed.toFixed(2)}</span></td></tr>
+                                    <tr><td>Average speed: </td><td><span style={{display: (avgSpeed > 0 && avgSpeed < Infinity) ? "" : "none"}}>{avgSpeed.toFixed(2)}</span></td></tr>
                                     <tr>
                                         <td>Description: </td>
                                         <td>
@@ -499,7 +527,7 @@ class Data extends React.Component {
                                     </tr>
                                 </tbody>
                             </table>
-                            <button type="button" onClick={this.saveStat}>Save</button>
+                            <button type="button" onClick={this.saveStat} disabled={(validate) ? "" : "false"}>Save</button>
                     </div>
                     <div className="uk-width-1-2">
                         <h3>Add bike</h3>
