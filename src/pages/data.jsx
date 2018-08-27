@@ -141,9 +141,14 @@ class Data extends React.Component {
         });
     }
 
-    validate() {
+    validate( ...args) {
+
         let surf = +this.state.statAsf + +this.state.statTvp + +this.state.statBzd + +this.state.statGrn;
         let date = this.validate_date(+this.state.statYear, +this.state.statMonth - 1, +this.state.statDay);
+
+        for(let arg in args) {
+            if (!args[arg]) return false;
+        }
 
         if (surf === 100 && date) {
             return true;
@@ -223,7 +228,7 @@ class Data extends React.Component {
             that.fillLists();
         }).catch((error) => {
             if (error.response) {
-                that.props.done("Error! Can't save tike.", "uk-alert-warning");
+                that.props.done("Error! Can't save ride statistic.", "uk-alert-warning");
             }
         });
     }
@@ -258,7 +263,7 @@ class Data extends React.Component {
             that.fillLists();
         }).catch((error) => {
             if (error.response) {
-                that.props.done("Error! Can't save tike.", "uk-alert-warning");
+                that.props.done("Error! Can't save year distance.", "uk-alert-warning");
             }
         });
     }
@@ -267,6 +272,12 @@ class Data extends React.Component {
     saveStat() {
 
         let formData = new FormData();
+
+        
+        let windForm = (this.state.statWindspd === undefined || this.state.statWinddir === 5) ? "" : this.state.statWindspd + "@" + this.state.statWinddir;
+        let temp = (this.state.statTemp === undefined) ? "" : this.state.statTemp;
+        let prim = (this.state.statPrim === undefined) ? "" : this.state.statPrim;
+
         formData.append('userid', this.props.state.userId);
         formData.append('token', this.props.state.token);
         formData.append('bike', this.state.addBike);
@@ -274,7 +285,7 @@ class Data extends React.Component {
         formData.append('date', (new Date(this.state.statYear, this.state.statMonth, this.state.statDay)).getTime() / 1000);
         formData.append('time', +this.state.statHr*3600 + +this.state.statMin*60 + +this.state.statSec);
         formData.append('dist', this.state.statDist);
-        formData.append('prim', this.state.statPrim);
+        formData.append('prim', prim);
         formData.append('maxspd', this.state.statMaxspd);
         formData.append('maxpls', this.state.statMaxpls);
         formData.append('avgpls', this.state.statAvgpls);
@@ -284,7 +295,7 @@ class Data extends React.Component {
         formData.append('bzd', this.state.statBzd);
         formData.append('temp', this.state.statTemp);
         formData.append('teh', this.state.statTeh);
-        formData.append('wind', this.state.statWindspd + "@" + this.state.statWinddir);
+        formData.append('wind', windForm);
 
         let that = this;
 
@@ -303,7 +314,7 @@ class Data extends React.Component {
             that.fillLists();
         }).catch((error) => {
             if (error.response) {
-                that.props.done("Error! Can't save tike.", "uk-alert-warning");
+                that.props.done("Error! Can't save ride statistic.", "uk-alert-warning");
             }
         });
     }
@@ -338,7 +349,7 @@ class Data extends React.Component {
             that.fillLists();
         }).catch((error) => {
             if (error.response) {
-                that.props.done("Error! Can't save tike.", "uk-alert-warning");
+                that.props.done("Error! Can't delete year data.", "uk-alert-warning");
             }
         });
     }
@@ -364,10 +375,11 @@ class Data extends React.Component {
     let sumSurface = +this.state.statAsf + +this.state.statTvp + +this.state.statBzd + +this.state.statGrn;
     let avgSpeed = this.state.statDist / (+this.state.statSec + +this.state.statMin*60 + +this.state.statHr*60*60)*3600;
 
-    let validate = this.validate();
     let validate_date = this.validate_date(+this.state.statYear, +this.state.statMonth - 1, +this.state.statDay);
     let validate_time = (this.state.statHr > 0 || this.state.statMin > 0 || this.state.statSec > 0) ? true : false;
     let validate_dist = this.state.statDist > 0;
+
+    let validate = this.validate(validate_date, validate_time, validate_dist);
 
         return (
             <div className="uk-container">

@@ -13,28 +13,30 @@ class DistStat extends React.Component {
         return h + ":" + m + ":" + s;
     }
 
-
-
     render() {
 
         let bikeList = Object.keys(this.props.data).map((item, i) => (
             <div key={i}>
-                <dd>{this.props.data[item]["Bike"]}</dd>
+                <dd align="left">{this.props.data[item]["Bike"]}</dd>
                 <div className="customhr"></div>
                 <div className="uk-grid">
                     <div className="uk-width-1-3">
-                        <dd>Total dist: {this.props.data[item]['Dist']}</dd>
-                        <dd>Total time: {this.convertTimeStampToDate(this.props.data[item]['Time'])}</dd>
-                        <dd>Average dist: {this.props.data[item]['AvgDist']}</dd>
-                        <dd>Average time: {this.convertTimeStampToDate(this.props.data[item]['AvgTime'])}</dd>
-                        <dd>Count: {this.props.data[item]['Count']}</dd>
-                        <br />
                         <table width="100%">
                             <tbody>
-                                <tr><td width="25%">Asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Asf'][1] + "%"}} className="surfacePerc"></div></td><td width="25%">{this.props.data[item]['Asf'][0]}</td></tr>
-                                <tr><td width="25%">Bad asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Tvp'][1] + "%"}} className="surfacePerc"></div></td><td width="25%">{this.props.data[item]['Tvp'][0]}</td></tr>
-                                <tr><td width="25%">Country:</td><td width="50%"><div style={{width: this.props.data[item]['Grn'][1] + "%"}} className="surfacePerc"></div></td><td width="25%">{this.props.data[item]['Grn'][0]}</td></tr>
-                                <tr><td width="25%">Offroad:</td><td width="50%"><div style={{width: this.props.data[item]['Bzd'][1] + "%"}} className="surfacePerc"></div></td><td width="25%">{this.props.data[item]['Bzd'][0]}</td></tr>
+                                <tr><td>Total dist:</td><td align="right">{this.props.data[item]['Dist']}</td></tr>
+                                <tr><td>Total time:</td><td align="right">{this.convertTimeStampToDate(this.props.data[item]['Time'])}</td></tr>
+                                <tr><td>Average dist:</td><td align="right">{this.props.data[item]['AvgDist']}</td></tr>
+                                <tr><td>Average time:</td><td align="right">{this.convertTimeStampToDate(this.props.data[item]['AvgTime'])}</td></tr>
+                                <tr><td>Count:</td><td align="right">{this.props.data[item]['Count']}</td></tr>
+                            </tbody>
+                        </table>  
+                        <br />  
+                        <table width="100%">
+                            <tbody>
+                                <tr><td width="25%">Asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Asf'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Asf'][0]}</td></tr>
+                                <tr><td width="25%">Bad asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Tvp'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Tvp'][0]}</td></tr>
+                                <tr><td width="25%">Country:</td><td width="50%"><div style={{width: this.props.data[item]['Grn'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Grn'][0]}</td></tr>
+                                <tr><td width="25%">Offroad:</td><td width="50%"><div style={{width: this.props.data[item]['Bzd'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Bzd'][0]}</td></tr>
                             </tbody>
                         </table>
                     </div>

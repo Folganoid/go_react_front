@@ -159,6 +159,16 @@ class Statistic extends React.Component {
      */
     preYear() {
 
+        let tmpYearStat = this.filterStatDataByYear(this.state.curYear - 1);
+
+        if (Object.keys(tmpYearStat).length === 0) {
+            for (let i = 1 ; i < 10; i++) {
+               tmpYearStat = this.filterStatDataByYear(this.state.curYear - i);
+               if (Object.keys(tmpYearStat).length !== 0) break;
+            }
+            return;
+        }
+
         let avgPlsTmp = this.state.avgPlsOptions;
         avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear - 1);
         let avgSpdTmp = this.state.avgSpdOptions;
@@ -166,7 +176,7 @@ class Statistic extends React.Component {
 
         this.setState({
             curYear: this.state.curYear - 1,
-            curYearStat: this.filterStatDataByYear(this.state.curYear - 1),
+            curYearStat: tmpYearStat,
             rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear - 1),
             avgPlsOptions: avgPlsTmp,
             avgSpdOptions: avgSpdTmp,
@@ -178,14 +188,24 @@ class Statistic extends React.Component {
      */
     nextYear() {
 
+        let tmpYearStat = this.filterStatDataByYear(this.state.curYear + 1);
+        
+        if (Object.keys(tmpYearStat).length === 0) {
+            for (let i = 1 ; i < 10; i++) {
+               tmpYearStat = this.filterStatDataByYear(this.state.curYear + i);
+               if (Object.keys(tmpYearStat).length !== 0) break;
+            }
+            return;
+        }
+
         let avgPlsTmp = this.state.avgPlsOptions;
         avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear + 1);
         let avgSpdTmp = this.state.avgSpdOptions;
-        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear - 1);
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear + 1);
 
         this.setState({
             curYear: this.state.curYear + 1,
-            curYearStat: this.filterStatDataByYear(this.state.curYear + 1),
+            curYearStat: tmpYearStat,
             rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear + 1),
             avgPlsOptions: avgPlsTmp,
             avgSpdOptions: avgSpdTmp,

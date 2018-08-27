@@ -409,6 +409,9 @@ export function makeOdoYearOptionsData(statData, year) {
     let tmpDay;
     let tmpDist = 0;
 
+    statData = JSON.parse(JSON.stringify(statData));
+    statData.sort((a,b) => {if (a.Date > b.Date) return 1; if (a.Date < b.Date) return -1; return 0;});
+
     for (let d = 0; d<statData.length; d++) {
 
         let curDate = new Date(statData[d].Date * 1000);
