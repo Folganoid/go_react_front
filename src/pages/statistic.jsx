@@ -40,10 +40,11 @@ class Statistic extends React.Component {
         this.filterStatDataByYear = this.filterStatDataByYear.bind(this);
         this.buildStatOneYear = this.buildStatOneYear.bind(this);
         this.buildRideDays = this.buildRideDays.bind(this);
+        this.getForeignStat = this.getForeignStat.bind(this);
+        this.getMyStat = this.getMyStat.bind(this);
 
         this.getData();
     }
-
 
     buildRideDays(data, year) {
 
@@ -105,11 +106,12 @@ class Statistic extends React.Component {
     /**
      * get data from DB
      */
-    getData() {
+    getData(login = "") {
 
         let formData = new FormData();
         formData.append('userid', this.props.state.userId);
         formData.append('token', this.props.state.token);
+        if (login !== "") formData.append('foreign', login);
 
         let that = this;
 
@@ -330,6 +332,16 @@ class Statistic extends React.Component {
         return result;
     }
 
+
+    getForeignStat() {
+        this.getData(document.getElementById("foreign").value);
+    }
+
+    getMyStat() {
+        document.getElementById("foreign").value = "";
+        this.getData();
+    }
+
     /**
      * render
      * @returns {*}
@@ -339,6 +351,8 @@ class Statistic extends React.Component {
         return (
             <div className="uk-container">
                 <h1>Statistic</h1>
+                Watch another Stat by login: <input id="foreign" type={'text'} name={'foreignLogin'} placeholder={'Login'} /><button onClick={this.getForeignStat}>Watch</button> <button onClick={this.getData}>My map</button>
+                <br />
                 <div className="uk-grid">
                     <div className="uk-width-1-2">
                         <div className="uk-grid">

@@ -12,7 +12,6 @@ export class MapContainer extends React.Component {
             activeMarker: {},
             selectedPlace: {},
             markers: [],
-            foreignLogin: '',
             filter: "",
             centerMap: {lat: 50.9129663, lng: 34.8055385},
             color: "reset",
@@ -114,7 +113,7 @@ export class MapContainer extends React.Component {
     getForeignMarker() {
 
         let formData = new FormData();
-        formData.append('login', this.state.foreignLogin);
+        formData.append('login', document.getElementById("foreign").value);
 
         let that = this;
 
@@ -136,10 +135,6 @@ export class MapContainer extends React.Component {
                 that.props.done("Markers not found!", "uk-alert-warning");
             }
         });
-
-        this.setState({
-            foreignLogin: ""
-        })
     }
 
     /**
@@ -226,7 +221,7 @@ export class MapContainer extends React.Component {
                 <h1>Map</h1>
                 <div className="uk-grid">
                     <div className="uk-width-1-2" style={{height: "500px"}}>
-                        Watch another map by login: <input type={'text'} name={'foreignLogin'} placeholder={'Login'} onChange={this.handleInputChange} /><button onClick={this.getForeignMarker}>Watch</button> <button onClick={this.getMarker}>My map</button>
+                        Watch another map by login: <input id="foreign" type={'text'} placeholder={'Login'} /><button onClick={this.getForeignMarker}>Watch</button> <button onClick={this.getMarker}>My map</button>
                         <br />
                         <Map
                             google={this.props.google}
