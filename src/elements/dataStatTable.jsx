@@ -62,7 +62,7 @@ class StatDataTable extends React.Component {
                 tmpData[d].Prim.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
-            result += "<tr><td>" + date +
+            result += "<tr key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'><td>" + date +
                 "</td><td>" + tmpData[d].Bike + 
                 "</td><td>" + tmpData[d].Prim +
                 "</td><td>" + tmpData[d].Dist +
@@ -73,6 +73,28 @@ class StatDataTable extends React.Component {
         }
 
         return result;
+    }
+
+    componentDidUpdate() {
+        this.statListInit();
+    }
+
+    componentDidMount() {
+       this.statListInit();
+    }
+
+    /**
+     * Init stat List click
+     * @return {[type]} [description]
+     */
+    statListInit() {
+
+        let list = document.getElementsByClassName("cellStat");
+            if (list) {
+                for (let a = 0 ; a < list.length ; a++) {
+                    list[a].onclick = () => {alert(list[a].getAttribute("value"))};
+                }
+            }   
     }
 
     render() {

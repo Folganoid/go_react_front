@@ -59,3 +59,8 @@ body {
 .invalid_stat_data {
   background-color: red;
 }
+
+.cellStat:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}

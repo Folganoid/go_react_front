@@ -19,6 +19,7 @@ class Data extends React.Component {
             statYear: (new Date()).getFullYear(),
             statMonth: (new Date()).getMonth() + 1,
             statDay: (new Date()).getDate(),
+            statPrim: "",
 
             statDist: 0,
             statHr: 0,
@@ -378,8 +379,10 @@ class Data extends React.Component {
     let validate_date = this.validate_date(+this.state.statYear, +this.state.statMonth - 1, +this.state.statDay);
     let validate_time = (this.state.statHr > 0 || this.state.statMin > 0 || this.state.statSec > 0) ? true : false;
     let validate_dist = this.state.statDist > 0;
+    let validate_desc = this.state.statPrim !== "";
+    let validate_bike_tire = this.state.addBike.length !== "" && this.state.addTire.length !== "";
 
-    let validate = this.validate(validate_date, validate_time, validate_dist);
+    let validate = this.validate(validate_date, validate_time, validate_dist, validate_bike_tire);
 
         return (
             <div className="uk-container">
@@ -457,7 +460,7 @@ class Data extends React.Component {
                                         </td>
                                     </tr>
                                     <tr><td>Average speed: </td><td><span style={{display: (avgSpeed > 0 && avgSpeed < Infinity) ? "" : "none"}}>{avgSpeed.toFixed(2)}</span></td></tr>
-                                    <tr>
+                                    <tr className={(validate_desc) ? "" : "invalid_stat_data"}>
                                         <td>Description: </td>
                                         <td>
                                             <input type="text" name="statPrim" onChange={this.handleInputChange}/>
@@ -481,25 +484,25 @@ class Data extends React.Component {
                                             <input type="text" name="statMaxpls" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(sumSurface === 100) ? "" : "invalid_stat_data"}>
                                         <td>Asphalte: </td>
                                         <td>
                                             <input type="text" size={3} name="statAsf" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(sumSurface === 100) ? "" : "invalid_stat_data"}>
                                         <td>Bad asphalte: </td>
                                         <td>
                                             <input type="text" size={3} name="statTvp" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(sumSurface === 100) ? "" : "invalid_stat_data"}>
                                         <td>Country: </td>
                                         <td>
                                             <input type="text" size={3} name="statGrn" onChange={this.handleInputChange}/>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr className={(sumSurface === 100) ? "" : "invalid_stat_data"}>
                                         <td>Offroad: </td>
                                         <td>
                                             <input type="text" size={3} name="statBzd" onChange={this.handleInputChange}/>
