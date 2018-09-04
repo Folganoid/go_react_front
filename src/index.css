@@ -64,3 +64,20 @@ body {
   background-color: lightgrey;
   cursor: pointer;
 }
+
+#statModal {
+  display: none;
+  width: 60%;
+  top: 10%;
+  left: 20%;
+  background-color: red;
+  position: fixed;
+}
+
+#saveModal {
+  display: none;
+}
+
+#cancelModal {
+  display: none;
+}

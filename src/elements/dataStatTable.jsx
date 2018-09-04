@@ -7,10 +7,20 @@ class StatDataTable extends React.Component {
         super(props);
         this.state = {
             filter: "",
+
+            "modalPrim": "",
+            "modalDate": "",
+            "modalTime": "",
+            "modalDist": "",
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildData = this.buildData.bind(this);
+        this.statListInit = this.statListInit.bind(this);
+        this.changeModal = this.changeModal.bind(this);
+        this.editModal = this.editModal.bind(this);
+        this.saveModal = this.saveModal.bind(this);
+        this.cancelModal = this.cancelModal.bind(this);
 
         console.log(this.state);
     }
@@ -92,14 +102,92 @@ class StatDataTable extends React.Component {
         let list = document.getElementsByClassName("cellStat");
             if (list) {
                 for (let a = 0 ; a < list.length ; a++) {
-                    list[a].onclick = () => {alert(list[a].getAttribute("value"))};
+                    list[a].onclick = () => {
+                        this.changeModal(list[a].getAttribute("value"));
+                    };
                 }
-            }   
+            }
+    }
+
+    changeModal(statId) {
+
+        for (let i = 0 ; i < this.props.data.length ; i++) {
+
+            if (+this.props.data[i].Id === +statId) {
+
+                this.setState({
+                    "modalAvgpls": this.props.data[i].Avgpls,
+                    "modalBike": this.props.data[i].Bike,
+                    "modalDate": this.props.data[i].Date,
+                    "modalDist": this.props.data[i].Dist,
+                    "modalMaxpls": this.props.data[i].Maxpls,
+                    "modalMaxspd": this.props.data[i].Maxspd,
+                    "modalPrim": this.props.data[i].Prim,
+                    "modalSrfbzd": this.props.data[i].Srfbzd,
+                    "modalSurfasf": this.props.data[i].Surfasf,
+                    "modalSurftvp": this.props.data[i].Surftvp,
+                    "modalSurfgrn": this.props.data[i].Surfgrn,
+                    "modalTeh": this.props.data[i].Teh,
+                    "modalTemp": this.props.data[i].Temp,
+                    "modalTime": this.props.data[i].Time,
+                    "modalTires": this.props.data[i].Tires,
+                    "modalWind": this.props.data[i].Wind,
+                    "modalId": this.props.data[i].Id,
+                });
+
+                document.getElementById('statModal').style['display'] = "block";
+
+                break;
+            }
+        }
+    }
+
+    editModal() {
+        document.getElementById('saveModal').style['display'] = "inline";
+        document.getElementById('cancelModal').style['display'] = "inline";
+        document.getElementById('editModal').style['display'] = "none";
+    }
+
+    saveModal() {
+
+    }
+
+    cancelModal() {
+        document.getElementById('saveModal').style['display'] = "none";
+        document.getElementById('cancelModal').style['display'] = "none";
+        document.getElementById('editModal').style['display'] = "inline";
     }
 
     render() {
+
+        let avgSpd = this.state.modalDist / this.state.modalTime * 3600;
         return (
             <div>
+
+                <div id="statModal" className="uk-container">
+                    <h1>{this.state.modalPrim}</h1> 
+                    <dd><input name="modalPrim" onChange={this.handleInputChange} value={this.state.modalPrim} /></dd>
+                    <dd>{this.state.modalBike} / {this.state.modalTires}</dd>
+                    <dd>{statFuncs.humanDate(this.state.modalDate)}</dd>
+                    <dd><input name="modalDate" onChange={this.handleInputChange} value={this.state.modalDate} /></dd>
+                    <dd>{this.state.modalDist}</dd>
+                    <dd>{statFuncs.convertTimeStampToDate(this.state.modalTime)}</dd>
+                    <dd>{avgSpd.toFixed(2)}</dd>
+                    <dd>{this.state.modalMaxpls}</dd>
+                    <dd>{this.state.modalMaxspd}</dd>
+                    <dd>{this.state.modalSrfbzd}</dd>
+                    <dd>{this.state.modalSurfasf}</dd>
+                    <dd>{this.state.modalSurftvp}</dd>
+                    <dd>{this.state.modalSurfgrn}</dd>
+                    <dd>{this.state.modalTeh}</dd>
+                    <dd>{this.state.modalTemp}</dd>
+                    <dd>{this.state.modalWind}</dd>
+                    <button id = "closeModal" onClick={()=> {document.getElementById('statModal').style['display'] = "none"}}>Close</button>
+                    <button id = "editModal" onClick={this.editModal}>Edit</button>
+                    <button id = "saveModal" onClick={this.saveModal}>Save</button>
+                    <button id = "cancelModal" onClick={this.cancelModal}>Cancel</button>
+                </div>
+
                 <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
                 <table style={{width: '100%'}} dangerouslySetInnerHTML={{__html: this.buildData(this.props.data, this.state.filter)}}/>
             </div>
