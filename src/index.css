@@ -70,8 +70,10 @@ body {
   width: 60%;
   top: 10%;
   left: 20%;
-  background-color: red;
+  background-color: grey;
   position: fixed;
+  padding: 10px;
+  align-content: center;
 }
 
 #saveModal {
@@ -80,4 +82,12 @@ body {
 
 #cancelModal {
   display: none;
+}
+
+.modalEdit {
+  display: none;
+}
+
+.modalShow {
+  display: table-row;
 }

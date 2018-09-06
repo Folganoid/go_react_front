@@ -145,6 +145,15 @@ class StatDataTable extends React.Component {
     editModal() {
         document.getElementById('saveModal').style['display'] = "inline";
         document.getElementById('cancelModal').style['display'] = "inline";
+
+        for (let i = 0 ; i < document.getElementsByClassName('modalShow').length ; i++) {
+            document.getElementsByClassName('modalShow')[i].style['display'] = "none";            
+        }
+
+        for (let i = 0 ; i < document.getElementsByClassName('modalEdit').length ; i++) {
+            document.getElementsByClassName('modalEdit')[i].style['display'] = "table-row";            
+        }
+
         document.getElementById('editModal').style['display'] = "none";
     }
 
@@ -155,6 +164,13 @@ class StatDataTable extends React.Component {
     cancelModal() {
         document.getElementById('saveModal').style['display'] = "none";
         document.getElementById('cancelModal').style['display'] = "none";
+        for (let i = 0 ; i < document.getElementsByClassName('modalShow').length ; i++) {
+            document.getElementsByClassName('modalShow')[i].style['display'] = "table-row";            
+        }
+
+        for (let i = 0 ; i < document.getElementsByClassName('modalEdit').length ; i++) {
+            document.getElementsByClassName('modalEdit')[i].style['display'] = "none";            
+        }
         document.getElementById('editModal').style['display'] = "inline";
     }
 
@@ -166,22 +182,42 @@ class StatDataTable extends React.Component {
 
                 <div id="statModal" className="uk-container">
                     <h1>{this.state.modalPrim}</h1> 
-                    <dd><input name="modalPrim" onChange={this.handleInputChange} value={this.state.modalPrim} /></dd>
-                    <dd>{this.state.modalBike} / {this.state.modalTires}</dd>
-                    <dd>{statFuncs.humanDate(this.state.modalDate)}</dd>
-                    <dd><input name="modalDate" onChange={this.handleInputChange} value={this.state.modalDate} /></dd>
-                    <dd>{this.state.modalDist}</dd>
-                    <dd>{statFuncs.convertTimeStampToDate(this.state.modalTime)}</dd>
-                    <dd>{avgSpd.toFixed(2)}</dd>
-                    <dd>{this.state.modalMaxpls}</dd>
-                    <dd>{this.state.modalMaxspd}</dd>
-                    <dd>{this.state.modalSrfbzd}</dd>
-                    <dd>{this.state.modalSurfasf}</dd>
-                    <dd>{this.state.modalSurftvp}</dd>
-                    <dd>{this.state.modalSurfgrn}</dd>
-                    <dd>{this.state.modalTeh}</dd>
-                    <dd>{this.state.modalTemp}</dd>
-                    <dd>{this.state.modalWind}</dd>
+                    <dd className="modalEdit"><input name="modalPrim" onChange={this.handleInputChange} value={this.state.modalPrim} /></dd>
+                    <table width="100%">
+                        <tbody>
+                            <tr className="modalShow"><td width="30%">Bike:</td><td width="70%">{this.state.modalBike}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Bike:</td><td width="70%"><input name="modalBike" onChange={this.handleInputChange} value={this.state.modalBike} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Tires:</td><td width="70%">{this.state.modalTires}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Tires:</td><td width="70%"><input name="modalTires" onChange={this.handleInputChange} value={this.state.modalTires} /></td></tr>
+                            <tr><td width="30%">Date:</td><td width="70%"><button className="modalEdit">{"<"}</button>{statFuncs.humanDate(this.state.modalDate)}<button className="modalEdit">{">"}</button></td></tr>
+                            <tr className="modalShow"><td width="30%">Dist:</td><td width="70%">{this.state.modalDist}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Dist:</td><td width="70%"><input name="modalDist" onChange={this.handleInputChange} value={this.state.modalDist} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Time:</td><td width="70%">{statFuncs.convertTimeStampToDate(this.state.modalTime)}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Time:</td><td width="70%"><input name="modalTimeHuman" onChange={this.handleInputChange} value={statFuncs.convertTimeStampToDate(this.state.modalTime)} /></td></tr>
+                            <tr><td width="30%">Average speed:</td><td width="70%">{avgSpd.toFixed(2)}</td></tr>
+                            <tr className="modalShow"><td width="30%">Maximal speed:</td><td width="70%">{this.state.modalMaxspd}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Maximal speed:</td><td width="70%"><input name="modalMaxspd" onChange={this.handleInputChange} value={this.state.modalMaxspd} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Average pulse:</td><td width="70%">{this.state.modalAvgpls}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Average pulse:</td><td width="70%"><input name="modalAvgpls" onChange={this.handleInputChange} value={this.state.modalAvgpls} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Maximal pulse:</td><td width="70%">{this.state.modalMaxpls}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Maximal pulse:</td><td width="70%"><input name="modalMaxpls" onChange={this.handleInputChange} value={this.state.modalMaxpls} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Asph:</td><td width="70%">{this.state.modalSurfasf}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Asph:</td><td width="70%"><input name="modalSurfasf" onChange={this.handleInputChange} value={this.state.modalSurfasf} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Bad asph:</td><td width="70%">{this.state.modalSurftvp}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Bad asph:</td><td width="70%"><input name="modalSurftvp" onChange={this.handleInputChange} value={this.state.modalSurftvp} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Country:</td><td width="70%">{this.state.modalSurfgrn}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Country:</td><td width="70%"><input name="modalSurfgrn" onChange={this.handleInputChange} value={this.state.modalSurfgrn} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Offroad:</td><td width="70%">{this.state.modalSrfbzd}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Offroad:</td><td width="70%"><input name="modalSurfbzd" onChange={this.handleInputChange} value={this.state.modalSurfbzd} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Temperature:</td><td width="70%">{this.state.modalTemp}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Temperature:</td><td width="70%"><input name="modalTemp" onChange={this.handleInputChange} value={this.state.modalTemp} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Technical notice:</td><td width="70%">{this.state.modalTeh}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Technical notice:</td><td width="70%"><input name="modalTeh" onChange={this.handleInputChange} value={this.state.modalTeh} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Wind:</td><td width="70%">{this.state.modalWind}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Wind:</td><td width="70%"><input name="modalWind" onChange={this.handleInputChange} value={this.state.modalWind} /></td></tr>
+                        </tbody>
+                    </table>
+
                     <button id = "closeModal" onClick={()=> {document.getElementById('statModal').style['display'] = "none"}}>Close</button>
                     <button id = "editModal" onClick={this.editModal}>Edit</button>
                     <button id = "saveModal" onClick={this.saveModal}>Save</button>
