@@ -171,10 +171,15 @@ class Statistic extends React.Component {
             return;
         }
 
+
+
         let avgPlsTmp = this.state.avgPlsOptions;
         avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear - 1);
         let avgSpdTmp = this.state.avgSpdOptions;
         avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear - 1);
+
+        let odoYearTmp = this.state.odoYearOptions;
+        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear - 1);
 
         this.setState({
             curYear: this.state.curYear - 1,
@@ -182,6 +187,7 @@ class Statistic extends React.Component {
             rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear - 1),
             avgPlsOptions: avgPlsTmp,
             avgSpdOptions: avgSpdTmp,
+            odoYearOptions: odoYearTmp,
         });
     }
 

@@ -65,10 +65,10 @@ class TechDataTable extends React.Component {
                 tmpData[d].Teh.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
-            result += "<tr><td>" + date +
-                "</td><td>" + tmpData[d].Bike +
-                "</td><td>" + tmpData[d].Teh +
-                "</td><td>" + odoTehDist.toFixed(2) +
+            result += "<tr><td width='15%'>" + date +
+                "</td><td width='15%'>" + tmpData[d].Bike +
+                "</td><td width='60%'>" + tmpData[d].Teh +
+                "</td><td width='10%'>" + odoTehDist.toFixed(2) +
                 "</td></tr>";
         }
         return result;
