@@ -128,16 +128,36 @@ class Statistic extends React.Component {
 
         }).then(function (response) {
             that.setState({yearData: response.data});
-            that.buildCharts();
+            
+                    axios({
+                        method: 'post',
+                        url: SETUP.goHost + '/get_stat_data',
+                        data: formData,
+                        config: {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                                'Origin': SETUP.reactHost,
+                            }
+                        },
+
+                    }).then(function (response) {
+                        that.setState({statData: response.data});
+                        that.buildCharts();
+                    }).catch((error) => {
+                        if (error.response) {
+                            that.props.done("Stat data not found!", "uk-alert-warning");
+                        }
+                    });
         }).catch((error) => {
             if (error.response) {
                 that.props.done("Years data not found!", "uk-alert-warning");
             }
         });
 
+        // get tire list
         axios({
             method: 'post',
-            url: SETUP.goHost + '/get_stat_data',
+            url: SETUP.goHost + '/tire',
             data: formData,
             config: {
                 headers: {
@@ -147,11 +167,15 @@ class Statistic extends React.Component {
             },
 
         }).then(function (response) {
-            that.setState({statData: response.data});
-            that.buildCharts();
+            let res = [];
+            for (let i = 0 ; i < response.data.length ; i++ ) {
+                res.push(response.data[i].Name);
+            }
+            that.setState({tires: res});
+
         }).catch((error) => {
             if (error.response) {
-                that.props.done("Stat data not found!", "uk-alert-warning");
+                that.props.done("Tire list not found!", "uk-alert-warning");
             }
         });
     }
@@ -170,8 +194,6 @@ class Statistic extends React.Component {
             }
             return;
         }
-
-
 
         let avgPlsTmp = this.state.avgPlsOptions;
         avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear - 1);
@@ -425,7 +447,7 @@ class Statistic extends React.Component {
                 </div>
                 <br />
                 <h1>Data</h1>
-                    <StatDataTable data={this.state.statData}/>
+                    <StatDataTable data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires}/>
                 <br />
                 <h1>Technical data</h1>
                     <TechDataTable data={this.state.statData}/>

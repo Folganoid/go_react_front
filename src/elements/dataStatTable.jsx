@@ -23,6 +23,9 @@ class StatDataTable extends React.Component {
             "modalDate": "",
             "modalTime": "",
             "modalDist": "",
+
+            "setBike": 0,
+            "setTires": 0,
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -34,6 +37,8 @@ class StatDataTable extends React.Component {
         this.cancelModal = this.cancelModal.bind(this);
         this.setModalTime = this.setModalTime.bind(this);
         this.setModalDate = this.setModalDate.bind(this);
+        this.setBike = this.setBike.bind(this);
+        this.setTires = this.setTires.bind(this);
 
         console.log(this.state);
     }
@@ -207,6 +212,39 @@ class StatDataTable extends React.Component {
        });
     }
 
+    setBike(e) {
+
+        let cnt = +e.target.value;
+        let setCount = this.state.setBike + cnt;
+
+        let res = [];
+        for (var k in this.props.odoYear){
+            if (this.props.odoYear.hasOwnProperty(k)) {
+                if (k !== "COMMON") res.push(k);
+            }
+        }
+
+        if (res[setCount]) {
+            this.setState({
+                "modalBike": res[setCount],
+                "setBike": setCount,
+            });
+        }
+    }
+
+    setTires(e) {
+
+        let cnt = +e.target.value;
+        let setCount = this.state.setTires + cnt;
+
+        if (this.props.tires[setCount]) {
+            this.setState({
+                "modalTires": this.props.tires[setCount],
+                "setTires": setCount,
+            });
+        }
+    }
+
     render() {
 
         let avgSpd = this.state.modalDist / this.state.modalTime * 3600;
@@ -225,9 +263,9 @@ class StatDataTable extends React.Component {
                     <table width="100%">
                         <tbody>
                             <tr className="modalShow"><td width="30%">Bike:</td><td width="70%">{this.state.modalBike}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Bike:</td><td width="70%"><input name="modalBike" onChange={this.handleInputChange} value={this.state.modalBike} /></td></tr>
+                            <tr className="modalEdit"><td width="30%">Bike:</td><td width="70%"><button value="-1" onClick={this.setBike}>{"-"}</button><input name="modalBike" onChange={this.handleInputChange} value={this.state.modalBike} /><button value="1" onClick={this.setBike}>{"+"}</button></td></tr>
                             <tr className="modalShow"><td width="30%">Tires:</td><td width="70%">{this.state.modalTires}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Tires:</td><td width="70%"><input name="modalTires" onChange={this.handleInputChange} value={this.state.modalTires} /></td></tr>
+                            <tr className="modalEdit"><td width="30%">Tires:</td><td width="70%"><button value="-1" onClick={this.setTires}>{"-"}</button><input name="modalTires" onChange={this.handleInputChange} value={this.state.modalTires} /><button value="1" onClick={this.setTires}>{"+"}</button></td></tr>
                             <tr><td width="30%">Date:</td><td width="70%"><button value="-86400" onClick={this.setModalDate} className="modalEdit">{"-"}</button>{statFuncs.humanDate(this.state.modalDate)}<button className="modalEdit" value="86400" onClick={this.setModalDate}>{"+"}</button></td></tr>
                             <tr className="modalShow"><td width="30%">Dist:</td><td width="70%">{this.state.modalDist}</td></tr>
                             <tr className="modalEdit"><td width="30%">Dist:</td><td width="70%"><input name="modalDist" onChange={this.handleInputChange} value={this.state.modalDist} /></td></tr>
