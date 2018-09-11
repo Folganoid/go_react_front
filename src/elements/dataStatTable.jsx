@@ -2,6 +2,7 @@ import React from 'react';
 import * as statFuncs from './statFuncs';
 
 const direction = {
+    "0": " ",
     "8": "⇡",
     "9": "↗",
     "6": "⇢",
@@ -10,6 +11,7 @@ const direction = {
     "1": "↙",
     "4": "⇠",
     "7": "↖",
+    "5": " ",
 };
 
 class StatDataTable extends React.Component {
@@ -39,6 +41,7 @@ class StatDataTable extends React.Component {
         this.setModalDate = this.setModalDate.bind(this);
         this.setBike = this.setBike.bind(this);
         this.setTires = this.setTires.bind(this);
+        this.setDir = this.setDir.bind(this);
 
         console.log(this.state);
     }
@@ -52,6 +55,8 @@ class StatDataTable extends React.Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
+
+
 
         this.setState({
             [name]: value
@@ -155,7 +160,8 @@ class StatDataTable extends React.Component {
                     "modalTemp": this.props.data[i].Temp,
                     "modalTime": this.props.data[i].Time,
                     "modalTires": this.props.data[i].Tires,
-                    "modalWind": this.props.data[i].Wind,
+                    "modalWind": (this.props.data[i].Wind.split("@")[1]) ? this.props.data[i].Wind.split("@")[1] : "",
+                    "modalDir": (this.props.data[i].Wind.split("@")[0]) ? this.props.data[i].Wind.split("@")[0]: "",
                     "modalId": this.props.data[i].Id,
                 });
 
@@ -245,6 +251,19 @@ class StatDataTable extends React.Component {
         }
     }
 
+    setDir(e) {
+
+        let cnt = +e.target.value;
+        let setCount = (+this.state.modalDir + cnt === 5) ? +this.state.modalDir + cnt*2 : +this.state.modalDir + cnt;
+
+        if (direction[setCount] !== undefined) {
+            this.setState({
+                "modalDir": setCount,
+            });
+
+        }
+    }
+
     render() {
 
         let avgSpd = this.state.modalDist / this.state.modalTime * 3600;
@@ -253,6 +272,9 @@ class StatDataTable extends React.Component {
         let hr = ht[0];
         let mn = ht[1];
         let sc = ht[2];
+
+        let surf = +this.state.modalSrfbzd + +this.state.modalSurfgrn + +this.state.modalSurftvp + +this.state.modalSurfasf;
+        let surfVal = (surf === 100);
 
         return (
             <div>
@@ -289,13 +311,14 @@ class StatDataTable extends React.Component {
                             <tr className="modalShow"><td width="30%">Country:</td><td width="70%">{this.state.modalSurfgrn}</td></tr>
                             <tr className="modalEdit"><td width="30%">Country:</td><td width="70%"><input name="modalSurfgrn" onChange={this.handleInputChange} value={this.state.modalSurfgrn} /></td></tr>
                             <tr className="modalShow"><td width="30%">Offroad:</td><td width="70%">{this.state.modalSrfbzd}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Offroad:</td><td width="70%"><input name="modalSurfbzd" onChange={this.handleInputChange} value={this.state.modalSurfbzd} /></td></tr>
+                            <tr className="modalEdit"><td width="30%">Offroad:</td><td width="70%"><input name="modalSrfbzd" onChange={this.handleInputChange} value={this.state.modalSrfbzd} /></td></tr>
+                            <tr className="modalEdit"><td className={surfVal ? "" : "invalid_stat_data"} width="30%">Total:</td><td width="70%">{surf}</td></tr>
                             <tr className="modalShow"><td width="30%">Temperature:</td><td width="70%">{this.state.modalTemp}</td></tr>
                             <tr className="modalEdit"><td width="30%">Temperature:</td><td width="70%"><input name="modalTemp" onChange={this.handleInputChange} value={this.state.modalTemp} /></td></tr>
                             <tr className="modalShow"><td width="30%">Technical notice:</td><td width="70%">{this.state.modalTeh}</td></tr>
                             <tr className="modalEdit"><td width="30%">Technical notice:</td><td width="70%"><input name="modalTeh" onChange={this.handleInputChange} value={this.state.modalTeh} /></td></tr>
                             <tr className="modalShow"><td width="30%">Wind:</td><td width="70%">{this.state.modalWind}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Wind:</td><td width="70%"><input name="modalWind" onChange={this.handleInputChange} value={this.state.modalWind} /></td></tr>
+                            <tr className="modalEdit"><td width="30%">Wind:</td><td width="70%"><input name="modalWind" onChange={this.handleInputChange} value={this.state.modalWind} /><button value="-1" onClick={this.setDir}>{"<"}</button>{direction[this.state.modalDir]}<button value="1" onClick={this.setDir}>{">"}</button></td></tr>
                         </tbody>
                     </table>
 
