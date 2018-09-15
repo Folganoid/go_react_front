@@ -1,8 +1,9 @@
 import React from 'react';
 import * as statFuncs from './statFuncs';
+import SETUP from "../config";
+import axios from 'axios';
 
 const direction = {
-    "0": " ",
     "8": "⇡",
     "9": "↗",
     "6": "⇢",
@@ -56,8 +57,6 @@ class StatDataTable extends React.Component {
         const value = target.value;
         const name = target.name;
 
-
-
         this.setState({
             [name]: value
         });
@@ -100,7 +99,7 @@ class StatDataTable extends React.Component {
                 tmpData[d].Prim.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
-            result += "<tr key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'><td>" + date +
+            result += "<tr id='cal"+ tmpData[d].Id +"' key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'><td>" + date +
                 "</td><td>" + tmpData[d].Bike + 
                 "</td><td>" + tmpData[d].Prim +
                 "</td><td>" + tmpData[d].Dist +
@@ -138,6 +137,10 @@ class StatDataTable extends React.Component {
             }
     }
 
+    /**
+     * fill modal-window data
+     * @param statId
+     */
     changeModal(statId) {
 
         for (let i = 0 ; i < this.props.data.length ; i++) {
@@ -162,7 +165,7 @@ class StatDataTable extends React.Component {
                     "modalTires": this.props.data[i].Tires,
                     "modalWind": (this.props.data[i].Wind.split("@")[1]) ? this.props.data[i].Wind.split("@")[1] : "",
                     "modalDir": (this.props.data[i].Wind.split("@")[0]) ? this.props.data[i].Wind.split("@")[0]: "",
-                    "modalId": this.props.data[i].Id,
+                    "modalId": statId,
                 });
 
                 document.getElementById('statModal').style['display'] = "block";
@@ -172,6 +175,9 @@ class StatDataTable extends React.Component {
         }
     }
 
+    /**
+     * edit button
+     */
     editModal() {
         document.getElementById('saveModal').style['display'] = "inline";
         document.getElementById('cancelModal').style['display'] = "inline";
@@ -187,10 +193,64 @@ class StatDataTable extends React.Component {
         document.getElementById('editModal').style['display'] = "none";
     }
 
+    /**
+     * save button
+     */
     saveModal() {
 
+        let formData = new FormData();
+
+        let windForm = (this.state.modalWind === undefined || this.state.modalDir === 5) ? "" : this.state.modalDir + "@" + this.state.modalWind;
+        let temp = (this.state.modalTemp === undefined) ? "" : this.state.modalTemp;
+        let prim = (this.state.modalPrim === undefined) ? "" : this.state.modalPrim;
+        let teh = (this.state.modalTeh === undefined) ? "" : this.state.modalTeh;
+
+        formData.append('userid', this.props.userId);
+        formData.append('token', this.props.token);
+        formData.append('bike', this.state.modalBike);
+        formData.append('tire', this.state.modalTires);;
+        formData.append('date', this.state.modalDate);
+        formData.append('time', this.state.modalTime);
+        formData.append('dist', this.state.modalDist);
+        formData.append('prim', prim);
+        formData.append('maxspd', this.state.modalMaxspd);
+        formData.append('maxpls', this.state.modalMaxpls);
+        formData.append('avgpls', this.state.modalAvgpls);
+        formData.append('asf', this.state.modalSurfasf);
+        formData.append('tvp', this.state.modalSurftvp);
+        formData.append('grn', this.state.modalSurfgrn);
+        formData.append('bzd', this.state.modalSrfbzd);
+        formData.append('temp', temp);
+        formData.append('teh', teh);
+        formData.append('wind', windForm);
+        formData.append('id', this.state.modalId);
+
+        let that = this;
+
+        axios({
+            method: 'PUT',
+            url: SETUP.goHost + '/stat',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.props.done("Data saved successfully.", "uk-alert-primary");
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Error! Can't save ride statistic.", "uk-alert-warning");
+            }
+        });
     }
 
+
+    /**
+     * cancel button
+     */
     cancelModal() {
         document.getElementById('saveModal').style['display'] = "none";
         document.getElementById('cancelModal').style['display'] = "none";
@@ -204,6 +264,10 @@ class StatDataTable extends React.Component {
         document.getElementById('editModal').style['display'] = "inline";
     }
 
+    /**
+     * choose time
+     * @param e
+     */
     setModalTime(e) {
         let cnt = +e.target.value;
         this.setState({
@@ -211,6 +275,10 @@ class StatDataTable extends React.Component {
        });
     }
 
+    /**
+     * choose date
+     * @param e
+     */
     setModalDate(e) {
         let cnt = +e.target.value;
         this.setState({
@@ -218,6 +286,10 @@ class StatDataTable extends React.Component {
        });
     }
 
+    /**
+     * choose bike
+     * @param e
+     */
     setBike(e) {
 
         let cnt = +e.target.value;
@@ -238,6 +310,10 @@ class StatDataTable extends React.Component {
         }
     }
 
+    /**
+     * choose tires
+     * @param e
+     */
     setTires(e) {
 
         let cnt = +e.target.value;
@@ -251,6 +327,10 @@ class StatDataTable extends React.Component {
         }
     }
 
+    /**
+     * set winow dir
+     * @param e
+     */
     setDir(e) {
 
         let cnt = +e.target.value;
@@ -264,6 +344,9 @@ class StatDataTable extends React.Component {
         }
     }
 
+    /*
+    * render
+     */
     render() {
 
         let avgSpd = this.state.modalDist / this.state.modalTime * 3600;
@@ -275,6 +358,7 @@ class StatDataTable extends React.Component {
 
         let surf = +this.state.modalSrfbzd + +this.state.modalSurfgrn + +this.state.modalSurftvp + +this.state.modalSurfasf;
         let surfVal = (surf === 100);
+        let totalSurf = (surfVal) ? "" : "invalid_stat_data";
 
         return (
             <div>
@@ -312,7 +396,7 @@ class StatDataTable extends React.Component {
                             <tr className="modalEdit"><td width="30%">Country:</td><td width="70%"><input name="modalSurfgrn" onChange={this.handleInputChange} value={this.state.modalSurfgrn} /></td></tr>
                             <tr className="modalShow"><td width="30%">Offroad:</td><td width="70%">{this.state.modalSrfbzd}</td></tr>
                             <tr className="modalEdit"><td width="30%">Offroad:</td><td width="70%"><input name="modalSrfbzd" onChange={this.handleInputChange} value={this.state.modalSrfbzd} /></td></tr>
-                            <tr className="modalEdit"><td className={surfVal ? "" : "invalid_stat_data"} width="30%">Total:</td><td width="70%">{surf}</td></tr>
+                            <tr className="modalEdit"><td className={totalSurf} width="30%">Total:</td><td width="70%">{surf+""}</td></tr>
                             <tr className="modalShow"><td width="30%">Temperature:</td><td width="70%">{this.state.modalTemp}</td></tr>
                             <tr className="modalEdit"><td width="30%">Temperature:</td><td width="70%"><input name="modalTemp" onChange={this.handleInputChange} value={this.state.modalTemp} /></td></tr>
                             <tr className="modalShow"><td width="30%">Technical notice:</td><td width="70%">{this.state.modalTeh}</td></tr>

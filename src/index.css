@@ -46,6 +46,7 @@ body {
 
 .calRideDay {
   background-color: red;
+  cursor: pointer;
 }
 
 .calMonth {
@@ -61,6 +62,11 @@ body {
 }
 
 .cellStat:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+
+.cellTechData:hover {
   background-color: lightgrey;
   cursor: pointer;
 }

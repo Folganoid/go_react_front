@@ -45,6 +45,9 @@ class Data extends React.Component {
         this.fillLists();
     }
 
+    /**
+     * fill yearstat, tires, bikes
+     */
     fillLists() {
 
         let formData = new FormData();
@@ -269,15 +272,16 @@ class Data extends React.Component {
         });
     }
 
-
+    /**
+     * Save data
+     */
     saveStat() {
 
         let formData = new FormData();
-
-        
-        let windForm = (this.state.statWindspd === undefined || this.state.statWinddir === 5) ? "" : this.state.statWindspd + "@" + this.state.statWinddir;
+        let windForm = (this.state.statWindspd === undefined || this.state.statWinddir === 5) ? "" : this.state.statWinddir + "@" + this.state.statWindspd;
         let temp = (this.state.statTemp === undefined) ? "" : this.state.statTemp;
         let prim = (this.state.statPrim === undefined) ? "" : this.state.statPrim;
+        let teh = (this.state.statTeh === undefined) ? "" : this.state.statTeh;
 
         formData.append('userid', this.props.state.userId);
         formData.append('token', this.props.state.token);
@@ -294,14 +298,14 @@ class Data extends React.Component {
         formData.append('tvp', this.state.statTvp);
         formData.append('grn', this.state.statGrn);
         formData.append('bzd', this.state.statBzd);
-        formData.append('temp', this.state.statTemp);
-        formData.append('teh', this.state.statTeh);
+        formData.append('temp', temp);
+        formData.append('teh', teh);
         formData.append('wind', windForm);
 
         let that = this;
 
         axios({
-            method: 'PUT',
+            method: 'POST',
             url: SETUP.goHost + '/stat',
             data: formData,
             config: {
@@ -312,7 +316,7 @@ class Data extends React.Component {
             },
 
         }).then(function (response) {
-            that.fillLists();
+            that.props.done("Data saved successfully.", "uk-alert-primary");
         }).catch((error) => {
             if (error.response) {
                 that.props.done("Error! Can't save ride statistic.", "uk-alert-warning");
@@ -384,6 +388,9 @@ class Data extends React.Component {
 
     let validate = this.validate(validate_date, validate_time, validate_dist, validate_bike_tire);
 
+    let day = +this.state.statDay;
+    let month = +this.state.statMonth;
+
         return (
             <div className="uk-container">
                 <h1>Data control</h1>
@@ -415,14 +422,14 @@ class Data extends React.Component {
                                     <tr className={(validate_date) ? "" : "invalid_stat_data"}>
                                         <td>Date:</td>
                                         <td>
-                                            <select name="statDay" onChange={this.handleInputChange}>
+                                            <select value={day} name="statDay" onChange={this.handleInputChange}>
                                                 {[...Array(31)].map((x, i) =>
-                                                   <option key={ i+1 } value={ i+1 } selected={ (+this.state.statDay === i+1) ? "selected" : "" }>{ i+1 }</option>
+                                                   <option key={ i+1 } value={ i+1 }>{ i+1 }</option>
                                                 )}
                                             </select>
-                                            <select name="statMonth" onChange={this.handleInputChange}>
+                                            <select value={month} name="statMonth" onChange={this.handleInputChange}>
                                                 {[...Array(12)].map((x, i) =>
-                                                   <option key={ i } value={ i+1 } selected={ (+this.state.statMonth === i+1) ? "selected" : "" }>{ i+1 }</option>
+                                                   <option key={ i } value={ i+1 }>{ i+1 }</option>
                                                 )}
                                             </select>
                                             <select name="statYear" onChange={this.handleInputChange}>
@@ -542,7 +549,7 @@ class Data extends React.Component {
                                     </tr>
                                 </tbody>
                             </table>
-                            <button type="button" onClick={this.saveStat} disabled={(validate) ? "" : "false"}>Save</button>
+                            <button type="button" onClick={this.saveStat} disabled={(validate) ? true : false}>Save</button>
                     </div>
                     <div className="uk-width-1-2">
                         <h3>Add bike</h3>

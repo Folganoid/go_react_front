@@ -447,7 +447,7 @@ class Statistic extends React.Component {
                 </div>
                 <br />
                 <h1>Data</h1>
-                    <StatDataTable data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires}/>
+                    <StatDataTable data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires} userId={this.props.state.userId} token={this.props.state.token} done={this.props.done}/>
                 <br />
                 <h1>Technical data</h1>
                     <TechDataTable data={this.state.statData}/>

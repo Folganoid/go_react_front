@@ -1,6 +1,25 @@
 import React from 'react';
 import * as statFuncs from './statFuncs';
 
+/**
+ * simuate mose click
+ *
+ * @param el
+ * @param etype
+ */
+function eventFire(el, etype){
+    if (el.fireEvent) {
+        el.fireEvent('on' + etype);
+    } else {
+        var evObj = document.createEvent('Events');
+        evObj.initEvent(etype, true, false);
+        el.dispatchEvent(evObj);
+    }
+}
+
+/**
+ *
+ */
 class TechDataTable extends React.Component {
 
     constructor(props) {
@@ -25,6 +44,8 @@ class TechDataTable extends React.Component {
         this.setState({
             [name]: value
         });
+
+        this.tdayInit = this.tdayInit.bind(this);
     }
 
     /**
@@ -65,7 +86,7 @@ class TechDataTable extends React.Component {
                 tmpData[d].Teh.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
-            result += "<tr><td width='15%'>" + date +
+            result += "<tr key='" + tmpData[d].Id + "' class='cellTechData'><td width='15%'>" + date +
                 "</td><td width='15%'>" + tmpData[d].Bike +
                 "</td><td width='60%'>" + tmpData[d].Teh +
                 "</td><td width='10%'>" + odoTehDist.toFixed(2) +
@@ -74,6 +95,34 @@ class TechDataTable extends React.Component {
         return result;
     }
 
+    componentDidUpdate() {
+        this.tdayInit();
+    }
+
+    componentDidMount() {
+        this.tdayInit();
+    }
+
+    /**
+     * Init day click
+     * @return {[type]} [description]
+     */
+    tdayInit() {
+
+        let list = document.getElementsByClassName("cellTechData");
+        if (list) {
+            for (let a = 0 ; a < list.length ; a++) {
+                list[a].onclick = () => {
+                    eventFire(document.getElementById('cal' + list[a].getAttribute("key")), 'click');
+                };
+            }
+        }
+    }
+
+    /**
+     * Reder
+     * @returns {*}
+     */
     render() {
 
         return (

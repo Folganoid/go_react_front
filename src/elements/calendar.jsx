@@ -66,9 +66,27 @@ function buildCalendarMonth(year, month, data) {
         result += "</tr>";
     }
 
+
+
+
     return <table className="calMonth">
         <tbody dangerouslySetInnerHTML={{ __html: result}} />
     </table>
+}
+
+/**
+ * simulate mouse click
+ * @param el
+ * @param etype
+ */
+function eventFire(el, etype){
+    if (el.fireEvent) {
+        el.fireEvent('on' + etype);
+    } else {
+        var evObj = document.createEvent('Events');
+        evObj.initEvent(etype, true, false);
+        el.dispatchEvent(evObj);
+    }
 }
 
 /**
@@ -89,14 +107,45 @@ function validate_date(y, m, d)
     }
 }
 
-
-
+/**
+ * Calendar
+ */
 class Calendar extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.dayInit = this.dayInit.bind(this);
     }
 
+    componentDidUpdate() {
+        this.dayInit();
+    }
+
+    componentDidMount() {
+        this.dayInit();
+    }
+
+    /**
+     * Init day click
+     * @return {[type]} [description]
+     */
+    dayInit() {
+
+        let list = document.getElementsByClassName("calRideDay");
+        if (list) {
+            for (let a = 0 ; a < list.length ; a++) {
+                list[a].onclick = () => {
+                    eventFire(document.getElementById('cal' + list[a].getAttribute("title")), 'click');
+                };
+            }
+        }
+    }
+
+    /**
+     * render
+     * @returns {*}
+     */
     render() {
 
         return buildCalendarMonth(this.props.year, this.props.month, this.props.data);
