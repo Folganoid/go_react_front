@@ -42,6 +42,7 @@ class Statistic extends React.Component {
         this.buildRideDays = this.buildRideDays.bind(this);
         this.getForeignStat = this.getForeignStat.bind(this);
         this.getMyStat = this.getMyStat.bind(this);
+        this.reload = this.reload.bind(this);
 
         this.getData();
     }
@@ -63,11 +64,11 @@ class Statistic extends React.Component {
     /**
      * build chart options
      */
-    buildCharts() {
+    buildCharts(data) {
 
         this.setState({
-            years: statFuncs.getYearsList(this.state.yearData, this.state.statData),
-            optionsOdoYear: statFuncs.getOdoBikeList(this.state.yearData, this.state.statData),
+            years: statFuncs.getYearsList(this.state.yearData, data),
+            optionsOdoYear: statFuncs.getOdoBikeList(this.state.yearData, data),
         });
 
         this.setState({
@@ -83,9 +84,9 @@ class Statistic extends React.Component {
         odoCatTmp.xAxis.categories = this.state.years;
         odoCatTmp.series = this.state.odoOptionsNames;
         odoSumTmp.series[0].data = statFuncs.convertToSumChart(this.state.odoOptionsNames);
-        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear);
-        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear);
-        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear);
+        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(data, this.state.curYear);
+        avgPlsTmp.series = statFuncs.makeAvgPulseData(data, this.state.curYear);
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(data, this.state.curYear);
 
         this.setState({
             odoOptions: odoCatTmp,
@@ -97,7 +98,7 @@ class Statistic extends React.Component {
 
         this.setState({
             curYearStat: this.filterStatDataByYear(this.state.curYear),
-            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear),
+            rideDaysArr: this.buildRideDays(data, this.state.curYear),
         });
 
         console.log(this.state);
@@ -142,7 +143,7 @@ class Statistic extends React.Component {
 
                     }).then(function (response) {
                         that.setState({statData: response.data});
-                        that.buildCharts();
+                        that.buildCharts(response.data);
                     }).catch((error) => {
                         if (error.response) {
                             that.props.done("Stat data not found!", "uk-alert-warning");
@@ -370,6 +371,15 @@ class Statistic extends React.Component {
         this.getData();
     }
 
+    reload(data) {
+        this.setState({
+            statData: data,
+        });
+
+        this.buildCharts(data);
+    }
+
+
     /**
      * render
      * @returns {*}
@@ -447,7 +457,7 @@ class Statistic extends React.Component {
                 </div>
                 <br />
                 <h1>Data</h1>
-                    <StatDataTable data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires} userId={this.props.state.userId} token={this.props.state.token} done={this.props.done}/>
+                    <StatDataTable reload={this.reload} data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires} userId={this.props.state.userId} token={this.props.state.token} done={this.props.done}/>
                 <br />
                 <h1>Technical data</h1>
                     <TechDataTable data={this.state.statData}/>

@@ -15,6 +15,9 @@ const direction = {
     "5": " ",
 };
 
+/**
+ *
+ */
 class StatDataTable extends React.Component {
 
     constructor(props) {
@@ -38,6 +41,7 @@ class StatDataTable extends React.Component {
         this.editModal = this.editModal.bind(this);
         this.saveModal = this.saveModal.bind(this);
         this.cancelModal = this.cancelModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
         this.setModalTime = this.setModalTime.bind(this);
         this.setModalDate = this.setModalDate.bind(this);
         this.setBike = this.setBike.bind(this);
@@ -240,6 +244,38 @@ class StatDataTable extends React.Component {
 
         }).then(function (response) {
             that.props.done("Data saved successfully.", "uk-alert-primary");
+
+            let tmpData = JSON.parse(JSON.stringify(that.props.data));
+
+            for (let i = 0 ; i < tmpData.length ; i++) {
+                if (+that.state.modalId === +tmpData[i].Id) {
+
+                    tmpData[i].Bike = that.state.modalBike;
+                    tmpData[i].Tires = that.state.modalTires;
+                    tmpData[i].Date = +that.state.modalDate;
+                    tmpData[i].Time = +that.state.modalTime;
+                    tmpData[i].Dist = +that.state.modalDist;
+                    tmpData[i].Date = +that.state.modalDate;
+                    tmpData[i].Prim = prim;
+                    tmpData[i].Maxspd = +that.state.modalMaxspd;
+                    tmpData[i].Avgpls = +that.state.modalAvgpls;
+                    tmpData[i].Maxpls = +that.state.modalMaxpls;
+                    tmpData[i].Surfasf = +that.state.modalSurfasf;
+                    tmpData[i].Surftvp = +that.state.modalSurftvp;
+                    tmpData[i].Surfgrn = +that.state.modalSurfgrn;
+                    tmpData[i].Srfbzd = +that.state.modalSrfbzd;
+                    tmpData[i].Temp = temp;
+                    tmpData[i].Teh = that.state.modalTeh;
+                    tmpData[i].Wind = windForm;
+                    break;
+
+                }
+            }
+
+            that.props.reload(tmpData);
+            that.cancelModal();
+            that.closeModal();
+
         }).catch((error) => {
             if (error.response) {
                 that.props.done("Error! Can't save ride statistic.", "uk-alert-warning");
@@ -262,6 +298,15 @@ class StatDataTable extends React.Component {
             document.getElementsByClassName('modalEdit')[i].style['display'] = "none";            
         }
         document.getElementById('editModal').style['display'] = "inline";
+
+    }
+
+    /**
+     * close button
+     */
+    closeModal() {
+        document.getElementById('statModal').style['display'] = "none";
+        this.cancelModal();
     }
 
     /**
@@ -406,7 +451,7 @@ class StatDataTable extends React.Component {
                         </tbody>
                     </table>
 
-                    <button id = "closeModal" onClick={()=> {document.getElementById('statModal').style['display'] = "none"}}>Close</button>
+                    <button id = "closeModal" onClick={this.closeModal}>Close</button>
                     <button id = "editModal" onClick={this.editModal}>Edit</button>
                     <button id = "saveModal" onClick={this.saveModal}>Save</button>
                     <button id = "cancelModal" onClick={this.cancelModal}>Cancel</button>

@@ -549,7 +549,7 @@ class Data extends React.Component {
                                     </tr>
                                 </tbody>
                             </table>
-                            <button type="button" onClick={this.saveStat} disabled={(validate) ? true : false}>Save</button>
+                            <button type="button" onClick={this.saveStat} disabled={(validate) ? false : true}>Save</button>
                     </div>
                     <div className="uk-width-1-2">
                         <h3>Add bike</h3>
