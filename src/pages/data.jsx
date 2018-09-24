@@ -287,7 +287,7 @@ class Data extends React.Component {
         formData.append('token', this.props.state.token);
         formData.append('bike', this.state.addBike);
         formData.append('tire', this.state.addTire);;
-        formData.append('date', (new Date(this.state.statYear, this.state.statMonth, this.state.statDay)).getTime() / 1000);
+        formData.append('date', (new Date(this.state.statYear, this.state.statMonth - 1, this.state.statDay)).getTime() / 1000);
         formData.append('time', +this.state.statHr*3600 + +this.state.statMin*60 + +this.state.statSec);
         formData.append('dist', this.state.statDist);
         formData.append('prim', prim);
