@@ -47,6 +47,7 @@ class StatDataTable extends React.Component {
         this.setBike = this.setBike.bind(this);
         this.setTires = this.setTires.bind(this);
         this.setDir = this.setDir.bind(this);
+        this.deleteModal = this.deleteModal.bind(this);
 
         console.log(this.state);
     }
@@ -310,6 +311,50 @@ class StatDataTable extends React.Component {
     }
 
     /**
+     * delete button
+     */
+    deleteModal() {
+        let formData = new FormData();
+
+        formData.append('userid', this.props.userId);
+        formData.append('token', this.props.token);
+        formData.append('id', this.state.modalId);
+
+        let that = this;
+
+        axios({
+            method: 'DELETE',
+            url: SETUP.goHost + '/stat',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function () {
+            that.props.done("Data deleted successfully.", "uk-alert-primary");
+            let tmpData = JSON.parse(JSON.stringify(that.props.data));
+
+            for (let i = 0 ; i < tmpData.length ; i++) {
+                if (+that.state.modalId === +tmpData[i].Id) {
+                    tmpData.splice(i, 1);
+                }
+            }
+
+            that.props.reload(tmpData);
+            that.cancelModal();
+            that.closeModal();
+
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("Error! Can't delete statistic.", "uk-alert-warning");
+            }
+        });
+    }
+
+    /**
      * choose time
      * @param e
      */
@@ -455,6 +500,7 @@ class StatDataTable extends React.Component {
                     <button id = "editModal" onClick={this.editModal}>Edit</button>
                     <button id = "saveModal" onClick={this.saveModal}>Save</button>
                     <button id = "cancelModal" onClick={this.cancelModal}>Cancel</button>
+                    <button className="modalEdit" id = "deleteModal" onClick={this.deleteModal}>Delete</button>
                 </div>
 
                 <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
