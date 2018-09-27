@@ -24,6 +24,7 @@ export class MapContainer extends React.Component {
         this.getForeignMarker = this.getForeignMarker.bind(this);
         this.colorFilter = this.colorFilter.bind(this);
         this.listMarkerClick = this.listMarkerClick.bind(this);
+        this.saveMarker = this.saveMarker.bind(this);
 
         this.getMarker();
     }
@@ -154,6 +155,42 @@ export class MapContainer extends React.Component {
         this.setState({centerMap: {lat: cord[0], lng: cord[1]}});
     }
 
+    /**
+     * Save Marker
+     */
+    saveMarker() {
+
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+        formData.append('name', this.state.addName);
+        formData.append('subname', this.state.addSubName);
+        formData.append('coord', this.state.addCoord);
+        formData.append('link', this.state.addLink);
+        formData.append('color', this.state.addColor);
+
+        let that = this;
+
+        axios({
+            method: 'POST',
+            url: SETUP.goHost + '/marker',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.props.done("Successful", "uk-alert-primary");
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("ERROR! Can't save marker.", "uk-alert-warning");
+            }
+        });
+    }
+
     render() {
 
         // sort
@@ -256,6 +293,20 @@ export class MapContainer extends React.Component {
                         </div>
                     </div>
                 </div>
+                <br />
+                Name: <input onChange={this.handleInputChange} name="addName" placeholder="Name" />&nbsp;
+                Subname: <input onChange={this.handleInputChange} name="addSubName" placeholder="Subname" />&nbsp;
+                Coordinates: <input onChange={this.handleInputChange} name="addCoord" placeholder="Coordinates" />&nbsp;
+                Link: <input onChange={this.handleInputChange} name="addLink" placeholder="External link" />&nbsp;
+                <select onChange={this.handleInputChange} name="addColor">
+                    <option value='red'>Red</option>
+                    <option value='green'>Green</option>
+                    <option value='blue'>Blue</option>
+                    <option value='orange'>Orange</option>
+                    <option value='grey'>Grey</option>
+                    <option value='purple'>Purple</option>
+                </select>&nbsp;
+                <button onClick={this.saveMarker}>Save</button>
 
             </div>
         );
