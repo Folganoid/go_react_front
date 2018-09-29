@@ -15,6 +15,13 @@ export class MapContainer extends React.Component {
             filter: "",
             centerMap: {lat: 50.9129663, lng: 34.8055385},
             color: "reset",
+
+            addName: "",
+            addSubName: "",
+            addCoord: "",
+            addLink: "",
+            addColor: "",
+            addId: ""
         };
 
         this.onMapClicked = this.onMapClicked.bind(this);
@@ -25,8 +32,19 @@ export class MapContainer extends React.Component {
         this.colorFilter = this.colorFilter.bind(this);
         this.listMarkerClick = this.listMarkerClick.bind(this);
         this.saveMarker = this.saveMarker.bind(this);
+        this.updateMarker = this.updateMarker.bind(this);
+        this.deleteMarker = this.deleteMarker.bind(this);
+        this.clearAddFields = this.clearAddFields.bind(this);
+        this.eventHandler = this.eventHandler.bind(this);
 
         this.getMarker();
+
+    }
+
+    eventHandler(e) {
+        if (e.type === 'click') {
+            this.clearAddFields();
+        }
     }
 
     /**
@@ -37,8 +55,9 @@ export class MapContainer extends React.Component {
         if (this.state.showingInfoWindow) {
             this.setState({
                 showingInfoWindow: false,
-                activeMarker: null
-            })
+                activeMarker: null,
+            });
+            this.clearAddFields();
         }
     };
 
@@ -50,10 +69,17 @@ export class MapContainer extends React.Component {
      * @param e
      */
     onMarkerClick (props, marker, e) {
+        document.getElementById("main_body").removeEventListener("click", this.eventHandler, false);
         this.setState({
             selectedPlace: props,
             activeMarker: marker,
-            showingInfoWindow: true
+            showingInfoWindow: true,
+            addName: marker.name,
+            addSubName: marker.subname,
+            addCoord: marker.x + ", " + marker.y,
+            addLink: marker.link,
+            addColor: marker.color,
+            addId: marker.id,
         });
     };
 
@@ -150,10 +176,34 @@ export class MapContainer extends React.Component {
      * list marker click
      * @param str
      */
-    listMarkerClick(cord) {
-        console.log(cord);
-        this.setState({centerMap: {lat: cord[0], lng: cord[1]}});
+    listMarkerClick(data) {
+        this.setState({
+            centerMap: {lat: data.X, lng: data.Y},
+            activeMarker: null,
+            showingInfoWindow: false,
+
+            addName: data.Name,
+            addSubName: data.SubName,
+            addCoord: data.X + ", " + data.Y,
+            addLink: data.Link,
+            addColor: data.Color,
+            addId: data.Id,
+        });
+        document.getElementById("main_body").addEventListener("click", this.eventHandler, false);
     }
+
+    clearAddFields() {
+        this.setState({
+            addName: "",
+            addSubName: "",
+            addCoord: "",
+            addLink: "",
+            addColor: "",
+            addId: "",
+        });
+        document.getElementById("main_body").removeEventListener("click", this.eventHandler, false);
+    }
+
 
     /**
      * Save Marker
@@ -191,6 +241,24 @@ export class MapContainer extends React.Component {
         });
     }
 
+    /**
+     * Update marker
+     */
+    updateMarker() {
+
+    }
+
+    /**
+     * Update marker
+     */
+    deleteMarker() {
+
+    }
+
+    /**
+     * RENDER
+     * @returns {*}
+     */
     render() {
 
         // sort
@@ -214,7 +282,8 @@ export class MapContainer extends React.Component {
 
         // make marker template
         let list = filteredObj.map((answer, i) => {
-            return (<Marker key={i}
+            let m = (<Marker key={i}
+                id={answer.Id}
                 name={answer.Name}
                 subname={answer.Subname}
                 x={answer.X}
@@ -229,13 +298,16 @@ export class MapContainer extends React.Component {
                 }}
                 onClick={this.onMarkerClick}
                 onMouseover={this.onMouseoverMarker}
-            />)
+            />);
+            return m;
         });
+
+
 
         // make list template
         let listTable = filteredObj.map((answer, i) => {
             return (
-                <tr className={'listMarkers'} key={i} onClick={this.listMarkerClick.bind(this, [answer.X, answer.Y])}>
+                <tr className={'listMarkers'} key={i} onClick={this.listMarkerClick.bind(this, answer)}>
                     <td style={{color: answer.Color}}>{answer.Name}</td>
                     <td>{answer.X}</td><td>{answer.Y}</td>
                     <td><a href={answer.Link}>Link...</a></td>
@@ -254,33 +326,38 @@ export class MapContainer extends React.Component {
             return (<button key={i} value={answer} onClick={this.colorFilter.bind(this, answer)}>{answer}</button>);
         });
 
+        let map = <Map
+            google={this.props.google}
+            style={style}
+            className={'map'}
+            initialCenter={this.state.centerMap}
+            center={this.state.centerMap}
+            zoom={12}
+            onClick={this.onMapClicked}
+        >
+            {list}
+            <InfoWindow
+                marker={this.state.activeMarker}
+                visible={this.state.showingInfoWindow}>
+                <div>
+                    <div style={{width: "100%", height: "20px", backgroundColor: this.state.selectedPlace.color, padding: "0px", margin: "0px"}}></div>
+                    <h3>{this.state.selectedPlace.name}</h3>
+                    {subname}
+                    <p>{this.state.selectedPlace.x + ", " + this.state.selectedPlace.y}</p>
+                    <a target="blank" href={this.state.selectedPlace.link}>Link...</a>
+                </div>
+            </InfoWindow>
+        </Map>
+
+        let addMarkerButton = (this.state.addId === "") ? <button onClick={this.saveMarker}>Add NEW</button> : <span><button onClick={this.updateMarker}>Update</button><button title="Delete marker" style={{color: "red"}} onClick={this.deleteMarker}>X</button></span>
+
         return (<div className="uk-container">
                 <h1>Map</h1>
                 <div className="uk-grid">
                     <div className="uk-width-1-2" style={{height: "500px"}}>
                         Watch another map by login: <input id="foreign" type={'text'} placeholder={'Login'} /><button onClick={this.getForeignMarker}>Watch</button> <button onClick={this.getMarker}>My map</button>
                         <br />
-                        <Map
-                            google={this.props.google}
-                            style={style}
-                            className={'map'}
-                            initialCenter={this.state.centerMap}
-                            zoom={12}
-                            onClick={this.onMapClicked}
-                        >
-                            {list}
-                            <InfoWindow
-                                marker={this.state.activeMarker}
-                                visible={this.state.showingInfoWindow}>
-                                <div>
-                                    <div style={{width: "100%", height: "20px", backgroundColor: this.state.selectedPlace.color, padding: "0px", margin: "0px"}}></div>
-                                    <h3>{this.state.selectedPlace.name}</h3>
-                                    {subname}
-                                    <p>{this.state.selectedPlace.x + ", " + this.state.selectedPlace.y}</p>
-                                    <a target="blank" href={this.state.selectedPlace.link}>Link...</a>
-                                </div>
-                            </InfoWindow>
-                        </Map>
+                        {map}
                     </div>
                     <div className="uk-width-1-2">
                         <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>{colors}
@@ -294,20 +371,20 @@ export class MapContainer extends React.Component {
                     </div>
                 </div>
                 <br />
-                Name: <input onChange={this.handleInputChange} name="addName" placeholder="Name" />&nbsp;
-                Subname: <input onChange={this.handleInputChange} name="addSubName" placeholder="Subname" />&nbsp;
-                Coordinates: <input onChange={this.handleInputChange} name="addCoord" placeholder="Coordinates" />&nbsp;
-                Link: <input onChange={this.handleInputChange} name="addLink" placeholder="External link" />&nbsp;
-                <select onChange={this.handleInputChange} name="addColor">
-                    <option value='red'>Red</option>
-                    <option value='green'>Green</option>
-                    <option value='blue'>Blue</option>
-                    <option value='orange'>Orange</option>
-                    <option value='grey'>Grey</option>
-                    <option value='purple'>Purple</option>
+                Name: <input onChange={this.handleInputChange} name="addName" value={this.state.addName} placeholder="Name" />&nbsp;
+                Subname: <input onChange={this.handleInputChange} name="addSubName" value={this.state.addSubName} placeholder="Subname" />&nbsp;
+                Coordinates: <input onChange={this.handleInputChange} name="addCoord" value={this.state.addCoord} placeholder="Coordinates" />&nbsp;
+                Link: <input onChange={this.handleInputChange} name="addLink" value={this.state.addLink} placeholder="External link" />&nbsp;
+                <select onChange={this.handleInputChange} name="addColor" value={this.state.addColor}>
+                    <option value='black' style={{color: "black"}}>Black</option>
+                    <option value='red' style={{color: "red"}}>Red</option>
+                    <option value='green' style={{color: "green"}}>Green</option>
+                    <option value='blue' style={{color: "blue"}}>Blue</option>
+                    <option value='orange' style={{color: "orange"}}>Orange</option>
+                    <option value='grey' style={{color: "grey"}}>Grey</option>
+                    <option value='purple' style={{color: "purple"}}>Purple</option>
                 </select>&nbsp;
-                <button onClick={this.saveMarker}>Save</button>
-
+                {addMarkerButton}
             </div>
         );
     }
