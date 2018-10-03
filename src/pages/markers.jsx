@@ -42,7 +42,7 @@ export class MapContainer extends React.Component {
     }
 
     eventHandler(e) {
-        if (e.type === 'click') {
+        if (e.type === 'click' && !e.target.matches('.addMarker *')) {
             this.clearAddFields();
         }
     }
@@ -183,7 +183,7 @@ export class MapContainer extends React.Component {
             showingInfoWindow: false,
 
             addName: data.Name,
-            addSubName: data.SubName,
+            addSubName: data.Subname,
             addCoord: data.X + ", " + data.Y,
             addLink: data.Link,
             addColor: data.Color,
@@ -203,7 +203,6 @@ export class MapContainer extends React.Component {
         });
         document.getElementById("main_body").removeEventListener("click", this.eventHandler, false);
     }
-
 
     /**
      * Save Marker
@@ -245,14 +244,66 @@ export class MapContainer extends React.Component {
      * Update marker
      */
     updateMarker() {
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+        formData.append('name', this.state.addName);
+        formData.append('subname', this.state.addSubName);
+        formData.append('coord', this.state.addCoord);
+        formData.append('link', this.state.addLink);
+        formData.append('color', this.state.addColor);
+        formData.append('id', this.state.addId);
 
+        let that = this;
+
+        axios({
+            method: 'PUT',
+            url: SETUP.goHost + '/marker',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.props.done("Successful", "uk-alert-primary");
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("ERROR! Can't update marker.", "uk-alert-warning");
+            }
+        });
     }
 
     /**
-     * Update marker
+     * Delete marker
      */
     deleteMarker() {
+        let formData = new FormData();
+        formData.append('userid', this.props.state.userId);
+        formData.append('token', this.props.state.token);
+        formData.append('id', this.state.addId);
 
+        let that = this;
+
+        axios({
+            method: 'DELETE',
+            url: SETUP.goHost + '/marker',
+            data: formData,
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+        }).then(function (response) {
+            that.props.done("Successful", "uk-alert-primary");
+        }).catch((error) => {
+            if (error.response) {
+                that.props.done("ERROR! Can't delete marker.", "uk-alert-warning");
+            }
+        });
     }
 
     /**
@@ -371,6 +422,7 @@ export class MapContainer extends React.Component {
                     </div>
                 </div>
                 <br />
+                <div className={'addMarker'}>
                 Name: <input onChange={this.handleInputChange} name="addName" value={this.state.addName} placeholder="Name" />&nbsp;
                 Subname: <input onChange={this.handleInputChange} name="addSubName" value={this.state.addSubName} placeholder="Subname" />&nbsp;
                 Coordinates: <input onChange={this.handleInputChange} name="addCoord" value={this.state.addCoord} placeholder="Coordinates" />&nbsp;
@@ -385,6 +437,7 @@ export class MapContainer extends React.Component {
                     <option value='purple' style={{color: "purple"}}>Purple</option>
                 </select>&nbsp;
                 {addMarkerButton}
+                </div>
             </div>
         );
     }

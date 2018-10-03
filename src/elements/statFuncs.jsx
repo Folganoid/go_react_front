@@ -282,7 +282,6 @@ export function makeAvgSpeedData(statData, year) {
         let date = Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate());
 
         //filter
-        if (statData[i].Avgpls === 0 || statData[i].Avgpls === undefined) continue;
         if (curDate.getFullYear() !== year) continue;
 
         let pass = false;
