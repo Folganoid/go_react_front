@@ -87,10 +87,10 @@ class TechDataTable extends React.Component {
                 date.search(this.state.filter) === -1) continue;
 
             result += "<tr key='" + tmpData[d].Id + "' class='cellTechData'><td width='15%'>" + date +
-                "</td><td width='15%'>" + tmpData[d].Bike +
-                "</td><td width='60%'>" + tmpData[d].Teh +
-                "</td><td width='10%'>" + odoTehDist.toFixed(2) +
-                "</td></tr>";
+                "</td><td width='15%' align='center'>" + tmpData[d].Bike +
+                "</td><td width='60%' align='justify'>" + tmpData[d].Teh +
+                "</td><td width='10%' align='right'>" + odoTehDist.toFixed(2) +
+                " km</td></tr>";
         }
         return result;
     }

@@ -38,7 +38,6 @@ export class MapContainer extends React.Component {
         this.eventHandler = this.eventHandler.bind(this);
 
         this.getMarker();
-
     }
 
     eventHandler(e) {
@@ -405,12 +404,12 @@ export class MapContainer extends React.Component {
         return (<div className="uk-container">
                 <h1>Map</h1>
                 <div className="uk-grid">
-                    <div className="uk-width-1-2" style={{height: "500px"}}>
+                    <div className="uk-width-1-2@m uk-width-1-1@s" style={{height: "500px"}}>
                         Watch another map by login: <input id="foreign" type={'text'} placeholder={'Login'} /><button onClick={this.getForeignMarker}>Watch</button> <button onClick={this.getMarker}>My map</button>
                         <br />
                         {map}
                     </div>
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                         <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>{colors}
                         <div style={{maxHeight: "500px", overflow: "auto"}}>
                         <table>
@@ -422,6 +421,7 @@ export class MapContainer extends React.Component {
                     </div>
                 </div>
                 <br />
+
                 <div className={'addMarker'}>
                 Name: <input onChange={this.handleInputChange} name="addName" value={this.state.addName} placeholder="Name" />&nbsp;
                 Subname: <input onChange={this.handleInputChange} name="addSubName" value={this.state.addSubName} placeholder="Subname" />&nbsp;

@@ -96,7 +96,7 @@ class StatDataTable extends React.Component {
 
             let aaa = wind.split("@");
             let windRes = "";
-            if(aaa && aaa[0] && aaa[1]) windRes = aaa[1] + " " + direction[aaa[0]];
+            if(aaa[0] && aaa[1]) windRes = (+aaa[1]).toFixed(1) + " " + direction[aaa[0]];
 
             // filter
             if (this.state.filter !== "" && 
@@ -104,14 +104,15 @@ class StatDataTable extends React.Component {
                 tmpData[d].Prim.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
-            result += "<tr id='cal"+ tmpData[d].Id +"' key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'><td>" + date +
-                "</td><td>" + tmpData[d].Bike + 
-                "</td><td>" + tmpData[d].Prim +
-                "</td><td>" + tmpData[d].Dist +
-                "</td><td>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
-                "</td><td>" + tmpData[d].Temp +
-                "</td><td>" + teh +
-                "</td><td>" + windRes +
+            result += "<tr id='cal"+ tmpData[d].Id +"' key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'>" +
+                "<td width='10%'>" + date +
+                "</td><td align='center' width='20%'>" + tmpData[d].Bike +
+                "</td><td align='justify' width='30%'>" + tmpData[d].Prim +
+                "</td><td align='right' width='10%'>" + (+tmpData[d].Dist).toFixed(2) + " km" +
+                "</td><td align='center' width='10%'>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
+                "</td><td align='right' width='10%'>" + tmpData[d].Temp + "°С" +
+                "</td><td align='center' width='3%'>" + teh +
+                "</td><td align='center' width='7%'>" + windRes +
                 "</tr>";
         }
 

@@ -41,7 +41,7 @@ body {
 }
 
 .calMonth {
-  font-size: small;
+  font-size: 0.65em;
 }
 
 .calRideDay {
@@ -96,4 +96,9 @@ body {
 
 .modalShow {
   display: table-row;
+}
+
+.statDist {
+  line-height: 0.9em;
+  font-size: .9em;
 }

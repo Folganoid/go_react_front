@@ -31,6 +31,7 @@ class Statistic extends React.Component {
             curYear: (new Date()).getFullYear(),
             curYearStat: {},
             rideDaysArr: {},
+            tiresOdo: {},
         };
 
         this.getData = this.getData.bind(this);
@@ -46,6 +47,18 @@ class Statistic extends React.Component {
 
         this.getData();
     }
+
+    countTiresOdo(data) {
+        let result = {};
+
+        for (let i = 0 ; i < data.length ; i++) {
+            if (result[data[i].Tires] === undefined) result[data[i].Tires] = 0;
+            result[data[i].Tires] += +data[i].Dist;
+        }
+
+        return result;
+    }
+
 
     buildRideDays(data, year) {
 
@@ -99,6 +112,7 @@ class Statistic extends React.Component {
         this.setState({
             curYearStat: this.filterStatDataByYear(this.state.curYear),
             rideDaysArr: this.buildRideDays(data, this.state.curYear),
+            tiresOdo: this.countTiresOdo(this.state.statData),
         });
 
         console.log(this.state);
@@ -187,27 +201,32 @@ class Statistic extends React.Component {
     preYear() {
 
         let tmpYearStat = this.filterStatDataByYear(this.state.curYear - 1);
+        let count = 1;
 
         if (Object.keys(tmpYearStat).length === 0) {
             for (let i = 1 ; i < 10; i++) {
-               tmpYearStat = this.filterStatDataByYear(this.state.curYear - i);
-               if (Object.keys(tmpYearStat).length !== 0) break;
+                tmpYearStat = this.filterStatDataByYear(this.state.curYear - i);
+                if (Object.keys(tmpYearStat).length !== 0) {
+                    count = i;
+                    break;
+                }
             }
             return;
         }
 
         let avgPlsTmp = this.state.avgPlsOptions;
-        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear - 1);
+
+        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear - count);
         let avgSpdTmp = this.state.avgSpdOptions;
-        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear - 1);
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear - count);
 
         let odoYearTmp = this.state.odoYearOptions;
-        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear - 1);
+        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear - count);
 
         this.setState({
             curYear: this.state.curYear - 1,
             curYearStat: tmpYearStat,
-            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear - 1),
+            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear - count),
             avgPlsOptions: avgPlsTmp,
             avgSpdOptions: avgSpdTmp,
             odoYearOptions: odoYearTmp,
@@ -220,24 +239,31 @@ class Statistic extends React.Component {
     nextYear() {
 
         let tmpYearStat = this.filterStatDataByYear(this.state.curYear + 1);
-        
+        let count = 1;
+
         if (Object.keys(tmpYearStat).length === 0) {
             for (let i = 1 ; i < 10; i++) {
                tmpYearStat = this.filterStatDataByYear(this.state.curYear + i);
-               if (Object.keys(tmpYearStat).length !== 0) break;
+               if (Object.keys(tmpYearStat).length !== 0) {
+                   count = i;
+                   break;
+               }
             }
             return;
         }
 
         let avgPlsTmp = this.state.avgPlsOptions;
-        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear + 1);
+        avgPlsTmp.series = statFuncs.makeAvgPulseData(this.state.statData, this.state.curYear + count);
         let avgSpdTmp = this.state.avgSpdOptions;
-        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear + 1);
+        avgSpdTmp.series = statFuncs.makeAvgSpeedData(this.state.statData, this.state.curYear + count);
+
+        let odoYearTmp = this.state.odoYearOptions;
+        odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear + count);
 
         this.setState({
-            curYear: this.state.curYear + 1,
+            curYear: this.state.curYear + count,
             curYearStat: tmpYearStat,
-            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear + 1),
+            rideDaysArr: this.buildRideDays(this.state.statData, this.state.curYear + count),
             avgPlsOptions: avgPlsTmp,
             avgSpdOptions: avgSpdTmp,
         });
@@ -330,7 +356,7 @@ class Statistic extends React.Component {
                 result[d.Bike]['LastDist'] = d.Dist;
                 result[d.Bike]['LastAvgpls'] = d.Avgpls;
                 result[d.Bike]['LastAvgspd'] = (d.Dist / d.Time * 60 * 60).toFixed(2);
-                result[d.Bike]['LastBike'] = d.Bike;
+                if (d.Bike === "COMMON" ) result[d.Bike]['LastBike'] = d.Id;
             }
         }
 
@@ -358,6 +384,15 @@ class Statistic extends React.Component {
             result[bike].Avgpls = (r.Avgpls[0] / r.Avgpls[1]).toFixed();
             result[bike].Avgspd = (r.Dist / r.Time * 60 * 60).toFixed(2);
         }
+
+        // last bike for common
+        for (let z = 0 ; z < data.length; z++) {
+            if (data[z].Id === result['COMMON']['LastBike']) {
+                result['COMMON']['LastBike'] = data[z].Bike;
+                break;
+            }
+        }
+
         return result;
     }
 
@@ -386,18 +421,27 @@ class Statistic extends React.Component {
      */
     render() {
 
+        let tiresOdo = (odo) => {
+            let res = '';
+            Object.keys(odo).forEach(function(key) {
+                res += '<tr key="' + key + '"><td>' + key + '</td><td>' + odo[key].toFixed(2) + '</td></tr>';
+            });
+            return res;
+        };
+
+
         return (
             <div className="uk-container">
                 <h1>Statistic</h1>
                 Watch another Stat by login: <input id="foreign" type={'text'} name={'foreignLogin'} placeholder={'Login'} /><button onClick={this.getForeignStat}>Watch</button> <button onClick={this.getData}>My map</button>
                 <br />
                 <div className="uk-grid">
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                         <div className="uk-grid">
-                            <div className="uk-width-1-2">
+                            <div className="uk-width-1-2@m uk-width-1-1@s">
                                 <YearList data={this.state.optionsOdoYear} years={JSON.parse(JSON.stringify( this.state.years )).reverse()}/>
                             </div>
-                            <div className="uk-width-1-2">
+                            <div className="uk-width-1-2@m uk-width-1-1@s">
                                 <HighchartsReact
                                     highcharts={Highcharts}
                                     options={this.state.odoCommonOptions}
@@ -405,7 +449,7 @@ class Statistic extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                         <HighchartsReact
                             highcharts={Highcharts}
                             options={this.state.odoOptions}
@@ -417,23 +461,20 @@ class Statistic extends React.Component {
                     <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
                     <DistStat data={this.state.curYearStat} />
                 </div>
-                <br />
                 <h2>Activity</h2>
-                <div className="uk-grid">
-                    <div className="uk-width-1-6">January<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={0} /></div>
-                    <div className="uk-width-1-6">Febrary<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={1} /></div>
-                    <div className="uk-width-1-6">Marth<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={2} /></div>
-                    <div className="uk-width-1-6">April<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={3} /></div>
-                    <div className="uk-width-1-6">May<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={4} /></div>
-                    <div className="uk-width-1-6">June<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={5} /></div>
-                </div>
-                <div className="uk-grid">
-                    <div className="uk-width-1-6">Jule<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={6} /></div>
-                    <div className="uk-width-1-6">August<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={7} /></div>
-                    <div className="uk-width-1-6">September<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={8} /></div>
-                    <div className="uk-width-1-6">October<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={9} /></div>
-                    <div className="uk-width-1-6">November<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={10} /></div>
-                    <div className="uk-width-1-6">December<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={11} /></div>
+                <div className="uk-flex-center" uk-grid="true">
+                    <div className="uk-flex-first">January<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={0} /></div>
+                    <div>Febrary<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={1} /></div>
+                    <div>Marth<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={2} /></div>
+                    <div>April<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={3} /></div>
+                    <div>May<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={4} /></div>
+                    <div>June<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={5} /></div>
+                    <div>Jule<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={6} /></div>
+                    <div>August<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={7} /></div>
+                    <div>September<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={8} /></div>
+                    <div>October<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={9} /></div>
+                    <div>November<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={10} /></div>
+                    <div className="uk-flex-last">December<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={11} /></div>
                 </div>
                 <br />
                 <HighchartsReact
@@ -442,19 +483,23 @@ class Statistic extends React.Component {
                 />
                 <br />
                 <div className="uk-grid">
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                         <HighchartsReact
                             highcharts={Highcharts}
                             options={this.state.avgPlsOptions}
                         />
                     </div>
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                         <HighchartsReact
                             highcharts={Highcharts}
                             options={this.state.avgSpdOptions}
                         />
                     </div>
                 </div>
+                <br />
+                <table>
+                    <tbody style={{width: '100%'}} dangerouslySetInnerHTML={{__html: tiresOdo(this.state.tiresOdo)}}/>
+                </table>
                 <br />
                 <h1>Data</h1>
                     <StatDataTable reload={this.reload} data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires} userId={this.props.state.userId} token={this.props.state.token} done={this.props.done}/>
