@@ -20,6 +20,18 @@ body {
   color: darkred;
 }
 
+.colorblue {
+  color: darkblue;
+}
+
+.colorpurple {
+  color: rebeccapurple;
+}
+
+.colorblack {
+  color: black;
+}
+
 .customhr {
   height: 3px;
   width: 100%;
@@ -101,4 +113,42 @@ body {
 .statDist {
   line-height: 0.9em;
   font-size: .9em;
+}
+
+.dataList {
+  max-height: 30em;
+  overflow: auto;
+}
+
+.dataListTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataListTable tbody td {
+  border: 1px solid grey;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.dataListTable thead td {
+  background-color: darkgrey;
+  color: black;
+  text-align: center;
+  border: 1px solid grey;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.odoList {
+  padding-top: 5px;
+  line-height: 0.9em;
+  font-size: 0.9em;
+
+  height: 350px;
+  overflow: auto;
+}
+
+.textBold {
+  font-weight: bold;
 }

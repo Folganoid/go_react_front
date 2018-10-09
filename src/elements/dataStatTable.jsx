@@ -86,7 +86,7 @@ class StatDataTable extends React.Component {
         let tmpData = JSON.parse(JSON.stringify(dt));
         tmpData.sort(compare);
 
-        let result = "";
+        let result = "<thead><td width='10%'>Date</td><td width='20%'>Bike</td><td width='30%'>Describe</td><td width='10%'>Dist.</td><td width='10%'>Time</td><td width='10%'>Temp</td><td width='3%'>TO</td><td width='7%'>Wind</td></thead><tbody>";
 
         for (let d = 0; d < tmpData.length; d++) {
 
@@ -116,7 +116,7 @@ class StatDataTable extends React.Component {
                 "</tr>";
         }
 
-        return result;
+        return result + "</tbody>";
     }
 
     componentDidUpdate() {
@@ -505,7 +505,9 @@ class StatDataTable extends React.Component {
                 </div>
 
                 <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
-                <table style={{width: '100%'}} dangerouslySetInnerHTML={{__html: this.buildData(this.props.data, this.state.filter)}}/>
+                <div className="dataList">
+                    <table className="dataListTable" dangerouslySetInnerHTML={{__html: this.buildData(this.props.data, this.state.filter)}}/>
+                </div>
             </div>
         )
     }

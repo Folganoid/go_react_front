@@ -67,7 +67,7 @@ class TechDataTable extends React.Component {
         let tmpData = JSON.parse(JSON.stringify(this.props.data));
         tmpData.sort(compare);
 
-        let result = "";
+        let result = "<thead><tr><td width='15%'>Date</td><td width='15%'>Bike</td><td width='60%'>Describe</td><td width='10%'>Odo</td></tr></thead><tbody>";
 
         for (let d = 0; d < tmpData.length; d++) {
 
@@ -92,7 +92,7 @@ class TechDataTable extends React.Component {
                 "</td><td width='10%' align='right'>" + odoTehDist.toFixed(2) +
                 " km</td></tr>";
         }
-        return result;
+        return result + "</tbody>";
     }
 
     componentDidUpdate() {
@@ -128,7 +128,9 @@ class TechDataTable extends React.Component {
         return (
             <div>
                 <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
-                <table style={{width: '100%'}} dangerouslySetInnerHTML={{__html: this.buildData()}}/>
+                <div className="dataList">
+                    <table className="dataListTable" dangerouslySetInnerHTML={{__html: this.buildData()}}/>
+                </div>
             </div>
         )
     }

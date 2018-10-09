@@ -18,26 +18,27 @@ class DistStat extends React.Component {
 
         let bikeList = Object.keys(this.props.data).map((item, i) => (
             <div key={i} className='statDist'>
-                <dd align="left">{this.props.data[item]["Bike"]}</dd>
+                <h4 align="left">{this.props.data[item]["Bike"]}</h4>
                 <div className="customhr"></div>
                 <div className="uk-grid">
                     <div className="uk-width-1-3@l uk-width-1-1@m">
                         <table width="100%">
                             <tbody>
-                                <tr><td>Total dist (km):</td><td align="right">{this.props.data[item]['Dist']}</td></tr>
-                                <tr><td>Total time:</td><td align="right">{this.convertTimeStampToDate(this.props.data[item]['Time'])}</td></tr>
-                                <tr><td>Average dist (km):</td><td align="right">{this.props.data[item]['AvgDist']}</td></tr>
-                                <tr><td>Average time:</td><td align="right">{this.convertTimeStampToDate(this.props.data[item]['AvgTime'])}</td></tr>
-                                <tr><td>Count:</td><td align="right">{this.props.data[item]['Count']}</td></tr>
+                                <tr><td>Total dist:</td><td className='colorred textBold' align="right">{this.props.data[item]['Dist']} km</td></tr>
+                                <tr><td>Total time:</td><td className='colorblue textBold' align="right">{this.convertTimeStampToDate(this.props.data[item]['Time'])}</td></tr>
+                                <tr><td> </td></tr>
+                                <tr><td>Average dist:</td><td className='colorred textBold' align="right">{this.props.data[item]['AvgDist']} km</td></tr>
+                                <tr><td>Average time:</td><td className='colorblue textBold' align="right">{this.convertTimeStampToDate(this.props.data[item]['AvgTime'])}</td></tr>
+                                <tr><td>Count:</td><td className='colorblack textBold' align="right">{this.props.data[item]['Count']}</td></tr>
                             </tbody>
                         </table>  
                         <br />  
                         <table width="100%">
                             <tbody>
-                                <tr><td width="25%">Asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Asf'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Asf'][0]} km</td></tr>
-                                <tr><td width="25%">Bad asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Tvp'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Tvp'][0]} km</td></tr>
-                                <tr><td width="25%">Country:</td><td width="50%"><div style={{width: this.props.data[item]['Grn'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Grn'][0]} km</td></tr>
-                                <tr><td width="25%">Offroad:</td><td width="50%"><div style={{width: this.props.data[item]['Bzd'][1] + "%"}} className="surfacePerc"></div></td><td width="25%" align="right">{this.props.data[item]['Bzd'][0]} km</td></tr>
+                            <tr><td width="25%">Asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Asf'][1] + "%"}} className="surfacePerc"></div></td><td className="colorred textBold" width="25%" align="right">{this.props.data[item]['Asf'][0]} km</td></tr>
+                            <tr><td width="25%">Bad asphalt:</td><td width="50%"><div style={{width: this.props.data[item]['Tvp'][1] + "%"}} className="surfacePerc"></div></td><td className="colorred textBold" width="25%" align="right">{this.props.data[item]['Tvp'][0]} km</td></tr>
+                            <tr><td width="25%">Country:</td><td width="50%"><div style={{width: this.props.data[item]['Grn'][1] + "%"}} className="surfacePerc"></div></td><td className="colorred textBold" width="25%" align="right">{this.props.data[item]['Grn'][0]} km</td></tr>
+                            <tr><td width="25%">Offroad:</td><td width="50%"><div style={{width: this.props.data[item]['Bzd'][1] + "%"}} className="surfacePerc"></div></td><td className="colorred textBold" width="25%" align="right">{this.props.data[item]['Bzd'][0]} km</td></tr>
                             </tbody>
                         </table>
                         <br />
@@ -45,12 +46,12 @@ class DistStat extends React.Component {
                     <div className="uk-width-1-3@l uk-width-1-1@m">
                         <table width="100%">
                             <tbody>
-                            <tr><td width="50%">Total average speed: </td><td width="45%" align="right">{this.props.data[item]['Avgspd']}</td><td width="5%">km/h</td></tr>
-                            <tr><td width="50%">Maximum average speed: </td><td width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxavgspd'][1])}) {this.props.data[item]['Maxavgspd'][0]}</td><td width="5%">km/h</td></tr>
-                            <tr><td width="50%">Total average pulse: </td><td width="45%" align="right">{this.props.data[item]['Avgpls']}</td><td width="5%">per/min</td></tr>
-                            <tr><td width="50%">Maximum pulse: </td><td width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxpls'][1])}) {this.props.data[item]['Maxpls'][0]}</td><td width="5%">per/min</td></tr>
-                            <tr><td width="50%">Maximum speed: </td><td width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxspd'][1])}) {this.props.data[item]['Maxspd'][0]}</td><td width="5%">km/h</td></tr>
-                            <tr><td width="50%">Maximum dist: </td><td width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxdst'][1])}) {this.props.data[item]['Maxdst'][0]}</td><td width="5%">km</td></tr>
+                            <tr><td width="50%">Total average speed: </td><td className='colorred textBold' width="45%" align="right">{this.props.data[item]['Avgspd']}</td><td className='colorred textBold' width="5%">km/h</td></tr>
+                            <tr><td width="50%">Maximum average speed: </td><td className='colorred textBold' width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxavgspd'][1])}) {this.props.data[item]['Maxavgspd'][0]}</td><td className='colorred textBold' width="5%">km/h</td></tr>
+                            <tr><td width="50%">Total average pulse: </td><td width="45%" className='colorpurple textBold' align="right">{this.props.data[item]['Avgpls']}</td><td className='colorpurple textBold' width="5%">per/min</td></tr>
+                            <tr><td width="50%">Maximum pulse: </td><td className='colorpurple textBold' width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxpls'][1])}) {this.props.data[item]['Maxpls'][0]}</td><td className='colorpurple textBold' width="5%">per/min</td></tr>
+                            <tr><td width="50%">Maximum speed: </td><td className='colorred textBold' width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxspd'][1])}) {this.props.data[item]['Maxspd'][0]}</td><td className='colorred textBold' width="5%">km/h</td></tr>
+                            <tr><td width="50%">Maximum dist: </td><td className='colorred textBold' width="45%" align="right">({statFuncs.humanDate(this.props.data[item]['Maxdst'][1])}) {this.props.data[item]['Maxdst'][0]}</td><td className='colorred textBold' width="5%">km</td></tr>
                             </tbody>
                         </table>
                         <br />
