@@ -297,7 +297,7 @@ class Statistic extends React.Component {
         let dataCommon = [];
         for (var  i = 0 ; i < data.length; i++) {
             let tmp = JSON.parse(JSON.stringify(data[i]));
-            tmp.Bike = "COMMON";
+            tmp.Bike = "TOTAL";
             dataCommon.push(tmp);
         }
         data = data.concat(dataCommon);
@@ -356,7 +356,7 @@ class Statistic extends React.Component {
                 result[d.Bike]['LastDist'] = d.Dist;
                 result[d.Bike]['LastAvgpls'] = d.Avgpls;
                 result[d.Bike]['LastAvgspd'] = (d.Dist / d.Time * 60 * 60).toFixed(2);
-                if (d.Bike === "COMMON" ) result[d.Bike]['LastBike'] = d.Id;
+                if (d.Bike === "TOTAL" ) result[d.Bike]['LastBike'] = d.Id;
             }
         }
 
@@ -387,8 +387,8 @@ class Statistic extends React.Component {
 
         // last bike for common
         for (let z = 0 ; z < data.length; z++) {
-            if (data[z].Id === result['COMMON']['LastBike']) {
-                result['COMMON']['LastBike'] = data[z].Bike;
+            if (data[z].Id === result['TOTAL']['LastBike']) {
+                result['TOTAL']['LastBike'] = data[z].Bike;
                 break;
             }
         }
@@ -424,7 +424,7 @@ class Statistic extends React.Component {
         let tiresOdo = (odo) => {
             let res = '';
             Object.keys(odo).forEach(function(key) {
-                res += '<tr key="' + key + '"><td>' + key + '</td><td>' + odo[key].toFixed(2) + '</td></tr>';
+                res += '<tr key="' + key + '"><td>' + key + '</td><td className="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td><td><div style={{wide: }} className="monthPerc"></div></td></tr>';
             });
             return res;
         };
@@ -461,6 +461,10 @@ class Statistic extends React.Component {
                     <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
                     <DistStat data={this.state.curYearStat} />
                 </div>
+                <h4>Tires odo</h4>
+                <table>
+                    <tbody style={{width: '100%'}} dangerouslySetInnerHTML={{__html: tiresOdo(this.state.tiresOdo)}}/>
+                </table>
                 <h2>Activity</h2>
                 <div className="uk-flex-center" uk-grid="true">
                     <div className="uk-flex-first">January<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={0} /></div>
@@ -496,11 +500,6 @@ class Statistic extends React.Component {
                         />
                     </div>
                 </div>
-                <br />
-                <table>
-                    <tbody style={{width: '100%'}} dangerouslySetInnerHTML={{__html: tiresOdo(this.state.tiresOdo)}}/>
-                </table>
-                <br />
                 <h1>Data</h1>
                     <StatDataTable reload={this.reload} data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires} userId={this.props.state.userId} token={this.props.state.token} done={this.props.done}/>
                 <br />

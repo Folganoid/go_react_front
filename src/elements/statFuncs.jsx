@@ -160,7 +160,7 @@ export function getOdoBikeList(arr, statArr) {
         }
     }
 
-    result.COMMON = common;
+    result.TOTAL = common;
     return result;
 }
 

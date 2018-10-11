@@ -389,7 +389,7 @@ class StatDataTable extends React.Component {
         let res = [];
         for (var k in this.props.odoYear){
             if (this.props.odoYear.hasOwnProperty(k)) {
-                if (k !== "COMMON") res.push(k);
+                if (k !== "TOTAL") res.push(k);
             }
         }
 
