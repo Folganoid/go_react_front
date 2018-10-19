@@ -6,12 +6,15 @@ import axios from 'axios';
 export class MapContainer extends React.Component {
 
     constructor(props) {
+
+        let markers = (localStorage.getItem('markers')) ? JSON.parse(localStorage.getItem('markers')) : [];
+
         super(props);
         this.state = {
             showingInfoWindow: false,
             activeMarker: {},
             selectedPlace: {},
-            markers: [],
+            markers: markers,
             filter: "",
             centerMap: {lat: 50.9129663, lng: 34.8055385},
             color: "reset",
@@ -37,7 +40,7 @@ export class MapContainer extends React.Component {
         this.clearAddFields = this.clearAddFields.bind(this);
         this.eventHandler = this.eventHandler.bind(this);
 
-        this.getMarker();
+        if (markers.length === 0) this.getMarker();
     }
 
     eventHandler(e) {
@@ -111,6 +114,7 @@ export class MapContainer extends React.Component {
 
         }).then(function (response) {
             that.setState({markers: response.data});
+            localStorage.setItem('markers', JSON.stringify(response.data));
         }).catch((error) => {
             if (error.response) {
                 that.props.done("Markers not found!", "uk-alert-warning");

@@ -22,6 +22,7 @@ class MainRouter extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            checkToken: false,
             login: '',
             pass: '',
             name: '',
@@ -39,6 +40,7 @@ class MainRouter extends Component {
         this.logOut = this.logOut.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.getUserByToken = this.getUserByToken.bind(this);
 
         this.Marks = () => <MapContainer done={this.changeAlert} state={this.state}/>;
         this.Stats = () => <Statistic done={this.changeAlert} state={this.state}/>
@@ -73,6 +75,10 @@ class MainRouter extends Component {
         this.setState({year: data.Year});
         this.setState({token: data.Token});
         this.setState({allow_map : data.Allow_map});
+        this.setState({allow_stat : data.Allow_stat});
+
+        this.deleteAllCookies();
+        document.cookie = "t=" + data.Token;
 
         this.changeAlert("Welcome " + data.Login);
     }
@@ -100,6 +106,9 @@ class MainRouter extends Component {
         this.setState({userId: 0});
         this.setState({token: 0});
         this.setState({markers: []});
+
+        this.deleteAllCookies();
+        localStorage.clear();
     }
 
     /**
@@ -136,6 +145,47 @@ class MainRouter extends Component {
         event.preventDefault();
     }
 
+    getUserByToken() {
+        let formData = new FormData();
+        formData.append('token', document.cookie.substr(2));
+        console.log(document.cookie.substr(2));
+        let that = this;
+        axios({
+            method: 'post',
+            url: SETUP.goHost + '/token',
+            data: formData,
+
+            config: {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Origin': SETUP.reactHost,
+                }
+            },
+
+        }).then(function (response) {
+            that.userChange(response.data)
+        }).catch((error) => {
+            localStorage.clear();
+            if (error.response) {
+                console.log("-");
+            }
+        });
+        this.setState({
+            checkToken: true,
+        })
+    }
+
+    deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+    }
+
     /**
      * RENDER
      *
@@ -145,6 +195,8 @@ class MainRouter extends Component {
 
         let Register = () => <RegForm done={this.changeAlert} />;
         let Profile = () => <ProfForm done={this.changeAlert} user={this.state} />;
+
+        if(this.state.userId === 0 && this.state.checkToken === false) this.getUserByToken();
 
         return (
             <Router>
