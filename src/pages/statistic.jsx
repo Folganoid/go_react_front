@@ -16,6 +16,18 @@ import TechDataTable from '../elements/dataTechTable';
 class Statistic extends React.Component {
 
     constructor(props) {
+
+        let yearDataTmp = (localStorage.getItem('yearData')) ? JSON.parse(localStorage.getItem('yearData')) : [];
+        let statDataTmp = (localStorage.getItem('statData')) ? JSON.parse(localStorage.getItem('statData')) : [];
+        let tiresTmp = (localStorage.getItem('tires')) ? JSON.parse(localStorage.getItem('tires')) : [];
+        let yearsTmp = (localStorage.getItem('years')) ? JSON.parse(localStorage.getItem('years')) : [];
+        let optionsOdoYearTmp = (localStorage.getItem('optionsOdoYear')) ? JSON.parse(localStorage.getItem('optionsOdoYear')) : [];
+        let odoOptionsNamesTmp = (localStorage.getItem('odoOptionsNames')) ? JSON.parse(localStorage.getItem('odoOptionsNames')) : [];
+        let curYearTmp = (localStorage.getItem('curYear')) ? JSON.parse(localStorage.getItem('curYear')) : (new Date()).getFullYear();
+        let curYearStatTmp = (localStorage.getItem('curYearStat')) ? JSON.parse(localStorage.getItem('curYearStat')) : {};
+        let rideDaysArrTmp = (localStorage.getItem('rideDaysArr')) ? JSON.parse(localStorage.getItem('rideDaysArr')) : {};
+        let tiresOdoTmp  = (localStorage.getItem('tiresOdo')) ? JSON.parse(localStorage.getItem('tiresOdo')) : {};
+
         super(props);
         this.state = {
             odoOptions: statFuncs.odoOptions(),
@@ -23,15 +35,16 @@ class Statistic extends React.Component {
             odoYearOptions: statFuncs.odoYearOptions(),
             avgPlsOptions: statFuncs.avgPlsOptions(),
             avgSpdOptions: statFuncs.avgSpdOptions(),
-            yearData: [],
-            statData: [],
-            years: [],
-            optionsOdoYear: [],
-            odoOptionsNames: [],
-            curYear: (new Date()).getFullYear(),
-            curYearStat: {},
-            rideDaysArr: {},
-            tiresOdo: {},
+            yearData: yearDataTmp,
+            statData: statDataTmp,
+            tires: tiresTmp,
+            years: yearsTmp,
+            optionsOdoYear: optionsOdoYearTmp,
+            odoOptionsNames: odoOptionsNamesTmp,
+            curYear: curYearTmp,
+            curYearStat: curYearStatTmp,
+            rideDaysArr: rideDaysArrTmp,
+            tiresOdo: tiresOdoTmp,
         };
 
         this.getData = this.getData.bind(this);
@@ -45,7 +58,11 @@ class Statistic extends React.Component {
         this.getMyStat = this.getMyStat.bind(this);
         this.reload = this.reload.bind(this);
 
-        this.getData();
+        if (yearDataTmp.length === 0 || statDataTmp.length === 0 || tiresTmp.length === 0) {
+            this.getData();
+        } else {
+            this.buildCharts(statDataTmp);
+        }
     }
 
     countTiresOdo(data) {
@@ -79,13 +96,21 @@ class Statistic extends React.Component {
      */
     buildCharts(data) {
 
+        let years = statFuncs.getYearsList(this.state.yearData, data);
+        let optionsOdoYear = statFuncs.getOdoBikeList(this.state.yearData, data);
+        let odoOptionsNames = statFuncs.makeOdoOptions(optionsOdoYear, years);
+
+        localStorage.setItem('years', JSON.stringify(years));
+        localStorage.setItem('optionsOdoYear', JSON.stringify(optionsOdoYear));
+        localStorage.setItem('odoOptionsNames', JSON.stringify(odoOptionsNames));
+
         this.setState({
-            years: statFuncs.getYearsList(this.state.yearData, data),
-            optionsOdoYear: statFuncs.getOdoBikeList(this.state.yearData, data),
+            years: years,
+            optionsOdoYear: optionsOdoYear,
         });
 
         this.setState({
-            odoOptionsNames: statFuncs.makeOdoOptions(this.state.optionsOdoYear, this.state.years),
+            odoOptionsNames: odoOptionsNames,
         });
 
         // chart data
@@ -94,12 +119,18 @@ class Statistic extends React.Component {
         let odoYearTmp = this.state.odoYearOptions;
         let avgPlsTmp = this.state.avgPlsOptions;
         let avgSpdTmp = this.state.avgSpdOptions;
-        odoCatTmp.xAxis.categories = this.state.years;
-        odoCatTmp.series = this.state.odoOptionsNames;
-        odoSumTmp.series[0].data = statFuncs.convertToSumChart(this.state.odoOptionsNames);
+        odoCatTmp.xAxis.categories = years;
+        odoCatTmp.series = odoOptionsNames;
+        odoSumTmp.series[0].data = statFuncs.convertToSumChart(odoOptionsNames);
         odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(data, this.state.curYear);
         avgPlsTmp.series = statFuncs.makeAvgPulseData(data, this.state.curYear);
         avgSpdTmp.series = statFuncs.makeAvgSpeedData(data, this.state.curYear);
+
+        localStorage.setItem('odoOptions', JSON.stringify(odoCatTmp));
+        localStorage.setItem('odoCommonOptions', JSON.stringify(odoSumTmp));
+        localStorage.setItem('odoYearOptions', JSON.stringify(odoYearTmp));
+        localStorage.setItem('avgPlsOptions', JSON.stringify(avgPlsTmp));
+        localStorage.setItem('avgSpdOptions', JSON.stringify(avgSpdTmp));
 
         this.setState({
             odoOptions: odoCatTmp,
@@ -109,10 +140,18 @@ class Statistic extends React.Component {
             avgSpdOptions: avgSpdTmp,
         });
 
+        let curYearStat = this.filterStatDataByYear(this.state.curYear, data);
+        let rideDaysArr = this.buildRideDays(data, this.state.curYear);
+        let tiresOdo = this.countTiresOdo(data);
+
+        localStorage.setItem('curYearStat', JSON.stringify(curYearStat));
+        localStorage.setItem('rideDaysArr', JSON.stringify(rideDaysArr));
+        localStorage.setItem('tiresOdo', JSON.stringify(tiresOdo));
+
         this.setState({
-            curYearStat: this.filterStatDataByYear(this.state.curYear),
-            rideDaysArr: this.buildRideDays(data, this.state.curYear),
-            tiresOdo: this.countTiresOdo(this.state.statData),
+            curYearStat: curYearStat,
+            rideDaysArr: rideDaysArr,
+            tiresOdo: tiresOdo,
         });
 
         console.log(this.state);
@@ -122,7 +161,7 @@ class Statistic extends React.Component {
      * get data from DB
      */
     getData(login = "") {
-
+        localStorage.clear();
         let formData = new FormData();
         formData.append('userid', this.props.state.userId);
         formData.append('token', this.props.state.token);
@@ -143,6 +182,7 @@ class Statistic extends React.Component {
 
         }).then(function (response) {
             that.setState({yearData: response.data});
+            localStorage.setItem('yearData', JSON.stringify(response.data));
             
                     axios({
                         method: 'post',
@@ -157,6 +197,8 @@ class Statistic extends React.Component {
 
                     }).then(function (response) {
                         that.setState({statData: response.data});
+                        localStorage.setItem('statData', JSON.stringify(response.data));
+
                         that.buildCharts(response.data);
                     }).catch((error) => {
                         if (error.response) {
@@ -187,6 +229,7 @@ class Statistic extends React.Component {
                 res.push(response.data[i].Name);
             }
             that.setState({tires: res});
+            localStorage.setItem('tires', JSON.stringify(res));
 
         }).catch((error) => {
             if (error.response) {
@@ -260,6 +303,9 @@ class Statistic extends React.Component {
         let odoYearTmp = this.state.odoYearOptions;
         odoYearTmp.series[0].data = statFuncs.makeOdoYearOptionsData(this.state.statData, this.state.curYear + count);
 
+
+
+
         this.setState({
             curYear: this.state.curYear + count,
             curYearStat: tmpYearStat,
@@ -275,11 +321,11 @@ class Statistic extends React.Component {
      * @param year
      * @returns {Array}
      */
-    filterStatDataByYear(year) {
+    filterStatDataByYear(year, data = this.state.statData) {
        var result = [];
-       for (var i = 0 ; i < this.state.statData.length ; i++) {
-           if ((new Date(this.state.statData[i].Date*1000)).getFullYear() === year) {
-               result.push(this.state.statData[i])
+       for (var i = 0 ; i < data.length ; i++) {
+           if ((new Date(data[i].Date*1000)).getFullYear() === year) {
+               result.push(data[i])
            };
        }
 
@@ -407,6 +453,8 @@ class Statistic extends React.Component {
     }
 
     reload(data) {
+        localStorage.setItem('statData', JSON.stringify(data));
+
         this.setState({
             statData: data,
         });
@@ -424,7 +472,7 @@ class Statistic extends React.Component {
         let tiresOdo = (odo) => {
             let res = '';
             Object.keys(odo).forEach(function(key) {
-                res += '<tr key="' + key + '"><td>' + key + '</td><td className="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td><td><div style={{wide: }} className="monthPerc"></div></td></tr>';
+                res += '<tr key="' + key + '"><td>' + key + '</td><td className="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td><td><div className="monthPerc"></div></td></tr>';
             });
             return res;
         };
