@@ -152,3 +152,8 @@ body {
 .textBold {
   font-weight: bold;
 }
+
+.pulseTires {
+  line-height: 0.9em;
+  font-size: .9em;
+}

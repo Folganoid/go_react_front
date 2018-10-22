@@ -470,12 +470,33 @@ class Statistic extends React.Component {
     render() {
 
         let tiresOdo = (odo) => {
+
+            let maxDist = 0;
+            Object.keys(odo).forEach(function (key) {
+                if (maxDist < odo[key]) maxDist = odo[key];
+            });
+
             let res = '';
             Object.keys(odo).forEach(function(key) {
-                res += '<tr key="' + key + '"><td>' + key + '</td><td className="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td><td><div className="monthPerc"></div></td></tr>';
+                res += '<tr key="' + key + '"><td width="40%">' + key + '</td><td width="40%"><div style="width: ' + odo[key]*100/maxDist + '%;" class="surfacePerc"></div></td><td width="20%" class="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td></tr>';
             });
             return res;
         };
+
+        let pulseZones = [220 - (+(new Date()).getFullYear() - +this.props.state.year), ((220 - (+(new Date()).getFullYear() - +this.props.state.year)) / 10).toFixed()];
+
+        let pulseZonesView = (!this.props.state.year > 0) ? "" : <div className="uk-width-1-3@l uk-width-1-1@m">
+                <h4>Pulse zones</h4>
+                <table width="100%">
+                    <tbody>
+                    <tr style={{color: "red"}}><td>VO2 Max</td><td>(88-100%)</td><td><b>{pulseZones[0] - pulseZones[1] + '-' + pulseZones[0]}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "orange"}}><td>Anaerobic Threshold</td><td>(76-88%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*2) + '-' + (+pulseZones[0] - +pulseZones[1])}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "orange"}}><td>Aerobic</td><td>(64-76%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*3) + '-' + (+pulseZones[0] - +pulseZones[1]*2)}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "green"}}><td>Easy</td><td>(52-64%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*4) + '-' + (+pulseZones[0] - +pulseZones[1]*3)}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "green"}}><td>Healthy Heart</td><td>(40-52%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*5) + '-' + (+pulseZones[0] - +pulseZones[1]*4)}</b></td><td>per/min</td></tr>
+                    </tbody>
+                </table>
+            </div>
 
 
         return (
@@ -509,10 +530,17 @@ class Statistic extends React.Component {
                     <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
                     <DistStat data={this.state.curYearStat} />
                 </div>
-                <h4>Tires odo</h4>
-                <table>
-                    <tbody style={{width: '100%'}} dangerouslySetInnerHTML={{__html: tiresOdo(this.state.tiresOdo)}}/>
-                </table>
+                <div className="uk-grid pulseTires">
+                    <div className="uk-width-2-3@l uk-width-1-1@m">
+                        <h4>Tires odo</h4>
+                        <table width = "100%">
+                            <tbody style={{width: '100%'}} dangerouslySetInnerHTML={{__html: tiresOdo(this.state.tiresOdo)}}/>
+                        </table>
+                    </div>
+
+                    {pulseZonesView}
+
+                </div>
                 <h2>Activity</h2>
                 <div className="uk-flex-center" uk-grid="true">
                     <div className="uk-flex-first">January<Calendar data={this.state.rideDaysArr} year={this.state.curYear} month={0} /></div>

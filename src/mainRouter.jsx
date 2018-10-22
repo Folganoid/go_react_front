@@ -148,7 +148,6 @@ class MainRouter extends Component {
     getUserByToken() {
         let formData = new FormData();
         formData.append('token', document.cookie.substr(2));
-        console.log(document.cookie.substr(2));
         let that = this;
         axios({
             method: 'post',
