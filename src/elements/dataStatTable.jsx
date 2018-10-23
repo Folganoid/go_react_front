@@ -90,7 +90,7 @@ class StatDataTable extends React.Component {
 
         for (let d = 0; d < tmpData.length; d++) {
 
-            let teh = (tmpData[d].Teh.length > 0) ? "*" : "";
+            let teh = (tmpData[d].Teh.length > 0) ? "!" : "";
             let date = statFuncs.humanDate(tmpData[d].Date);
             let wind = tmpData[d].Wind;
 
@@ -105,14 +105,14 @@ class StatDataTable extends React.Component {
                 date.search(this.state.filter) === -1) continue;
 
             result += "<tr id='cal"+ tmpData[d].Id +"' key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'>" +
-                "<td width='10%'>" + date +
-                "</td><td align='center' width='20%'>" + tmpData[d].Bike +
+                "<td width='10%' class='colorblue textBold' align='center'>" + date +
+                "</td><td align='center' width='20%' class='textBold'>" + tmpData[d].Bike +
                 "</td><td align='justify' width='30%'>" + tmpData[d].Prim +
-                "</td><td align='right' width='10%'>" + (+tmpData[d].Dist).toFixed(2) + " km" +
-                "</td><td align='center' width='10%'>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
+                "</td><td align='right' width='10%' class='colorred textBold'>" + (+tmpData[d].Dist).toFixed(2) + " km" +
+                "</td><td align='center' width='10%' class='textBold colorblue'>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
                 "</td><td align='right' width='10%'>" + tmpData[d].Temp + "°С" +
-                "</td><td align='center' width='3%'>" + teh +
-                "</td><td align='center' width='7%'>" + windRes +
+                "</td><td align='center' width='3%' class='colorred'>" + teh +
+                "</td><td align='center' width='7%' class='textBold'>" + windRes +
                 "</tr>";
         }
 
@@ -459,41 +459,41 @@ class StatDataTable extends React.Component {
                     <dd className="modalEdit"><input name="modalPrim" onChange={this.handleInputChange} value={this.state.modalPrim} /></dd>
                     <table width="100%">
                         <tbody>
-                            <tr className="modalShow"><td width="30%">Bike:</td><td width="70%">{this.state.modalBike}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Bike:</td><td width="70%"><button value="-1" onClick={this.setBike}>{"-"}</button><input name="modalBike" onChange={this.handleInputChange} value={this.state.modalBike} /><button value="1" onClick={this.setBike}>{"+"}</button></td></tr>
-                            <tr className="modalShow"><td width="30%">Tires:</td><td width="70%">{this.state.modalTires}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Tires:</td><td width="70%"><button value="-1" onClick={this.setTires}>{"-"}</button><input name="modalTires" onChange={this.handleInputChange} value={this.state.modalTires} /><button value="1" onClick={this.setTires}>{"+"}</button></td></tr>
-                            <tr><td width="30%">Date:</td><td width="70%"><button value="-86400" onClick={this.setModalDate} className="modalEdit">{"-"}</button>{statFuncs.humanDate(this.state.modalDate)}<button className="modalEdit" value="86400" onClick={this.setModalDate}>{"+"}</button></td></tr>
-                            <tr className="modalShow"><td width="30%">Dist:</td><td width="70%">{this.state.modalDist}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Dist:</td><td width="70%"><input name="modalDist" onChange={this.handleInputChange} value={this.state.modalDist} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Time:</td><td width="70%">{statFuncs.convertTimeStampToDate(this.state.modalTime)}</td></tr>
+                            <tr className="modalShow"><td width="30%">Bike:</td><td width="70%"><b>{this.state.modalBike}</b></td></tr>
+                            <tr className="modalEdit"><td width="30%">Bike:</td><td width="70%"><button value="-1" onClick={this.setBike}>{"-"}</button>&nbsp;<input name="modalBike" size="30" onChange={this.handleInputChange} value={this.state.modalBike} />&nbsp;<button value="1" onClick={this.setBike}>{"+"}</button></td></tr>
+                            <tr className="modalShow"><td width="30%">Tires:</td><td width="70%"><b>{this.state.modalTires}</b></td></tr>
+                            <tr className="modalEdit"><td width="30%">Tires:</td><td width="70%"><button value="-1" onClick={this.setTires}>{"-"}</button>&nbsp;<input name="modalTires" size="30" onChange={this.handleInputChange} value={this.state.modalTires} />&nbsp;<button value="1" onClick={this.setTires}>{"+"}</button></td></tr>
+                            <tr><td width="30%">Date:</td><td width="70%"><button value="-86400" onClick={this.setModalDate} className="modalEdit">{"-"}</button><b className="colorblue">{statFuncs.humanDate(this.state.modalDate)}</b>&nbsp;<button className="modalEdit" value="86400" onClick={this.setModalDate}>{"+"}</button></td></tr>
+                            <tr className="modalShow"><td width="30%">Dist:</td><td width="70%"><b className="colorred">{this.state.modalDist} km</b></td></tr>
+                            <tr className="modalEdit"><td width="30%">Dist:</td><td width="70%"><input name="modalDist" size="10" onChange={this.handleInputChange} value={this.state.modalDist} /> km</td></tr>
+                            <tr className="modalShow"><td width="30%">Time:</td><td width="70%"><b className="colorblue">{statFuncs.convertTimeStampToDate(this.state.modalTime)}</b></td></tr>
                             <tr className="modalEdit"><td width="30%">Time:</td><td width="70%">
-                                <button value="-3600" onClick={this.setModalTime}>{"-"}</button>{hr}<button value="3600" onClick={this.setModalTime}>{"+"}</button>
-                                <button value="-60" onClick={this.setModalTime}>{"-"}</button>{mn}<button value="60" onClick={this.setModalTime}>{"+"}</button>
-                                <button value="-1" onClick={this.setModalTime}>{"-"}</button>{sc}<button value="1" onClick={this.setModalTime}>{"+"}</button>
+                                <button value="-3600" onClick={this.setModalTime}>{"-"}</button>&nbsp;{hr}&nbsp;<button value="3600" onClick={this.setModalTime}>{"+"}</button>&nbsp;:&nbsp;
+                                <button value="-60" onClick={this.setModalTime}>{"-"}</button>&nbsp;{mn}&nbsp;<button value="60" onClick={this.setModalTime}>{"+"}</button>&nbsp;:&nbsp;
+                                <button value="-1" onClick={this.setModalTime}>{"-"}</button>&nbsp;{sc}&nbsp;<button value="1" onClick={this.setModalTime}>{"+"}</button>
                             </td></tr>
-                            <tr><td width="30%">Average speed:</td><td width="70%">{avgSpd.toFixed(2)}</td></tr>
-                            <tr className="modalShow"><td width="30%">Maximal speed:</td><td width="70%">{this.state.modalMaxspd}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Maximal speed:</td><td width="70%"><input name="modalMaxspd" onChange={this.handleInputChange} value={this.state.modalMaxspd} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Average pulse:</td><td width="70%">{this.state.modalAvgpls}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Average pulse:</td><td width="70%"><input name="modalAvgpls" onChange={this.handleInputChange} value={this.state.modalAvgpls} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Maximal pulse:</td><td width="70%">{this.state.modalMaxpls}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Maximal pulse:</td><td width="70%"><input name="modalMaxpls" onChange={this.handleInputChange} value={this.state.modalMaxpls} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Asph:</td><td width="70%">{this.state.modalSurfasf}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Asph:</td><td width="70%"><input name="modalSurfasf" onChange={this.handleInputChange} value={this.state.modalSurfasf} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Bad asph:</td><td width="70%">{this.state.modalSurftvp}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Bad asph:</td><td width="70%"><input name="modalSurftvp" onChange={this.handleInputChange} value={this.state.modalSurftvp} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Country:</td><td width="70%">{this.state.modalSurfgrn}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Country:</td><td width="70%"><input name="modalSurfgrn" onChange={this.handleInputChange} value={this.state.modalSurfgrn} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Offroad:</td><td width="70%">{this.state.modalSrfbzd}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Offroad:</td><td width="70%"><input name="modalSrfbzd" onChange={this.handleInputChange} value={this.state.modalSrfbzd} /></td></tr>
-                            <tr className="modalEdit"><td className={totalSurf} width="30%">Total:</td><td width="70%">{surf+""}</td></tr>
-                            <tr className="modalShow"><td width="30%">Temperature:</td><td width="70%">{this.state.modalTemp}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Temperature:</td><td width="70%"><input name="modalTemp" onChange={this.handleInputChange} value={this.state.modalTemp} /></td></tr>
+                            <tr><td width="30%">Average speed:</td><td width="70%"><b>{avgSpd.toFixed(2)} kmh</b></td></tr>
+                            <tr className="modalShow"><td width="30%">Maximal speed:</td><td width="70%"><b>{(this.state.modalMaxspd > 0) ? this.state.modalMaxspd + " km" : "-"}</b></td></tr>
+                            <tr className="modalEdit"><td width="30%">Maximal speed:</td><td width="70%"><input name="modalMaxspd" size="10" onChange={this.handleInputChange} value={this.state.modalMaxspd} /> kmh</td></tr>
+                            <tr className="modalShow"><td width="30%">Average pulse:</td><td width="70%"><b className="colorpurple">{(this.state.modalAvgpls > 0) ? this.state.modalAvgpls + " per/min" : "-"}</b></td></tr>
+                            <tr className="modalEdit"><td width="30%">Average pulse:</td><td width="70%"><input name="modalAvgpls" size="5" onChange={this.handleInputChange} value={this.state.modalAvgpls} /> per/min</td></tr>
+                            <tr className="modalShow"><td width="30%">Maximal pulse:</td><td width="70%"><b className="colorpurple">{(this.state.modalMaxpls > 0) ? this.state.modalMaxpls + " per/min" : "-"}</b></td></tr>
+                            <tr className="modalEdit"><td width="30%">Maximal pulse:</td><td width="70%"><input name="modalMaxpls" size="5" onChange={this.handleInputChange} value={this.state.modalMaxpls} /> per/min</td></tr>
+                            <tr className="modalShow"><td width="30%">Asph:</td><td width="70%">{(this.state.modalSurfasf !== 0) ? this.state.modalSurfasf + " %" : "-"}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Asph:</td><td width="70%"><input name="modalSurfasf" size="5" onChange={this.handleInputChange} value={this.state.modalSurfasf} /> %</td></tr>
+                            <tr className="modalShow"><td width="30%">Bad asph:</td><td width="70%">{(this.state.modalSurftvp !== 0) ? this.state.modalSurftvp + " %" : "-"}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Bad asph:</td><td width="70%"><input name="modalSurftvp" size= "5" onChange={this.handleInputChange} value={this.state.modalSurftvp} /> %</td></tr>
+                            <tr className="modalShow"><td width="30%">Country:</td><td width="70%">{(this.state.modalSurfgrn !== 0) ? this.state.modalSurfgrn + " %" : "-"}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Country:</td><td width="70%"><input name="modalSurfgrn" size="5" onChange={this.handleInputChange} value={this.state.modalSurfgrn} /> %</td></tr>
+                            <tr className="modalShow"><td width="30%">Offroad:</td><td width="70%">{(this.state.modalSrfbzd !== 0) ? this.state.modalSrfbzd + " %" : "-"}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Offroad:</td><td width="70%"><input name="modalSrfbzd" size="5" onChange={this.handleInputChange} value={this.state.modalSrfbzd} /> %</td></tr>
+                            <tr className="modalEdit"><td className={totalSurf} width="30%">Total:</td><td width="70%">{surf+"%"}</td></tr>
+                            <tr className="modalShow"><td width="30%">Temperature:</td><td width="70%">{this.state.modalTemp} {(this.state.modalTemp !== "") ? "°C" : "-"}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Temperature:</td><td width="70%"><input name="modalTemp" size="10" onChange={this.handleInputChange} value={this.state.modalTemp} /> °C</td></tr>
                             <tr className="modalShow"><td width="30%">Technical notice:</td><td width="70%">{this.state.modalTeh}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Technical notice:</td><td width="70%"><input name="modalTeh" onChange={this.handleInputChange} value={this.state.modalTeh} /></td></tr>
-                            <tr className="modalShow"><td width="30%">Wind:</td><td width="70%">{this.state.modalWind}</td></tr>
-                            <tr className="modalEdit"><td width="30%">Wind:</td><td width="70%"><input name="modalWind" onChange={this.handleInputChange} value={this.state.modalWind} /><button value="-1" onClick={this.setDir}>{"<"}</button>{direction[this.state.modalDir]}<button value="1" onClick={this.setDir}>{">"}</button></td></tr>
+                            <tr className="modalEdit"><td width="30%">Technical notice:</td><td width="70%"><textarea rows="4" cols="40" name="modalTeh" onChange={this.handleInputChange} value={this.state.modalTeh} /></td></tr>
+                            <tr className="modalShow"><td width="30%">Wind:</td><td width="70%">{this.state.modalWind} {(this.state.modalWind > 0) ? "m/s" : "-"} {direction[this.state.modalDir]}</td></tr>
+                            <tr className="modalEdit"><td width="30%">Wind:</td><td width="70%"><input name="modalWind" size="5" onChange={this.handleInputChange} value={this.state.modalWind} />&nbsp;m/s&nbsp;&nbsp;&nbsp;<button value="-1" onClick={this.setDir}>{"<"}</button>&nbsp;{direction[this.state.modalDir]}&nbsp;<button value="1" onClick={this.setDir}>{">"}</button></td></tr>
                         </tbody>
                     </table>
 

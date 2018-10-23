@@ -67,7 +67,7 @@ class TechDataTable extends React.Component {
         let tmpData = JSON.parse(JSON.stringify(this.props.data));
         tmpData.sort(compare);
 
-        let result = "<thead><tr><td width='15%'>Date</td><td width='15%'>Bike</td><td width='60%'>Describe</td><td width='10%'>Odo</td></tr></thead><tbody>";
+        let result = "<thead><tr><td width='10%'>Date</td><td width='20%'>Bike</td><td width='60%'>Describe</td><td width='10%'>Odo</td></tr></thead><tbody>";
 
         for (let d = 0; d < tmpData.length; d++) {
 
@@ -86,10 +86,10 @@ class TechDataTable extends React.Component {
                 tmpData[d].Teh.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
-            result += "<tr key='" + tmpData[d].Id + "' class='cellTechData'><td width='15%'>" + date +
-                "</td><td width='15%' align='center'>" + tmpData[d].Bike +
+            result += "<tr key='" + tmpData[d].Id + "' class='cellTechData'><td width='10%' align='center' class='colorblue textBold'>" + date +
+                "</td><td width='20%' align='center' class='textBold'>" + tmpData[d].Bike +
                 "</td><td width='60%' align='justify'>" + tmpData[d].Teh +
-                "</td><td width='10%' align='right'>" + odoTehDist.toFixed(2) +
+                "</td><td width='10%' align='right' class='colorred textBold'>" + odoTehDist.toFixed(2) +
                 " km</td></tr>";
         }
         return result + "</tbody>";

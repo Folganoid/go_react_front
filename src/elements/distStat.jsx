@@ -18,8 +18,8 @@ class DistStat extends React.Component {
 
         let lastAverageMark = (avg, last, unit = "kmh") => {
 
-            let markUp = <span title={"Last ride is " + (+last - +avg).toFixed(2) + " " + unit + " bigger than average"} style={{color: "green"}}><b>▴</b></span>;
-            let markDown = <span title={"Last ride is " + (+avg - +last).toFixed(2) + " " + unit + " less than average"} style={{color: "red"}}><b>▾</b></span>;
+            let markUp = <span title={"Last ride is " + (+last - +avg).toFixed(2) + " " + unit + " bigger than average"} style={{color: (unit === "per/min") ? "red" : "green"}}><b>▴</b></span>;
+            let markDown = <span title={"Last ride is " + (+avg - +last).toFixed(2) + " " + unit + " less than average"} style={{color: (unit === "per/min") ? "green" : "red"}}><b>▾</b></span>;
             let markMiddle = <span style={{color: "orange"}}><b>♦</b></span>;
 
             if (last === 0 || avg === 0 || last === avg) {
@@ -35,7 +35,7 @@ class DistStat extends React.Component {
 
         let bikeList = Object.keys(this.props.data).map((item, i) => (
             <div key={i} className='statDist'>
-                <h4 style={{"line-height": "0px"}} align="left">{this.props.data[item]["Bike"]}</h4>
+                <h4 style={{"lineHeight": "0px"}} align="left">{this.props.data[item]["Bike"]}</h4>
                 <div className="customhr"></div>
                 <div className="uk-grid">
                     <div className="uk-width-1-3@l uk-width-1-1@m">
@@ -65,20 +65,21 @@ class DistStat extends React.Component {
                             <tbody>
                             <tr><td width="50%">Total average speed: </td><td className='colorred textBold' width="45%" align="right">{this.props.data[item]['Avgspd']}</td><td className='colorred textBold' width="5%">km/h</td></tr>
                             <tr><td width="50%">Maximum average speed: </td><td className='colorred textBold' width="45%" align="right" title={statFuncs.humanDate(this.props.data[item]['Maxavgspd'][1])}>{this.props.data[item]['Maxavgspd'][0]}</td><td className='colorred textBold' width="5%">km/h</td></tr>
-                            <tr className='colorpurple'><td width="50%">Total average pulse: </td><td className='textBold' width="45%" align="right">{this.props.data[item]['Avgpls']}</td><td className='textBold' width="5%">per/min</td></tr>
-                            <tr className='colorpurple'><td width="50%">Maximum pulse: </td><td className='textBold' width="45%" align="right" title={statFuncs.humanDate(this.props.data[item]['Maxpls'][1])}>{this.props.data[item]['Maxpls'][0]}</td><td className='textBold' width="5%">per/min</td></tr>
-                            <tr><td width="50%">Maximum speed: </td><td className='colorred textBold' width="45%" align="right" title={statFuncs.humanDate(this.props.data[item]['Maxspd'][1])}>{(this.props.data[item]['Maxspd'][0]).toFixed(2)}</td><td className='colorred textBold' width="5%">km/h</td></tr>
+                            <tr className='colorpurple'><td width="50%">Total average pulse: </td><td className='textBold' width="45%" align="right">{(this.props.data[item]['Avgpls'] !== "NaN" && this.props.data[item]['Avgpls'] !== 0) ? this.props.data[item]['Avgpls'] : "-" }</td><td className='textBold' width="5%">{(this.props.data[item]['Avgpls'] !== "NaN" && this.props.data[item]['Avgpls'] !== 0) ? "per/min" : "" }</td></tr>
+                            <tr className='colorpurple'><td width="50%">Maximum pulse: </td><td className='textBold' width="45%" align="right" title={(this.props.data[item]['Maxspd'][0] > 0) ? statFuncs.humanDate(this.props.data[item]['Maxpls'][1]) : "-"}>{(this.props.data[item]['Maxpls'][0] !== "NaN" && this.props.data[item]['Maxpls'][0] !== 0) ? this.props.data[item]['Maxpls'][0] : "-"}</td><td className='textBold' width="5%">{(this.props.data[item]['Maxpls'][0] !== "NaN" && this.props.data[item]['Maxpls'][0] !== 0) ? "per/min" : ""}</td></tr>
+                            <tr><td width="50%">Maximum speed: </td><td className='colorred textBold' width="45%" align="right" title={(this.props.data[item]['Maxspd'][0] > 0) ? statFuncs.humanDate(this.props.data[item]['Maxspd'][1]) : "-"}>{(this.props.data[item]['Maxspd'][0] > 0) ? (this.props.data[item]['Maxspd'][0]).toFixed(2) : "-"}</td><td className='colorred textBold' width="5%">{(this.props.data[item]['Maxspd'][0] > 0) ? "km/h" : ""}</td></tr>
                             <tr><td width="50%">Maximum dist: </td><td className='colorred textBold' width="45%" align="right" title={statFuncs.humanDate(this.props.data[item]['Maxdst'][1])}>{(this.props.data[item]['Maxdst'][0]).toFixed(2)}</td><td className='colorred textBold' width="5%">km</td></tr>
                             </tbody>
                         </table>
                         <br />
                         <div className="uk-float-left textBold">{(this.props.data[item]['LastBike'] !== undefined) ? this.props.data[item]['LastBike'] : ""}</div>
+
                         <table width="100%">
                             <tbody>
-                            <tr><td width="50%">Last ride date</td><td className="colorblue textBold" align="right" width="50%">{statFuncs.humanDate(this.props.data[item]['LastDate'])}</td><td width="10%"></td></tr>
-                            <tr><td width="50%">Last ride average speed</td><td>{lastAverageMark(this.props.data[item]['Avgspd'], this.props.data[item]['LastAvgspd'])}</td><td className="textBold colorred" align="right" width="40%">{this.props.data[item]['LastAvgspd']}</td><td className="colorred textBold" width="10%">km/h</td></tr>
-                            <tr className="colorpurple"><td width="50%">Last ride average pulse</td><td>{lastAverageMark(this.props.data[item]['Avgpls'], this.props.data[item]['LastAvgpls'], "per/min")}</td><td className="textBold" align="right" width="40%">{this.props.data[item]['LastAvgpls']}</td><td className="textBold" width="10%">per/min</td></tr>
-                            <tr><td width="50%">Last ride distance</td><td>{lastAverageMark(this.props.data[item]['AvgDist'], this.props.data[item]['LastDist'])}</td><td className='textBold colorred' align="right" width="40%">{this.props.data[item]['LastDist']}</td><td className='textBold colorred' width="10%">km</td></tr>
+                            <tr><td width="60%">Last ride date <span className="colorblue textBold">{statFuncs.humanDate(this.props.data[item]['LastDate'])}</span></td><td width="5%"></td><td width="25%"></td><td className="colorred textBold" width="10%"></td></tr>
+                            <tr><td width="60%">Last ride average speed</td><td align="right" width="5%">{lastAverageMark(this.props.data[item]['Avgspd'], this.props.data[item]['LastAvgspd'])}</td><td className="textBold colorred" align="right" width="25%">{this.props.data[item]['LastAvgspd']}</td><td className="colorred textBold" width="10%">km/h</td></tr>
+                            <tr><td width="60%">Last ride average pulse</td><td align="right" width="5%">{lastAverageMark(this.props.data[item]['Avgpls'], this.props.data[item]['LastAvgpls'], "per/min")}</td><td className="textBold colorpurple" align="right" width="25%">{(this.props.data[item]['LastAvgpls'] > 0) ? this.props.data[item]['LastAvgpls'] : "-"}</td><td className="textBold colorpurple" width="10%">{(this.props.data[item]['LastAvgpls'] > 0) ? "per/min" : ""}</td></tr>
+                            <tr><td width="60%">Last ride distance</td><td align="right" width="5%">{lastAverageMark(this.props.data[item]['AvgDist'], this.props.data[item]['LastDist'])}</td><td className='textBold colorred' align="right" width="25%">{this.props.data[item]['LastDist']}</td><td className='textBold colorred' width="10%">km</td></tr>
                             </tbody>
                         </table>
                         <br />

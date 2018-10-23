@@ -85,6 +85,8 @@ body {
 
 #statModal {
   display: none;
+  color: black;
+  opacity: 0.95;
   width: 60%;
   top: 10%;
   left: 20%;
@@ -145,7 +147,7 @@ body {
   line-height: 0.9em;
   font-size: 0.9em;
 
-  height: 350px;
+  height: 260px;
   overflow: auto;
 }
 
@@ -156,4 +158,18 @@ body {
 .pulseTires {
   line-height: 0.9em;
   font-size: .9em;
+}
+
+.yearArrows:hover {
+  cursor: pointer;
+  color: #fff;
+  text-shadow:
+          -1px -1px 0 #000,
+          1px -1px 0 #000,
+          -1px 1px 0 #000,
+          1px 1px 0 #000;
+}
+
+.yearArrows {
+
 }

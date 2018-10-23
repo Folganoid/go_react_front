@@ -317,6 +317,7 @@ class Data extends React.Component {
 
         }).then(function (response) {
             that.props.done("Data saved successfully.", "uk-alert-primary");
+            localStorage.clear();
         }).catch((error) => {
             if (error.response) {
                 that.props.done("Error! Can't save ride statistic.", "uk-alert-warning");

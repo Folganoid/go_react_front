@@ -21,6 +21,7 @@ class ProfForm extends React.Component {
             email: this.props.user.email,
             year: this.props.user.year,
             allow_map: this.props.user.allow_map,
+            allow_stat: this.props.user.allow_stat,
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -33,17 +34,18 @@ class ProfForm extends React.Component {
      */
     handleSubmit(event) {
 
-        if (this.state.pass === this.state.pass2) {
+        if (this.state.pass === this.state.pass2 || this.state.pass.length === 0) {
 
             let formData = new FormData();
             formData.append('userId', this.state.userId);
             formData.append('login', this.state.login);
             formData.append('name', this.state.name);
-            formData.append('pass', this.state.pass);
+            if (this.state.pass.length !== 0) formData.append('pass', this.state.pass);
             formData.append('pass_old', this.state.pass_old);
             formData.append('email', this.state.email);
             formData.append('year', this.state.year);
             formData.append('allow_map', this.state.allow_map);
+            formData.append('allow_stat', this.state.allow_stat);
 
             let that = this;
             axios({
@@ -113,6 +115,19 @@ class ProfForm extends React.Component {
             </select>;
         }
 
+        let allowStat;
+        if (this.state.allow_stat === true) {
+            allowStat = <select id="upd_allow_stat" name="allow_stat" onChange={this.handleInputChange}>
+                <option value={"1"} selected>true</option>
+                <option value={"0"}>false</option>
+            </select>;
+        } else {
+            allowStat = <select id="upd_allow_stat" name="allow_stat" onChange={this.handleInputChange}>
+                <option value={"1"}>true</option>
+                <option value={"0"} selected>false</option>
+            </select>;
+        }
+
         let form =
             <div>
                 <h1>Edit profile</h1>
@@ -129,6 +144,7 @@ class ProfForm extends React.Component {
                                 <label htmlFor="upd_pass2">Confirm password: </label><br/>
                                 <label htmlFor="upd_year">Year: </label><br/>
                                 <label htmlFor="upd_allow_map">Allow watch map: </label><br/>
+                                <label htmlFor="upd_allow_stat">Allow watch stat: </label><br/>
                             </td>
                             <td>
                                 <input id="upd_userId" name="userId" type="hidden" value={this.state.userId} />
@@ -148,6 +164,8 @@ class ProfForm extends React.Component {
                                 <input id="upd_year" name="year" placeholder="year" value={this.state.year}
                                        onChange={this.handleInputChange}/><br/>
                                 {allowMap}
+                                <br />
+                                {allowStat}
                             </td>
                         </tr>
                         </tbody>

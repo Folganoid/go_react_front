@@ -26,8 +26,18 @@ class YearList extends React.Component {
             return (<div key={i}>
                 <dd><b className="colorblue">{year}</b></dd>
                 <table style={{width: '90%'}} dangerouslySetInnerHTML={{__html: this.getByYear(year)}}/>
+                <br />
                 </div>)
         });
+
+        let totalOdo = (total) => {
+            let res = 0;
+            for (let d in total) {
+                res += total[d];
+            };
+
+            return res;
+        };
 
         return (
             <div>
@@ -35,6 +45,9 @@ class YearList extends React.Component {
             <div className="odoList">
                 {ylist}
             </div>
+                <hr />
+                <dd>Total years: <span className="colorblue textBold">{ylist.length}</span></dd>
+                <dd>Average dist on year: <span className="colorred textBold">{(totalOdo(this.props.data.TOTAL)/ylist.length).toFixed(2)} km</span></dd>
             </div>
         )
     }

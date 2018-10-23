@@ -478,7 +478,7 @@ class Statistic extends React.Component {
 
             let res = '';
             Object.keys(odo).forEach(function(key) {
-                res += '<tr key="' + key + '"><td width="40%">' + key + '</td><td width="40%"><div style="width: ' + odo[key]*100/maxDist + '%;" class="surfacePerc"></div></td><td width="20%" class="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td></tr>';
+                res += '<tr key="' + key + '"><td width="40%">' + key + '</td><td width="20%" class="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td><td width="40%"><div style="width: ' + odo[key]*100/maxDist + '%;" class="surfacePerc"></div></td></tr>';
             });
             return res;
         };
@@ -489,20 +489,19 @@ class Statistic extends React.Component {
                 <h4>Pulse zones</h4>
                 <table width="100%">
                     <tbody>
-                    <tr style={{color: "red"}}><td>VO2 Max</td><td>(88-100%)</td><td><b>{pulseZones[0] - pulseZones[1] + '-' + pulseZones[0]}</b></td><td>per/min</td></tr>
-                    <tr style={{color: "orange"}}><td>Anaerobic Threshold</td><td>(76-88%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*2) + '-' + (+pulseZones[0] - +pulseZones[1])}</b></td><td>per/min</td></tr>
-                    <tr style={{color: "orange"}}><td>Aerobic</td><td>(64-76%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*3) + '-' + (+pulseZones[0] - +pulseZones[1]*2)}</b></td><td>per/min</td></tr>
-                    <tr style={{color: "green"}}><td>Easy</td><td>(52-64%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*4) + '-' + (+pulseZones[0] - +pulseZones[1]*3)}</b></td><td>per/min</td></tr>
-                    <tr style={{color: "green"}}><td>Healthy Heart</td><td>(40-52%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*5) + '-' + (+pulseZones[0] - +pulseZones[1]*4)}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "#B900FF"}}><td>VO2 Max</td><td>(88-100%)</td><td><b>{pulseZones[0] - pulseZones[1] + '-'}<span style={{color: "red"}}>{pulseZones[0]}</span></b></td><td>per/min</td></tr>
+                    <tr style={{color: "#8E00C4"}}><td>Anaerobic Threshold</td><td>(76-88%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*2) + '-' + (+pulseZones[0] - +pulseZones[1])}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "#6B0094"}}><td>Aerobic</td><td>(64-76%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*3) + '-' + (+pulseZones[0] - +pulseZones[1]*2)}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "#55006A"}}><td>Easy</td><td>(52-64%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*4) + '-' + (+pulseZones[0] - +pulseZones[1]*3)}</b></td><td>per/min</td></tr>
+                    <tr style={{color: "#350042"}}><td>Healthy Heart</td><td>(40-52%)</td><td><b>{(+pulseZones[0] - +pulseZones[1]*5) + '-' + (+pulseZones[0] - +pulseZones[1]*4)}</b></td><td>per/min</td></tr>
                     </tbody>
                 </table>
             </div>
 
-
         return (
             <div className="uk-container">
-                <h1>Statistic</h1>
-                Watch another Stat by login: <input id="foreign" type={'text'} name={'foreignLogin'} placeholder={'Login'} /><button onClick={this.getForeignStat}>Watch</button> <button onClick={this.getData}>My map</button>
+                <h2>Statistic</h2>
+                <div style={{color: "grey", fontSize: "0.8em"}} align="right">Watch another Stat by login: <input id="foreign" type={'text'} name={'foreignLogin'} placeholder={'Login'} /><button onClick={this.getForeignStat}>Watch</button> <button onClick={this.getData}>My stat</button></div>
                 <br />
                 <div className="uk-grid">
                     <div className="uk-width-1-2@m uk-width-1-1@s">
@@ -527,19 +526,19 @@ class Statistic extends React.Component {
                 </div>
                 <br />
                 <div className="uk-row" align="center">
-                    <h1><span onClick={this.preYear}>-</span>{this.state.curYear}<span onClick={this.nextYear}>+</span></h1>
+                    <h2><span className="yearArrows" onClick={this.preYear}>- </span><b className="colorblue">{this.state.curYear}</b><span className="yearArrows" onClick={this.nextYear}> +</span></h2>
                     <DistStat data={this.state.curYearStat} />
                 </div>
+                <hr />
                 <div className="uk-grid pulseTires">
+                    {pulseZonesView}
+
                     <div className="uk-width-2-3@l uk-width-1-1@m">
                         <h4>Tires odo</h4>
                         <table width = "100%">
                             <tbody style={{width: '100%'}} dangerouslySetInnerHTML={{__html: tiresOdo(this.state.tiresOdo)}}/>
                         </table>
                     </div>
-
-                    {pulseZonesView}
-
                 </div>
                 <h2>Activity</h2>
                 <div className="uk-flex-center" uk-grid="true">
@@ -576,10 +575,10 @@ class Statistic extends React.Component {
                         />
                     </div>
                 </div>
-                <h1>Data</h1>
+                <h2>Data</h2>
                     <StatDataTable reload={this.reload} data={this.state.statData} odoYear={this.state.optionsOdoYear} tires={this.state.tires} userId={this.props.state.userId} token={this.props.state.token} done={this.props.done}/>
                 <br />
-                <h1>Technical data</h1>
+                <h2>Technical data</h2>
                     <TechDataTable data={this.state.statData}/>
             </div>
 
