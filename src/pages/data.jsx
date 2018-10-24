@@ -555,49 +555,48 @@ class Data extends React.Component {
                     <div className="uk-width-1-2">
                         <h3>Add bike</h3>
                             <input id="add_bike" name="addBike" type="text" placeholder="Enter bike" onChange={this.handleInputChange}/>
-                            <button className="uk-button uk-button-primary" id="save_bike" type="button" onClick={this.saveBikeAjax}>Save bike</button>
+                            &nbsp;<button className="uk-button-mini uk-button-primary" id="save_bike" type="button" onClick={this.saveBikeAjax}>Add bike</button>
                             <br />
-                            {this.state.bikeList.map(function(val, index){
-                                return <dd key={ index }>{val.Name}<button value={val.Id} onClick={delBike}>X</button></dd>;
-                            })}
+                            <div style={{overflow: "auto", maxHeight: "5.5em"}}>
+                                <table width="90%"><tbody>
+                                    {this.state.bikeList.map(function(val, index){
+                                        return <tr><td width="90%" key={ index }><b>{val.Name}</b></td><td align="right" width="10%"><button title={"delete " + val.Name} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delBike}>X</button></td></tr>;
+                                    })}
+                                </tbody></table>
+                            </div>
                         <h3>Add tires</h3>
                             <input id="add_tire" type="text" name="addTire" placeholder="Enter tire" onChange={this.handleInputChange}/>
-                             <button className="uk-button uk-button-primary" id="save_tire" type="button" onClick={this.saveTireAjax}>Save tire</button>
+
+                            &nbsp;<button className="uk-button-mini uk-button-primary" id="save_tire" type="button" onClick={this.saveTireAjax}>Add tire</button>
                             <br />
-                            {this.state.tireList.map(function(val, index){
-                                return <dd key={ index }>{val.Name} <button value={val.Id} onClick={delTire}>X</button></dd>;
-                            })}
+                            <div style={{overflow: "auto", maxHeight: "7.2em"}}>
+                                <table width="90%"><tbody>
+                                {this.state.tireList.map(function(val, index){
+                                    return <tr><td key={ index }><b>{val.Name}</b></td><td width="10%" align="right"><button title={"delete " + val.Name} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delTire}>X</button></td></tr>;
+                                })}
+                                </tbody></table>
+                            </div>
 
                         <h3>Add year distantion</h3>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>Bike:</td>
-                                        <td>
-                                            <select name="addYDBike" onChange={this.handleInputChange}>
-                                                {this.state.bikeList.map(function(val, index){
-                                                    return <option key={ index } value={val.Name}>{val.Name}</option>;
-                                                })}
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Year / Dist </td>
-                                        <td>
-                                            <input type="text" name="addYDYear" onChange={this.handleInputChange} />/
-                                            <input type="text" name="addYDDist" onChange={this.handleInputChange} />
-                                            <button className="uk-button uk-button-primary" type="button" onClick={this.saveYearDist}>Save</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table>
+                            Bike: <select name="addYDBike" onChange={this.handleInputChange}>
+                                     {this.state.bikeList.map(function(val, index){
+                                         return <option key={ index } value={val.Name}>{val.Name}</option>;
+                                     })}
+                                     </select>
+                        <br />
+                        <input size="4" type="text" name="addYDYear" placeholder="Year" onChange={this.handleInputChange}/>&nbsp;/&nbsp;
+                        <input size="10" type="text" name="addYDDist" placeholder="Dist" onChange={this.handleInputChange} />
+                        &nbsp;<button className="uk-button-mini uk-button-primary" type="button" onClick={this.saveYearDist}>Add</button>
+
+                            <div style={{overflow: "auto", maxHeight: "8.5em"}}>
+                            <table width="90%">
                                 <tbody>
                                     {this.state.yearDistList.map(function(val, index){
-                                        return <tr key={ index }><td>{val.Year}</td><td>{val.Bike}</td><td>{val.Dist}</td><td><button value={val.Id} onClick={delYearDist}>X</button></td></tr>;
+                                        return <tr key={ index }><td width="10%"><b className="colorblue">{val.Year}</b></td><td width="50%"><b>{val.Bike}</b></td><td align="right" width="20%"><b className="colorred">{val.Dist + " km"}</b></td><td align="right" width="10%"><button  title={"delete " + val.Year + " / " + val.Bike} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delYearDist}>X</button></td></tr>;
                                     })}
                                 </tbody>
                             </table>
+                            </div>
                     </div>
                 </div>
                 <br />
