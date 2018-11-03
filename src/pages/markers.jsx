@@ -40,7 +40,7 @@ export class MapContainer extends React.Component {
         this.clearAddFields = this.clearAddFields.bind(this);
         this.eventHandler = this.eventHandler.bind(this);
 
-        if (markers.length === 0) this.getMarker();
+        if (!localStorage.getItem('markers')) this.getMarker();
     }
 
     eventHandler(e) {

@@ -8,13 +8,22 @@ import axios from 'axios';
 class Data extends React.Component {
 
     constructor(props) {
+
+        let bikeList = (localStorage.getItem('bikeList')) ? JSON.parse(localStorage.getItem('bikeList')) : [];
+        let tireList = (localStorage.getItem('tireList')) ? JSON.parse(localStorage.getItem('tireList')) : [];
+        let yearDistList = (localStorage.getItem('yearDistList')) ? JSON.parse(localStorage.getItem('yearDistList')) : [];
+        let addBike = (bikeList.length > 0) ? bikeList[0].Name : "";
+        let addYDBike = (bikeList.length > 0) ? bikeList[0].Name : "";
+        let addTire = (tireList.length > 0) ? tireList[0].Name : "";
+
         super(props);
         this.state = {
-            bikeList: [],
-            tireList: [],
-            yearDistList: [],
-            addBike: "",
-            addTire: "",
+            bikeList: bikeList,
+            tireList: tireList,
+            yearDistList: yearDistList,
+            addBike: addBike,
+            addTire: addTire,
+            addYDBike: addYDBike,
 
             statYear: (new Date()).getFullYear(),
             statMonth: (new Date()).getMonth() + 1,
@@ -42,7 +51,9 @@ class Data extends React.Component {
         this.validate = this.validate.bind(this);
         this.validate_date = this.validate_date.bind(this);
 
-        this.fillLists();
+        if (!localStorage.getItem('bikeList') || !localStorage.getItem('tireList') || !localStorage.getItem('yearDistList')) {
+            this.fillLists();
+        }
     }
 
     /**
@@ -69,7 +80,7 @@ class Data extends React.Component {
             },
 
         }).then(function (response) {
-
+            localStorage.setItem('bikeList', JSON.stringify(response.data));
             that.setState({bikeList: response.data});
             if (response.data[0].Name !== undefined) {
                 that.setState({addBike: response.data[0].Name});
@@ -96,6 +107,7 @@ class Data extends React.Component {
 
         }).then(function (response) {
 
+            localStorage.setItem('tireList', JSON.stringify(response.data));
             that.setState({tireList: response.data});
 
             if (response.data[0].Name !== undefined) {
@@ -122,6 +134,7 @@ class Data extends React.Component {
 
         }).then(function (response) {
 
+            localStorage.setItem('yearDistList', JSON.stringify(response.data));
             that.setState({yearDistList: response.data});
 
         }).catch((error) => {
@@ -286,7 +299,7 @@ class Data extends React.Component {
         formData.append('userid', this.props.state.userId);
         formData.append('token', this.props.state.token);
         formData.append('bike', this.state.addBike);
-        formData.append('tire', this.state.addTire);;
+        formData.append('tire', this.state.addTire);
         formData.append('date', (new Date(this.state.statYear, this.state.statMonth - 1, this.state.statDay)).getTime() / 1000);
         formData.append('time', +this.state.statHr*3600 + +this.state.statMin*60 + +this.state.statSec);
         formData.append('dist', this.state.statDist);

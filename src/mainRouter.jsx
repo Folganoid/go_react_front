@@ -79,7 +79,6 @@ class MainRouter extends Component {
 
         this.deleteAllCookies();
         document.cookie = "t=" + data.Token;
-
         this.changeAlert("Welcome " + data.Login);
     }
 
@@ -135,7 +134,7 @@ class MainRouter extends Component {
             },
 
         }).then(function (response) {
-                that.userChange(response.data)
+                that.userChange(response.data);
         }).catch((error) => {
             if (error.response) {
                 that.changeAlert("Login or password is incorrect ", "uk-alert-danger");

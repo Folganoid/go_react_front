@@ -17,6 +17,8 @@ function eventFire(el, etype){
     }
 }
 
+let techRowsCount = 0;
+
 /**
  *
  */
@@ -55,6 +57,8 @@ class TechDataTable extends React.Component {
      */
     buildData() {
 
+        techRowsCount = 0;
+
         // filter DESC
         function compare(a,b) {
             if (a.Date < b.Date)
@@ -85,6 +89,8 @@ class TechDataTable extends React.Component {
                 tmpData[d].Bike.search(this.state.filter) === -1 &&
                 tmpData[d].Teh.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
+
+            techRowsCount++;
 
             result += "<tr key='" + tmpData[d].Id + "' class='cellTechData'><td width='10%' align='center' class='colorblue textBold'>" + date +
                 "</td><td width='20%' align='center' class='textBold'>" + tmpData[d].Bike +
@@ -125,11 +131,13 @@ class TechDataTable extends React.Component {
      */
     render() {
 
+        let techTable = this.buildData();
+
         return (
             <div>
-                <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
+                <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>&nbsp;<b>Rows: {techRowsCount}</b>
                 <div className="dataList">
-                    <table className="dataListTable" dangerouslySetInnerHTML={{__html: this.buildData()}}/>
+                    <table className="dataListTable" dangerouslySetInnerHTML={{__html: techTable}}/>
                 </div>
             </div>
         )

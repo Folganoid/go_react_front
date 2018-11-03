@@ -19,6 +19,7 @@ body {
   opacity: 0.8;
   left: 10%;
   width: 80%;
+  z-index: 100;
 }
 
 .map {
@@ -79,7 +80,19 @@ body {
 }
 
 .invalid_stat_data {
-  background-color: red;
+
+  -webkit-animation: invalid_stat_data 1s ease-in-out infinite alternate;
+  -moz-animation: invalid_stat_data 1s ease-in-out infinite alternate;
+  animation: invalid_stat_data 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes invalid_stat_data {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60100, 0 0 40px #e60100, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  }
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff0021, 0 0 40px #ff0012, 0 0 50px #ff001e, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
 }
 
 .cellStat:hover {
@@ -88,6 +101,11 @@ body {
 }
 
 .cellTechData:hover {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+
+.listMarkers:hover {
   background-color: lightgrey;
   cursor: pointer;
 }
@@ -185,4 +203,16 @@ body {
 
 .highcharts-background {
   opacity: 0;
+}
+
+#closeModal {
+  right: 1%;
+  top: 1%;
+  position: absolute;
+}
+
+#deleteModal {
+  right: 1%;
+  bottom: 1%;
+  position: absolute;
 }

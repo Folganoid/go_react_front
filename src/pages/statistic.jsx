@@ -580,6 +580,7 @@ class Statistic extends React.Component {
                 <br />
                 <h2>Technical data</h2>
                     <TechDataTable data={this.state.statData}/>
+                <br />
             </div>
 
         );

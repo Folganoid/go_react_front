@@ -45,7 +45,7 @@ class NameForm extends React.Component {
             </div>;
         }
 
-        return (login);
+        return login;
     }
 }
 

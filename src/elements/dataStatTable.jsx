@@ -15,6 +15,8 @@ const direction = {
     "5": " ",
 };
 
+let statRowsCount = 0;
+
 /**
  *
  */
@@ -32,7 +34,9 @@ class StatDataTable extends React.Component {
 
             "setBike": 0,
             "setTires": 0,
-        }
+
+            "rowsCount": 0,
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.buildData = this.buildData.bind(this);
@@ -73,7 +77,7 @@ class StatDataTable extends React.Component {
      * @returns {string}
      */
     buildData(dt, filter) {
-
+        statRowsCount = 0;
         // filter DESC
         function compare(a,b) {
             if (a.Date < b.Date)
@@ -86,7 +90,8 @@ class StatDataTable extends React.Component {
         let tmpData = JSON.parse(JSON.stringify(dt));
         tmpData.sort(compare);
 
-        let result = "<thead><td width='10%'>Date</td><td width='20%'>Bike</td><td width='30%'>Describe</td><td width='10%'>Dist.</td><td width='10%'>Time</td><td width='10%'>Temp</td><td width='3%'>TO</td><td width='7%'>Wind</td></thead><tbody>";
+        let result = "<thead><td width='10%'>Date</td><td width='20%'>Bike</td><td width='30%'>Describe</td><td width='10%'>Dist.</td><td width='10%'>Time</td><td width='10%'>Temp</td><td width='7%'>Wind</td><td width='3%'>TO</td></thead><tbody>";
+
 
         for (let d = 0; d < tmpData.length; d++) {
 
@@ -104,6 +109,7 @@ class StatDataTable extends React.Component {
                 tmpData[d].Prim.search(this.state.filter) === -1 &&
                 date.search(this.state.filter) === -1) continue;
 
+            statRowsCount++;
             result += "<tr id='cal"+ tmpData[d].Id +"' key='"+tmpData[d].Id+"' class='cellStat' value='"+ tmpData[d].Id +"'>" +
                 "<td width='10%' class='colorblue textBold' align='center'>" + date +
                 "</td><td align='center' width='20%' class='textBold'>" + tmpData[d].Bike +
@@ -111,8 +117,8 @@ class StatDataTable extends React.Component {
                 "</td><td align='right' width='10%' class='colorred textBold'>" + (+tmpData[d].Dist).toFixed(2) + " km" +
                 "</td><td align='center' width='10%' class='textBold colorblue'>" + statFuncs.convertTimeStampToDate(tmpData[d].Time) +
                 "</td><td align='right' width='10%'>" + tmpData[d].Temp + "°С" +
-                "</td><td align='center' width='3%' class='colorred'>" + teh +
                 "</td><td align='center' width='7%' class='textBold'>" + windRes +
+                "</td><td align='center' width='3%' class='colorred'>" + teh +
                 "</tr>";
         }
 
@@ -148,7 +154,7 @@ class StatDataTable extends React.Component {
      * @param statId
      */
     changeModal(statId) {
-
+    this.closeModal();
         for (let i = 0 ; i < this.props.data.length ; i++) {
 
             if (+this.props.data[i].Id === +statId) {
@@ -451,11 +457,13 @@ class StatDataTable extends React.Component {
         let surfVal = (surf === 100);
         let totalSurf = (surfVal) ? "" : "invalid_stat_data";
 
+        let statTable = this.buildData(this.props.data, this.state.filter);
+
         return (
             <div>
 
                 <div id="statModal" className="uk-container">
-                    <h1>{this.state.modalPrim}</h1> 
+                    <h1>{this.state.modalPrim}</h1><button id = "closeModal" className="uk-button-mini uk-button-danger" onClick={this.closeModal}>X</button>
                     <dd className="modalEdit"><input name="modalPrim" onChange={this.handleInputChange} value={this.state.modalPrim} /></dd>
                     <table width="100%">
                         <tbody>
@@ -497,16 +505,15 @@ class StatDataTable extends React.Component {
                         </tbody>
                     </table>
 
-                    <button id = "closeModal" onClick={this.closeModal}>Close</button>
-                    <button id = "editModal" onClick={this.editModal}>Edit</button>
-                    <button id = "saveModal" onClick={this.saveModal}>Save</button>
-                    <button id = "cancelModal" onClick={this.cancelModal}>Cancel</button>
-                    <button className="modalEdit" id = "deleteModal" onClick={this.deleteModal}>Delete</button>
+                    <button className="modalEdit uk-button-small uk-button-success" id = "editModal" onClick={this.editModal}>Edit</button>
+                    <button className="uk-button-small uk-button-success" id = "saveModal" onClick={this.saveModal}>Save</button>
+                    <button className="uk-button-small uk-button-danger" id = "cancelModal" onClick={this.cancelModal}>Cancel</button>
+                    <button className="modalEdit uk-button-mini uk-button-danger" id = "deleteModal" onClick={this.deleteModal}>Delete</button>
                 </div>
 
-                <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>
+                <input name="filter" onChange={this.handleInputChange} placeholder="Filter"/>&nbsp;<b>Rows:&nbsp;{statRowsCount}</b>
                 <div className="dataList">
-                    <table className="dataListTable" dangerouslySetInnerHTML={{__html: this.buildData(this.props.data, this.state.filter)}}/>
+                    <table className="dataListTable" dangerouslySetInnerHTML={{__html: statTable}}/>
                 </div>
             </div>
         )
