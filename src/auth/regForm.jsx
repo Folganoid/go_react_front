@@ -57,7 +57,7 @@ class RegForm extends React.Component {
                     that.props.history.push('/');
             }).catch((error) => {
                 if (error.response) {
-                    that.changeAlert("Data Base error ", "uk-alert-danger");
+                    that.props.done("Data Base error ", "uk-alert-danger");
                 }
             });
 
