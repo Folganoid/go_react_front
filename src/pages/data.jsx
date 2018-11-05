@@ -573,7 +573,7 @@ class Data extends React.Component {
                             <div style={{overflow: "auto", maxHeight: "5.5em"}}>
                                 <table width="90%"><tbody>
                                     {this.state.bikeList.map(function(val, index){
-                                        return <tr><td width="90%" key={ index }><b>{val.Name}</b></td><td align="right" width="10%"><button title={"delete " + val.Name} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delBike}>X</button></td></tr>;
+                                        return <tr key={ index }><td width="90%"><b>{val.Name}</b></td><td align="right" width="10%"><button title={"delete " + val.Name} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delBike}>X</button></td></tr>;
                                     })}
                                 </tbody></table>
                             </div>
@@ -585,7 +585,7 @@ class Data extends React.Component {
                             <div style={{overflow: "auto", maxHeight: "7.2em"}}>
                                 <table width="90%"><tbody>
                                 {this.state.tireList.map(function(val, index){
-                                    return <tr><td key={ index }><b>{val.Name}</b></td><td width="10%" align="right"><button title={"delete " + val.Name} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delTire}>X</button></td></tr>;
+                                    return <tr key={ index }><td><b>{val.Name}</b></td><td width="10%" align="right"><button title={"delete " + val.Name} className="uk-button-mini uk-button-danger" value={val.Id} onClick={delTire}>X</button></td></tr>;
                                 })}
                                 </tbody></table>
                             </div>
