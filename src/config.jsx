@@ -1,6 +1,6 @@
 const SETUP = {
-        reactHost: "http://127.0.0.1:3000",
-        goHost: "http://127.0.0.1:3001",
+        reactHost: "https://velofg.herokuapp.com",
+        goHost: "https://velofggorest.herokuapp.com"
     };
 
 export default SETUP

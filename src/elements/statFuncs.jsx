@@ -276,7 +276,7 @@ export function makeAvgSpeedData(statData, year) {
 
     let result = [];
 
-    for (let i = statData.length-1; i > 0; i--) {
+    for (let i = 0; i< statData.length; i++) {
 
         let curDate = new Date(statData[i].Date * 1000);
         let date = Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate());
@@ -313,7 +313,7 @@ export function makeAvgPulseData(statData, year) {
 
     let result = [];
 
-    for (let i = statData.length-1; i > 0; i--) {
+    for (let i = 0; i< statData.length; i++) {
 
         let curDate = new Date(statData[i].Date * 1000);
         let date = Date.UTC(curDate.getFullYear(), curDate.getMonth(), curDate.getDate());
