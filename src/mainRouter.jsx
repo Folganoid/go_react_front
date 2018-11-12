@@ -42,9 +42,9 @@ class MainRouter extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getUserByToken = this.getUserByToken.bind(this);
 
-        this.Marks = () => <MapContainer done={this.changeAlert} state={this.state}/>;
-        this.Stats = () => <Statistic done={this.changeAlert} state={this.state}/>
-        this.Data = () => <Data done={this.changeAlert} state={this.state}/>
+        this.Marks = (props) => <MapContainer done={this.changeAlert} state={this.state} match={props.match} />;
+        this.Stats = (props) => <Statistic done={this.changeAlert} state={this.state} match={props.match} />;
+        this.Data = () => <Data done={this.changeAlert} state={this.state} />;
     }
 
     /**
@@ -215,7 +215,9 @@ class MainRouter extends Component {
                         <Switch>
                             <Route exact path="/" component={Home}/>
                             <Route exact path="/map" component={this.Marks}/>
+                            <Route path='/map/:userLoginFor' component={this.Marks}/>
                             <Route exact path="/stat" component={this.Stats}/>
+                            <Route path='/stat/:userLoginFor' component={this.Stats}/>
                             <Route exact path="/register" component={Register}/>
                             <Route exact path="/profile" component={Profile}/>
                             <Route exact path="/data" component={this.Data} />

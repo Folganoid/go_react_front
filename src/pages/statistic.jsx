@@ -28,6 +28,8 @@ class Statistic extends React.Component {
         let rideDaysArrTmp = (localStorage.getItem('rideDaysArr')) ? JSON.parse(localStorage.getItem('rideDaysArr')) : {};
         let tiresOdoTmp  = (localStorage.getItem('tiresOdo')) ? JSON.parse(localStorage.getItem('tiresOdo')) : {};
 
+        let foreign = (props.match.params.userLoginFor !== undefined && props.match.params.userLoginFor.length > 0) ? props.match.params.userLoginFor : "";
+
         super(props);
         this.state = {
             odoOptions: statFuncs.odoOptions(),
@@ -47,6 +49,8 @@ class Statistic extends React.Component {
             tiresOdo: tiresOdoTmp,
         };
 
+        console.log(props);
+
         this.getData = this.getData.bind(this);
         this.buildCharts = this.buildCharts.bind(this);
         this.preYear = this.preYear.bind(this);
@@ -58,7 +62,9 @@ class Statistic extends React.Component {
         this.getMyStat = this.getMyStat.bind(this);
         this.reload = this.reload.bind(this);
 
-        if (yearDataTmp.length === 0 || statDataTmp.length === 0 || tiresTmp.length === 0) {
+        if (foreign !=="") {
+            this.getData(foreign);
+        } else if (yearDataTmp.length === 0 || statDataTmp.length === 0 || tiresTmp.length === 0) {
             this.getData();
         } else {
             this.buildCharts(statDataTmp);
@@ -165,7 +171,9 @@ class Statistic extends React.Component {
         let formData = new FormData();
         formData.append('userid', this.props.state.userId);
         formData.append('token', this.props.state.token);
-        if (login !== "") formData.append('foreign', login);
+        if (login !== "") {
+            formData.append('foreign', login);
+        }
 
         let that = this;
 
@@ -206,6 +214,12 @@ class Statistic extends React.Component {
                         }
                     });
         }).catch((error) => {
+            that.setState({
+                statData: [],
+                tires: [],
+                yearData: [],
+            });
+
             if (error.response) {
                 that.props.done("Years data not found!", "uk-alert-warning");
             }
@@ -444,6 +458,7 @@ class Statistic extends React.Component {
 
 
     getForeignStat() {
+        //this.props.route('/' + document.getElementById("foreign").value);
         this.getData(document.getElementById("foreign").value);
     }
 

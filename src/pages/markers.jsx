@@ -8,6 +8,7 @@ export class MapContainer extends React.Component {
     constructor(props) {
 
         let markers = (localStorage.getItem('markers')) ? JSON.parse(localStorage.getItem('markers')) : [];
+        let foreign = (props.match.params.userLoginFor !== undefined && props.match.params.userLoginFor.length > 0) ? props.match.params.userLoginFor : "";
 
         super(props);
         this.state = {
@@ -24,7 +25,9 @@ export class MapContainer extends React.Component {
             addCoord: "",
             addLink: "",
             addColor: "",
-            addId: ""
+            addId: "",
+
+            foreign: foreign
         };
 
         this.onMapClicked = this.onMapClicked.bind(this);
@@ -40,7 +43,8 @@ export class MapContainer extends React.Component {
         this.clearAddFields = this.clearAddFields.bind(this);
         this.eventHandler = this.eventHandler.bind(this);
 
-        if (!localStorage.getItem('markers')) this.getMarker();
+        if (foreign !== "") this.getForeignMarker();
+        else if (!localStorage.getItem('markers')) this.getMarker();
     }
 
     eventHandler(e) {
@@ -143,8 +147,11 @@ export class MapContainer extends React.Component {
     getForeignMarker() {
 
         let formData = new FormData();
-        formData.append('login', document.getElementById("foreign").value);
 
+        let login;
+        if (this.state.foreign !== "") login = this.state.foreign;
+        if (document.getElementById("foreign")) login = document.getElementById("foreign").value;
+        formData.append('login', login);
         let that = this;
 
         axios({
