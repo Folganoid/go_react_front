@@ -409,7 +409,7 @@ class Data extends React.Component {
             <div className="uk-container">
                 <h1>Data control</h1>
                 <div className="uk-grid">
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                     <h3>Add ride data</h3>
                             <table>
                                 <tbody>
@@ -565,7 +565,7 @@ class Data extends React.Component {
                             </table>
                             <button type="button" onClick={this.saveStat} disabled={(validate) ? false : true}>Save</button>
                     </div>
-                    <div className="uk-width-1-2">
+                    <div className="uk-width-1-2@m uk-width-1-1@s">
                         <h3>Add bike</h3>
                             <input id="add_bike" name="addBike" type="text" placeholder="Enter bike" onChange={this.handleInputChange}/>
                             &nbsp;<button className="uk-button-mini uk-button-primary" id="save_bike" type="button" onClick={this.saveBikeAjax}>Add bike</button>

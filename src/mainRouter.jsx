@@ -199,8 +199,8 @@ class MainRouter extends Component {
         return (
             <Router>
                 <div>
-                    <nav className="uk-navbar-container" uk-navbar={"boundary-align: true; align: center;"}>
-                        <div className="uk-navbar-left">
+                    <nav className="uk-navbar-container uk-grid" uk-navbar={"boundary-align: true; align: center;"}>
+                        <div className="uk-navbar-left uk-width-1-2@m uk-width-1-1@s">
                             <ul className="uk-navbar-nav">
                                 <li className="uk-parent"><Link to="/">Home</Link></li>
                                 <li className="uk-parent"><Link to="/map">Map</Link></li>

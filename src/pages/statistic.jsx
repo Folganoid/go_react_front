@@ -75,8 +75,19 @@ class Statistic extends React.Component {
         let result = {};
 
         for (let i = 0 ; i < data.length ; i++) {
-            if (result[data[i].Tires] === undefined) result[data[i].Tires] = 0;
+            if (result[data[i].Tires] === undefined) {
+                result[data[i].Tires] = 0;
+                result[data[i].Tires + " (asphalt)"] = 0;
+                result[data[i].Tires + " (bad asphalt)"] = 0;
+                result[data[i].Tires + " (country)"] = 0;
+                result[data[i].Tires + " (offroad)"] = 0;
+            }
             result[data[i].Tires] += +data[i].Dist;
+            result[data[i].Tires + " (asphalt)"] += +data[i].Surfasf / 100 * +data[i].Dist;
+            result[data[i].Tires + " (bad asphalt)"] += +data[i].Surftvp / 100 * +data[i].Dist;
+            result[data[i].Tires + " (country)"] += +data[i].Surfgrn / 100 * +data[i].Dist;
+            result[data[i].Tires + " (offroad)"] += +data[i].Srfbzd / 100 * +data[i].Dist;
+
         }
 
         return result;
@@ -493,7 +504,20 @@ class Statistic extends React.Component {
 
             let res = '';
             Object.keys(odo).forEach(function(key) {
-                res += '<tr key="' + key + '"><td width="40%">' + key + '</td><td width="20%" class="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td><td width="40%"><div style="width: ' + odo[key]*100/maxDist + '%;" class="surfacePerc"></div></td></tr>';
+
+                if (key.includes("(asphalt)") || key.includes("(bad asphalt)") || key.includes("(country)") || key.includes("(offroad)")) {
+                    res += '<tr key="' + key + '" style="font-size: 12px;">' +
+                        '<td width="40%">' + key + '</td>' +
+                        '<td width="20%" align="right">' + odo[key].toFixed(2) + ' km</td>' +
+                        '<td width="40%"><div style="width: ' + odo[key]*100/maxDist + '%;" class="surfacePerc"></div></td>' +
+                        '</tr>';
+                } else {
+                    res += '<tr key="' + key + '" style="font-size: 16px;">' +
+                        '<td width="40%"><b>' + key + '</b></td>' +
+                        '<td width="20%" class="colorred textBold" align="right">' + odo[key].toFixed(2) + ' km</td>' +
+                        '<td width="40%"><div style="width: ' + odo[key]*100/maxDist + '%;" class="surfacePerc"></div></td>' +
+                        '</tr>';
+                }
             });
             return res;
         };

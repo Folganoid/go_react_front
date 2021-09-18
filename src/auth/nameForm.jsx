@@ -15,7 +15,7 @@ class NameForm extends React.Component {
         let login;
 
         if (this.props.userId === 0) {
-            login = <div className="uk-navbar-right">
+            login = <div className="uk-navbar-right uk-width-1-2@m uk-width-1-1@s">
                 <div className="uk-navbar-item">
                     <input className="uk-input uk-form-width-small" name="login" type="text" size="5"
                            placeholder="login" onChange={this.props.loginChange}/>
@@ -32,7 +32,7 @@ class NameForm extends React.Component {
                 </div>
             </div>;
         } else {
-            login = <div className="uk-navbar-right">
+            login = <div className="uk-navbar-right uk-width-1-2@m uk-width-1-1@s">
                 <div className="uk-navbar-item">
                     <Link to="/profile"><span uk-icon="icon: user"></span> <b>{this.props.userLogin}</b></Link>
                 </div>
